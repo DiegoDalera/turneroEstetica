@@ -1,0 +1,29 @@
+.contenedor_principal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formulario_turnos{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+
+}
+.turnos{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.titulo{
+    margin: 20px
+}
+
+
+input,textarea,select{
+    margin: 10px 0px;
+}
