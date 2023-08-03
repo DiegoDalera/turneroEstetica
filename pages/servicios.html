@@ -10,26 +10,6 @@
 </head>
 
 <body>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCFEQpgbtB294Z6vUiDvqba0YgQuVpPCOU",
-            authDomain: "turnosenlinea-f601e.firebaseapp.com",
-            projectId: "turnosenlinea-f601e",
-            storageBucket: "turnosenlinea-f601e.appspot.com",
-            messagingSenderId: "755987946873",
-            appId: "1:755987946873:web:95b894bc0a7de86a75e3a8"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-    </script>
-
     <div class="menu">
         <ion-icon name="menu-outline"></ion-icon>
         <ion-icon name="close-outline"></ion-icon>
@@ -39,11 +19,11 @@
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="cloud-outline"></ion-icon>
-                <span>Apex</span>
+                <span>Anto Slashess</span>
             </div>
             <button class="boton">
                 <ion-icon name="add-outline"></ion-icon>
-                <span>Crear nuevo</span>
+                <span><a id="enlaceAgregarServicios" href="#modal1">Crear Servicio</a></span>
             </button>
         </div>
 
@@ -128,6 +108,37 @@
 
     <main>
         <h1>Servicios</h1>
+        <div id="modal-editar" class="modalmask">
+            <div class="modalbox movedown">
+                <a href="#close" title="Close" class="close">X</a>
+                <h2>Editar Servicio</h2>
+
+                <form action="#" method="post" class="formulario_servicio" id="formulario_servicio">
+
+                    <div class="elem-group">
+                        <label for="nombre_servicio">Servicio</label>
+                        <input type="text" id="nombre_servicio_ed" name="nombre_servicio" required>
+                    </div>
+
+                    <div class=" elem-group">
+                        <label for="duracion">Duracion Aproximada</label>
+                        <input type="text" id="duracion_ed" name="duracion" required>
+                    </div>
+
+                    <div class="elem-group">
+                        <label for="cantidad_turnos">Cantidad de turnos diarios</label>
+                        <input type="text" id="cantidad_turnos_ed" name="cantidad_turnos" required>
+                    </div>
+
+                    <div class="elem-group">
+                        <label for="precio">Valor del Servicio</label>
+                        <input type="text" id="valor_ed" name="valor_ed" required>
+                    </div>
+
+                    <button type="button" id="btn_editar_servicio">Editar</button>
+                </form>
+            </div>
+        </div>
 
         <div id="modal1" class="modalmask">
             <div class="modalbox movedown">
@@ -138,23 +149,22 @@
 
                     <div class="elem-group">
                         <label for="nombre_servicio">Servicio</label>
-                        <input type="text" id="nombre_servicio" name="nombre_servicio" placeholder="Nombre del servicio"
-                            required>
+                        <input type="text" id="nombre_servicio" name="nombre_servicio"     required>
                     </div>
 
                     <div class=" elem-group">
                         <label for="duracion">Duracion Aproximada</label>
-                        <input type="text" id="duracion" name="duracion" placeholder="120" required>
+                        <input type="text" id="duracion" name="duracion" required>
                     </div>
 
                     <div class="elem-group">
                         <label for="cantidad_turnos">Cantidad de turnos diarios</label>
-                        <input type="text" id="cantidad_turnos" name="cantidad_turnos" placeholder="4" required>
+                        <input type="text" id="cantidad_turnos" name="cantidad_turnos"  required>
                     </div>
 
-                    <div class="elem-group">
-                        <label for="precio">Precio $</label>
-                        <textarea id="precio" name="precio" placeholder="$1000" required></textarea>
+                    <div class=" elem-group">
+                        <label for="valor">Valor de servicio</label>
+                        <input type="text" id="valor" name="valor" required>
                     </div>
 
                     <button type="button" id="btn_guardar_servicio">Guardar</button>
@@ -163,9 +173,10 @@
             </div>
         </div>
 
-        <div class="Servicios">
+
+        <!-- <div class="Servicios">
             <li><a id="enlaceAgregarServicios" href="#modal1">Agregar Servicios</a></li>
-        </div>
+        </div> -->
 
 
         <div class="contenedor-servicios">
@@ -186,12 +197,15 @@
         </div>
 
     </main>
-
-
+    <script type="module" src="../js/firebase.js"></script>
     <script type="module" src="../js/servicios.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="../js/slideBarScript.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    
 </body>
 
 </html>

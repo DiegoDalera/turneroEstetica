@@ -1,8 +1,12 @@
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
 const botonIngresoServicio = document.getElementById("btn_guardar_servicio");
+const botonEditarServicio = document.getElementById("btn_editar_servicio");
 const tablaServicios = document.getElementById("tabla-servicios");
 const cuerpoTablaServicios = document.getElementById("cuerpo-tabla-servicios");
+
+let claveServicioEditar = null;
+let servicioAEditar = null;
 
 //EventListener
 document.addEventListener("DOMContentLoaded", (e) => {
@@ -13,22 +17,73 @@ botonIngresoServicio.addEventListener("click", () => {
   guardarServicio();
 })
 
-/*Guarda los servicio en firebase */
+botonEditarServicio.addEventListener("click", () => {
+  editarServicioCargado();
+})
+
+function editarServicio(clave, servicio) {
+  console.log(clave, servicio)
+  claveServicioEditar = clave;
+  servicioAEditar = servicio;
+  window.location = "#modal-editar"
+
+  document.getElementById("nombre_servicio_ed").value = servicio.nombre_servicio;
+  document.getElementById("duracion_ed").value = servicio.duracion;
+  document.getElementById("cantidad_turnos_ed").value = servicio.cantidad_turnos;
+  document.getElementById("valor_ed").value = servicio.precio;
+}
+
+function editarServicioCargado() {
+  const database = getDatabase();
+  const referenciaServicios = ref(database, "servicios");
+
+  var claveRegistro = claveServicioEditar;
+
+  const nombreServicio = document.getElementById("nombre_servicio_ed").value;
+  const duracion = parseInt(document.getElementById("duracion_ed").value);
+  const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos_ed").value);
+  const valor = parseFloat(document.getElementById("valor_ed").value);
+
+  // Para actualizar los datos de un registro específico en Firebase, debemos construir el objeto de actualización con los campos que deseamos cambiar.
+  // En este caso, asumiendo que el registro tiene una clave única, utilizaremos la función `child()` para apuntar a esa clave.
+  // Luego, utilizaremos la función `update()` para realizar la actualización de los campos correspondientes.
+
+  var registroActualizado = {};
+  registroActualizado[`/${claveRegistro}/nombre_servicio`] = nombreServicio;
+  registroActualizado[`/${claveRegistro}/duracion`] = duracion;
+  registroActualizado[`/${claveRegistro}/cantidad_turnos`] = cantidadTurnos;
+  registroActualizado[`/${claveRegistro}/precio`] = valor;
+
+  // Ahora podemos realizar la actualización en la base de datos de Firebase
+  update(referenciaServicios, registroActualizado)
+    .then(function () {
+      alert('Registro actualizado correctamente');
+    })
+    .catch(function (error) {
+      console.error('Error al actualizar el registro:', error);
+    });
+}
+
+
+/*Guarda los servicio en Firebase */
 function guardarServicio() {
-  const nombreServicio = document.getElementById("nombre_servicio").value;
-  const duracion = parseInt(document.getElementById("duracion").value);
-  const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos").value);
-  const precio = parseFloat(document.getElementById("precio").value);
 
   const database = getDatabase();
   const referenciaServicios = ref(database, "servicios");
 
+  const nombreServicio = document.getElementById("nombre_servicio").value;
+  const duracion = parseInt(document.getElementById("duracion").value);
+  const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos").value);
+  const valor = parseFloat(document.getElementById("valor").value);
+
   const nuevoServicio = {
     nombre_servicio: nombreServicio,
     duracion: duracion,
-    cantidad_turnos: cantidadTurnos,
-    precio: precio
+    precio: valor,
+    cantidad_turnos: cantidadTurnos
   };
+
+
 
   push(referenciaServicios, nuevoServicio)
     .then(() => {
@@ -39,7 +94,6 @@ function guardarServicio() {
       console.error("Error al guardar el servicio:", error);
     });
 }
-
 
 /* Carga los servicos en La tabla */
 function cargarServicios() {
@@ -89,13 +143,10 @@ function cargarServicios() {
         celdaAcciones.appendChild(botonEditar);
 
         fila.appendChild(celdaAcciones);
-      
-
-        // Agregar la fila a la tabla
         cuerpoTablaServicios.appendChild(fila);
+
       }
     } else {
-      // Mostrar un mensaje si no hay datos en la colección "servicios"
       const filaVacia = document.createElement("tr");
       const celdaMensaje = document.createElement("td");
       celdaMensaje.setAttribute("colspan", "5");
@@ -108,6 +159,7 @@ function cargarServicios() {
   });
 }
 
+/*--- Elimina servicios ---*/
 function eliminarServicio(clave) {
   const servicioAEliminar = ref(getDatabase(), `servicios/${clave}`);
   remove(servicioAEliminar)
@@ -118,101 +170,3 @@ function eliminarServicio(clave) {
       console.error("Error al eliminar el servicio:", error)
     })
 };
-
-
-
-function editarServicio(clave, servicio) {
-  abrirModal("editar", clave, servicio);
-}
-
-
-let modoModal = "agregar"; // Variable para controlar el modo del modal (agregar o editar)
-
-function abrirModal(modo, clave, servicio) {
-
-const enlaceAgregarServicios = document.getElementById("enlaceAgregarServicios");
-enlaceAgregarServicios.click();
-
-  if (modo === "editar" && servicio) {
-    // Si es modo editar y servicio está definido, llenar el formulario con los datos del servicio seleccionado
-    document.getElementById("nombre_servicio").value = servicio.nombre_servicio;
-    document.getElementById("duracion").value = servicio.duracion;
-    document.getElementById("cantidad_turnos").value = servicio.cantidad_turnos;
-    document.getElementById("precio").value = servicio.precio;
-  } else {
-    // Si es modo agregar o servicio no está definido, limpiar el formulario
-    document.getElementById("nombre_servicio").value = "";
-    document.getElementById("duracion").value = "";
-    document.getElementById("cantidad_turnos").value = "";
-    document.getElementById("precio").value = "";
-  }
-}
-
-
-function guardarCambios(clave) {
-  if (modoModal === "editar") {
-    // Obtener los nuevos valores del formulario de edición
-    const nuevoNombre = document.getElementById("nombre_servicio").value;
-    const nuevaDuracion = document.getElementById("duracion").value;
-    const nuevaCantidadTurnos = document.getElementById("cantidad_turnos").value;
-    const nuevoPrecio = document.getElementById("precio").value;
-
-    // Crear un objeto con los nuevos valores del servicio
-    const servicioEditado = {
-      nombre_servicio: nuevoNombre,
-      duracion: nuevaDuracion,
-      cantidad_turnos: nuevaCantidadTurnos,
-      precio: nuevoPrecio
-    };
-
-    // Actualizar el servicio en la base de datos utilizando la clave única
-    const servicioAEditar = ref(getDatabase(), `servicios/${clave}`);
-    set(servicioAEditar, servicioEditado)
-      .then(() => {
-        console.log("Servicio editado correctamente.");
-        // Cerrar el modal después de guardar los cambios
-        const modal = document.getElementById("modal1");
-        modal.style.display = "none";
-      })
-      .catch((error) => {
-        console.error("Error al editar el servicio:", error);
-      });
-  } else if (modoModal === "agregar") {
-    // Obtener los valores del formulario de agregar
-    const nombre = document.getElementById("nombre_servicio").value;
-    const duracion = document.getElementById("duracion").value;
-    const cantidadTurnos = document.getElementById("cantidad_turnos").value;
-    const precio = document.getElementById("precio").value;
-
-    // Crear un objeto con los datos del nuevo servicio
-    const nuevoServicio = {
-      nombre_servicio: nombre,
-      duracion: duracion,
-      cantidad_turnos: cantidadTurnos,
-      precio: precio
-    };
-
-    // Obtener una referencia a la colección "servicios"
-    const referenciaServicios = ref(getDatabase(), "servicios");
-
-    // Agregar el nuevo servicio a la base de datos
-    push(referenciaServicios, nuevoServicio)
-      .then(() => {
-        console.log("Servicio agregado correctamente.");
-        // Cerrar el modal después de guardar el nuevo servicio
-        const modal = document.getElementById("modal1");
-        modal.style.display = "none";
-      })
-      .catch((error) => {
-        console.error("Error al agregar el servicio:", error);
-      });
-  }
-}
-
-// Obtener el enlace "Agregar Servicios" del modal y agregar el evento onclick
-const enlaceAgregarServicios = document.querySelector(".Servicios a");
-enlaceAgregarServicios.onclick = function () {
-  abrirModal("agregar");
-};
-
-// ... Código posterior ...
