@@ -60,8 +60,13 @@ color: var(--color-boton-texto);
 text-decoration: none;
 }
 
-/*Menu*/
+i{
+    font-size: 20px;
+    margin: 5px 10px;
 
+}
+
+/*Menu*/
 .menu{
     position: fixed;
     width: 50px;
