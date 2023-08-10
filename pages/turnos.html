@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anto Lashess - Servicios</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/modal.css">
-    <link rel="stylesheet" href="../css/tablas.css">
+    <link rel="stylesheet" href="../css/servicios.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 
@@ -31,19 +31,19 @@
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a id="inbox" href="./turnos.html">
+                    <a id="inbox" class="selected" href="#">
                         <i class="bi bi-calendar-check"></i>
                         <span>Turnos</span>
                     </a>
                 </li>
                 <li>
-                    <a class="selected " href="#">
+                    <a class="selected" href="./servicios.html">
                         <i class="bi bi-star"></i>
                         <span>Servicios</span>
                     </a>
                 </li>
                 <li>
-                    <a href="./empleados.html">
+                    <a href="#">
                         <i class="bi bi-people-fill"></i>
                         <span>Empleados</span>
                     </a>
@@ -104,72 +104,10 @@
     <main>
 
         <div class="titulo">
-            <h1>Servicios</h1>
-        </div>
-
-        <div id="modal-agregar" class="modal">
-
-            <div class="modal-content">
-                <span class="close">&times;</span>
-
-                <form action="#" method="post" class="formulario-servicio-agregar" id="formulario-servicio-agregar">
-
-                    <div class="elem-group">
-                        <label for="nombre_servicio">Servicio</label>
-                        <input type="text" id="nombre_servicio_ag" name="nombre_servicio_ag" required>
-                    </div>
-
-                    <div class=" elem-group">
-                        <label for="duracion">Duracion Aproximada</label>
-                        <input type="text" id="duracion_ag" name="duracion_ag" required>
-                    </div>
-
-                    <div class="elem-group">
-                        <label for="cantidad_turnos">Cantidad de turnos diarios</label>
-                        <input type="text" id="cantidad_turnos_ag" name="cantidad_turnos_ag" required>
-                    </div>
-
-                    <div class="elem-group">
-                        <label for="precio">Valor del Servicio</label>
-                        <input type="text" id="valor_ag" name="valor_ag" required>
-                    </div>
-
-                    <div class="elem-group">
-                        <button type="button" id="btn_agregar_servicio">Agregar</button>
-                    </div>
-
-                </form>
-            </div>
+            <h1>Turnos </h1>
         </div>
 
         
-        
-
-
-        <div class="contenedor-servicios">
-            <table id="tabla-servicios">
-                <thead>
-                    <tr>
-                        <th>Nombre del servicio</th>
-                        <th>Duración (minutos)</th>
-                        <th>Cantidad de turnos</th>
-                        <th>Precio</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpo-tabla-servicios">
-                    <!-- Aquí se agregarán las filas de la tabla con los datos de los servicios -->
-                </tbody>
-            </table>
-        </div>
-
-    </main>
-
-
-
-    
-    <script type="module" src="../js/firebase.js"></script>
-    <script type="module" src="../js/servicios.js"></script>
     <script src="../js/slideBarScript.js"></script>
 
 </body>

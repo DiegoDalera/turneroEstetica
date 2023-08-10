@@ -24,7 +24,7 @@
                 <span>Anto Slashess</span>
             </div>
             <button class="boton">
-                <span><a id="enlaceAgregarServicios" href="#">Agregar Servicio</a></span>
+                <span><a id="enlaceAgregarEmpleados" href="#">Agregar Empleado</a></span>
             </button>
         </div>
 
@@ -37,13 +37,13 @@
                     </a>
                 </li>
                 <li>
-                    <a class="selected " href="#">
+                    <a  href="./servicios.html">
                         <i class="bi bi-star"></i>
                         <span>Servicios</span>
                     </a>
                 </li>
                 <li>
-                    <a href="./empleados.html">
+                    <a class="selected" href="#">
                         <i class="bi bi-people-fill"></i>
                         <span>Empleados</span>
                     </a>
@@ -104,38 +104,37 @@
     <main>
 
         <div class="titulo">
-            <h1>Servicios</h1>
+            <h1>Empleados</h1>
         </div>
 
         <div id="modal-agregar" class="modal">
-
             <div class="modal-content">
                 <span class="close">&times;</span>
 
-                <form action="#" method="post" class="formulario-servicio-agregar" id="formulario-servicio-agregar">
+                <form action="#" method="post" class="formulario-empleado-agregar" id="formulario-empleado-agregar">
 
                     <div class="elem-group">
-                        <label for="nombre_servicio">Servicio</label>
-                        <input type="text" id="nombre_servicio_ag" name="nombre_servicio_ag" required>
+                        <label for="nombre">Nombre y Apellido</label>
+                        <input type="text" id="nombre" name="nombre" required>
                     </div>
 
                     <div class=" elem-group">
-                        <label for="duracion">Duracion Aproximada</label>
-                        <input type="text" id="duracion_ag" name="duracion_ag" required>
+                        <label for="mail">Mail de contacto</label>
+                        <input type="text" id="mail" name="mail" required>
                     </div>
 
                     <div class="elem-group">
-                        <label for="cantidad_turnos">Cantidad de turnos diarios</label>
-                        <input type="text" id="cantidad_turnos_ag" name="cantidad_turnos_ag" required>
+                        <label for="telefono">Telefono</label>
+                        <input type="text" id="telefono" name="telefono" required>
                     </div>
 
                     <div class="elem-group">
-                        <label for="precio">Valor del Servicio</label>
-                        <input type="text" id="valor_ag" name="valor_ag" required>
+                        <label for="direccion">Direccion</label>
+                        <input type="text" id="direccion" name="direccion" required>
                     </div>
 
                     <div class="elem-group">
-                        <button type="button" id="btn_agregar_servicio">Agregar</button>
+                        <button type="button" id="btn_agregar_empleado">Agregar</button>
                     </div>
 
                 </form>
@@ -146,19 +145,21 @@
         
 
 
-        <div class="contenedor-servicios">
-            <table id="tabla-servicios">
+        <div class="contenedor-empleados">
+            <table id="tabla-empleados">
                 <thead>
                     <tr>
-                        <th>Nombre del servicio</th>
-                        <th>Duración (minutos)</th>
-                        <th>Cantidad de turnos</th>
-                        <th>Precio</th>
+                        <th>Nombre del empleado</th>
+                        <th>E mail</th>
+                        <th>Telefono</th>
+                        <th>Direccion</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="cuerpo-tabla-servicios">
+                <tbody id="cuerpo-tabla-empleados">
+
                     <!-- Aquí se agregarán las filas de la tabla con los datos de los servicios -->
+
                 </tbody>
             </table>
         </div>
@@ -167,9 +168,8 @@
 
 
 
-    
     <script type="module" src="../js/firebase.js"></script>
-    <script type="module" src="../js/servicios.js"></script>
+    <script type="module" src="../js/empleados.js"></script>
     <script src="../js/slideBarScript.js"></script>
 
 </body>

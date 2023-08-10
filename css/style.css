@@ -292,7 +292,7 @@ i{
 
 /*main*/
 
-#inbox{
+.selected{
     background-color: var(--color-menu-hover);
     color: var(--color-menu-hover-texto);
 }
