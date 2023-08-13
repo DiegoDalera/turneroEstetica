@@ -32,7 +32,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
 
-// funciones Servicios
+// Funciones Servicios---------------------------------------------------------
 export {
     collection,
     onSnapshot,
@@ -42,24 +42,35 @@ export const guardarServicio = (servicio, duracion, cantidadTurnos, valor) => {
     addDoc(collection(db, 'servicios'), { servicio: servicio, duracion: duracion, cantidadTurnos: cantidadTurnos, valor: valor })
 }
 export const obtenerServicios = () => getDocs(collection(db, 'servicios'))
+
 export const escucharCambios = () => console.log("escuchar servicios")
 export const borrarServicio = id => deleteDoc(doc(db, "servicios", id))
-//obtengo solo un servicio
 export const obtenerServicio = id => getDoc(doc(db, "servicios", id))
-export const actualizarServicio = (id,newField) => 
-updateDoc(doc(db, "servicios", id),newField)
+export const actualizarServicio = (id, newField) =>
+    updateDoc(doc(db, "servicios", id), newField)
 
 
-// funciones Empleados
+// Funciones Empleados--------------------------------------------------------
 export const guardarEmpleado = (nombre, mail, telefono, direccion) => {
     addDoc(collection(db, 'empleados'), { nombre: nombre, mail: mail, telefono: telefono, direccion: direccion })
 }
 export const obtenerEmpleados = () => getDocs(collection(db, 'empleados'))
+
 export const escucharCambiosEmpleado = () => console.log("escuchar empleados")
 export const borrarEmpleado = id => deleteDoc(doc(db, "empleados", id))
 //obtengo solo un Empleado
 export const obtenerEmpleado = id => getDoc(doc(db, "empleados", id))
-export const actualizarEmpleado = (id,newField) => 
-updateDoc(doc(db, "empleados", id),newField)
+export const actualizarEmpleado = (id, newField) =>
+    updateDoc(doc(db, "empleados", id), newField)
 
-// funciones conexiones
+
+
+// Funciones Conexiones-------------------------------------------------------
+export const guardarConexion = ( servicioConexion,nombreEmpleado,  diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin) => {
+    addDoc(collection(db, 'conexiones'), { servicioConexion,nombreEmpleado, diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin })
+}
+export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
+
+export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
+export const actualizarConexion = (id, newField) =>
+    updateDoc(doc(db, "conexiones", id), newField)

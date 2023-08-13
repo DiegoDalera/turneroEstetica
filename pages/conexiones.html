@@ -129,7 +129,7 @@
 
                     <div class="elem-group">
                         <label for="dias">Selecciona que dias de semana se va a trabajar</label>
-                        <select name="dias" id="lang" size="5" multiple>
+                        <select name="dias" id="dias" size="5" multiple>
                             <option value="lunes">Lunes</option>
                             <option value="martes">Martes</option>
                             <option value="miercoles">Miercoles</option>
@@ -141,7 +141,7 @@
                     </div>
 
                     <div class="elem-group">
-                        <label for="direccion">Rango de fechas</label>
+                        <label for="fechas">Rango de fechas</label>
                         <input type="date" value="2017-06-01" id="fecha-inicio" />
                         <input type="date" value="2017-06-01" id="fecha-fin"/>
                     </div>
@@ -153,23 +153,25 @@
                     </div>
 
                     <div class="elem-group">
-                        <button type="button" id="btn_agregar_conexion">Agregar</button>
+                        <button type="button" id="btn_agregar_conexion">Crear Conexion</button>
                     </div>
 
                 </form>
             </div>
         </div>
 
-
-
         <div class="contenedor-conexiones">
             <table id="tabla-conexiones">
                 <thead>
                     <tr>
-                        <th>Nombre del empleado / Servicio</th>
-                        <th>Dias a trabajar</th>
-                        <th>Fecha Inicio / Fecha fin </th>
-                        <th>Horario</th>
+                        <th>Servicio</th>
+                        <th>Nombre del empleado</th>
+                        <th>Dias a Trabajar</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Fecha de Fin</th>
+                        <th>Hora de Inicio</th>
+                        <th>Hora de fin</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-tabla-conexiones">
