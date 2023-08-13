@@ -62,3 +62,4 @@ export const obtenerEmpleado = id => getDoc(doc(db, "empleados", id))
 export const actualizarEmpleado = (id,newField) => 
 updateDoc(doc(db, "empleados", id),newField)
 
+// funciones conexiones

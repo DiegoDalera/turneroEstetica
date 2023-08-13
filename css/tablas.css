@@ -1,3 +1,15 @@
+/* Tabla conexiones */
+.contenedor-conexiones {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tabla-conexiones {
+  width: 100%;
+}
+
+
 /* Tabla servicios */
 .contenedor-servicios {
   display: flex;
