@@ -66,11 +66,11 @@ export const actualizarEmpleado = (id, newField) =>
 
 
 // Funciones Conexiones-------------------------------------------------------
-export const guardarConexion = ( servicioConexion,nombreEmpleado,  diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin) => {
+export const guardarConexion = ( servicioConexion, nombreEmpleado,  diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin) => {
     addDoc(collection(db, 'conexiones'), { servicioConexion,nombreEmpleado, diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin })
 }
 export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
 
 export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
-export const actualizarConexion = (id, newField) =>
+export const actualizarConexion = (id,  newField) =>
     updateDoc(doc(db, "conexiones", id), newField)

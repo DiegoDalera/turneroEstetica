@@ -20,11 +20,13 @@ agregarConexion.onclick = function () {
 
 span.onclick = function () {
   modal.style.display = "none";
+  formAgregarConexion.reset();
 }
 
 window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
+    formAgregarConexion.reset();
   }
 }
 
@@ -45,21 +47,24 @@ btnAgregarConexion.addEventListener("click", (e) => {
   const horaInicioSeleccionada = document.getElementById("hora-inicio").value;
   const horaFinSeleccionada = document.getElementById("hora-fin").value;
 
-
-  console.log(serviciosSelecionado)
-  console.log(empleadoSeleccionado)
-  console.log(diasSeleccionados)
-  console.log(fechaInicioSeleccionada)
-  console.log(horaInicioSeleccionada)
-  console.log(horaFinSeleccionada)
-  console.log(horaInicioSeleccionada)
-  console.log(horaFinSeleccionada)
-
+  const newField = {
+    servicioConexion: serviciosSelecionado,
+    nombreEmpleado: empleadoSeleccionado,
+    diasATrabajar: diasSeleccionados,
+    fechaInicio: fechaInicioSeleccionada,
+    fechaFin: fechaFinSeleccionada,
+    horaInicio: horaInicioSeleccionada,
+    horaFin: horaFinSeleccionada
+};
+  
 
   if (!editStatus) {
     guardarConexion(serviciosSelecionado, empleadoSeleccionado, diasSeleccionados, fechaInicioSeleccionada, fechaFinSeleccionada, horaInicioSeleccionada, horaFinSeleccionada);
   } else {
-    actualizarConexion(idEdit, { serviciosSelecionado, empleadoSeleccionado, diasSeleccionados, fechaInicioSeleccionada, fechaFinSeleccionada, horaInicioSeleccionada, horaFinSeleccionada })
+    console.log("entro")
+    console.log(newField )
+
+    actualizarConexion(idEdit, newField)
 
     editStatus = false;
     btnAgregarConexion.innerText = "Grabar Conexion"
@@ -96,6 +101,20 @@ async function cargarFormularioDefault() {
     option.textContent = servicio.servicio;
     serviciosSelectList.appendChild(option);
   });
+
+  const selectDias = document.getElementById("dias");
+
+  // Lista de días de la semana
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+  // Recorre la lista de días y crea las opciones
+  for (let i = 0; i < diasSemana.length; i++) {
+    const option = document.createElement("option");
+    option.text = diasSemana[i];
+    option.value = diasSemana[i];
+    selectDias.appendChild(option);
+  }
+
 }
 
 
@@ -134,6 +153,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     //agrego event listener editar
     const botonesEditarConexion = document.querySelectorAll(".btn-editar")
+
+
     botonesEditarConexion.forEach(btn => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
@@ -151,6 +172,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         //Cargar el formulario de conexion para editar
+
+
 
         // Datos proporcionados Servicios
         const servicioConexion = conexionEditar.servicioConexion
@@ -174,21 +197,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         // Datos proporcionados Dias de la semana trabajados
-        const diasATrabajar = conexionEditar.diasATrabajar
+
+
+       
+        
+
         const diasElement = document.getElementById("dias");
-        for (let i = 0; i < diasATrabajar.length; i++) {
-          let option = document.createElement("option");
-          option.value = diasATrabajar[i];
-          option.text = diasATrabajar[i];
+        diasElement.innerHTML = "";
+
+        const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+        const diasATrabajar = conexionEditar.diasATrabajar
+        console.log(diasATrabajar)
+        console.log(diasSemana)
+      
+        // Recorre la lista de días y crea las opciones
+        
+        for (let i = 0; i < diasSemana.length; i++) {
+          const option = document.createElement("option");
+          option.text = diasSemana[i];
+          option.value = diasSemana[i];
+      
+          // Verifica si el día debe estar preseleccionado
+          if (diasATrabajar.includes(diasSemana[i])) {
+              option.selected = true;
+          }
           diasElement.appendChild(option);
         }
 
-        for (let i = 0; i < diasElement.options.length; i++) {
-          let diaOption = diasElement.options[i];
-          if (diasATrabajar.includes(diaOption.value)) {
-            diaOption.selected = true;
-          }
-        }
 
         formAgregarConexion["fecha-inicio"].value = conexionEditar.fechaInicio
         formAgregarConexion["fecha-fin"].value = conexionEditar.fechaFin
