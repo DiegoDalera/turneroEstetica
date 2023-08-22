@@ -1,5 +1,4 @@
 /* Modal */
-
 .modal {
   position: fixed; 
   z-index: 1; 
@@ -16,7 +15,6 @@
   align-items: center;
   display: none; 
 }
-
 
 .modal-content {
   background-color: #fefefe;
@@ -58,4 +56,6 @@
 .titulo h1{
   text-align: center;
 }
+
+
 

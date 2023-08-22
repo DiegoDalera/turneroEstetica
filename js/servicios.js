@@ -1,10 +1,38 @@
-import { guardarServicio, obtenerServicio, onSnapshot, collection, db, borrarServicio, actualizarServicio } from '../js/firebase.js'
+import {
+  guardarServicio,
+  obtenerServicio,
+  onSnapshot, collection,
+  db,
+  borrarServicio,
+  actualizarServicio
+} from '../js/firebase.js'
 
 const formAgregarServicio = document.getElementById("formulario-servicio-agregar");
-const btnAgregarServicio = document.getElementById("btn_agregar_servicio")
 const cuerpoTablaServicios = document.getElementById("cuerpo-tabla-servicios")
+
+const servicio = document.getElementById("nombre_servicio_ag")
+const duracion = document.getElementById("duracion_ag")
+const cantidadTurnos = document.getElementById("cantidad_turnos_ag")
+const valor = document.getElementById("valor_ag")
+const btnAgregarServicio = document.getElementById("btn_agregar_servicio")
+
 let editStatus = false
 let idEdit
+
+//Validar formulario
+servicio.addEventListener('input', verificarCampos);
+duracion.addEventListener('input', verificarCampos);
+cantidadTurnos.addEventListener('input', verificarCampos);
+valor.addEventListener('input', verificarCampos);
+
+function verificarCampos() {
+  if (servicio.value && duracion.value && cantidadTurnos.value && valor.value) {
+    btnAgregarServicio.removeAttribute('disabled');
+  } else {
+    btnAgregarServicio.setAttribute('disabled', 'true');
+  }
+}
+
 
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
@@ -57,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         editStatus = true
         idEdit = id;
 
-        btnAgregarServicio.innerText="Actualizar";
+        btnAgregarServicio.innerText = "Actualizar";
         formAgregarServicio["nombre_servicio_ag"].value = servicioEditar.servicio
         formAgregarServicio["duracion_ag"].value = servicioEditar.duracion
         formAgregarServicio["cantidad_turnos_ag"].value = servicioEditar.cantidadTurnos
@@ -78,13 +106,13 @@ btnAgregarServicio.addEventListener("click", (e) => {
   if (!editStatus) {
     guardarServicio(servicio, duracion, cantidadTurnos, valor);
   } else {
-    actualizarServicio(idEdit, {servicio, duracion, cantidadTurnos, valor})
+    actualizarServicio(idEdit, { servicio, duracion, cantidadTurnos, valor })
     editStatus = false;
-    btnAgregarServicio.innerText="Grabar"
+    btnAgregarServicio.innerText = "Grabar"
   }
 
   formAgregarServicio.reset();
-  modal.style.display="none";
+  modal.style.display = "none";
 
 })
 
@@ -106,5 +134,7 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 }
+
+
 
 

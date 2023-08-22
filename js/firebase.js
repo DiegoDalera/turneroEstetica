@@ -32,7 +32,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
 
-// Funciones Servicios---------------------------------------------------------
+// -----------------------------Funciones Servicios---------------------------------------------------------
 export {
     collection,
     onSnapshot,
@@ -50,7 +50,7 @@ export const actualizarServicio = (id, newField) =>
     updateDoc(doc(db, "servicios", id), newField)
 
 
-// Funciones Empleados--------------------------------------------------------
+// --------------------------------Funciones Empleados--------------------------------------------------------
 export const guardarEmpleado = (nombre, mail, telefono, direccion) => {
     addDoc(collection(db, 'empleados'), { nombre: nombre, mail: mail, telefono: telefono, direccion: direccion })
 }
@@ -65,12 +65,19 @@ export const actualizarEmpleado = (id, newField) =>
 
 
 
-// Funciones Conexiones-------------------------------------------------------
-export const guardarConexion = ( servicioConexion, nombreEmpleado,  diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin) => {
-    addDoc(collection(db, 'conexiones'), { servicioConexion,nombreEmpleado, diasATrabajar, fechaInicio, fechaFin, horaInicio, horaFin })
+// ----------------------------------Funciones Conexiones-------------------------------------------------------
+export const guardarConexion = (newField) => {
+    addDoc(collection(db, 'conexiones'), newField )
 }
 export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
 
 export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
-export const actualizarConexion = (id,  newField) =>
+export const actualizarConexion = (id, newField) =>
     updateDoc(doc(db, "conexiones", id), newField)
+
+    
+// ----------------------------------Funciones Turnos-------------------------------------------------------
+
+
+export const obtenerTurnos= () => getDocs(collection(db, 'conexiones'))
+

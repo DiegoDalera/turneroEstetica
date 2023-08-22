@@ -1,11 +1,39 @@
-import { guardarEmpleado, obtenerEmpleado, onSnapshot, collection, db, borrarEmpleado, actualizarEmpleado } from '../js/firebase.js'
+import {
+  guardarEmpleado,
+  obtenerEmpleado,
+  onSnapshot,
+  collection,
+  db,
+  borrarEmpleado,
+  actualizarEmpleado
+} from '../js/firebase.js'
 
 const formAgregarEmpleado = document.getElementById("formulario-empleado-agregar");
 const btnAgregarEmpleado = document.getElementById("btn_agregar_empleado")
 const cuerpoTablaEmpleados = document.getElementById("cuerpo-tabla-empleados")
 
+const nombre = document.getElementById("nombre")
+const mail = document.getElementById("mail")
+const telefono = document.getElementById("telefono")
+const direccion = document.getElementById("direccion")
+
 let editStatus = false
 let idEdit
+
+//Validar formulario
+nombre.addEventListener('input', verificarCampos);
+mail.addEventListener('input', verificarCampos);
+telefono.addEventListener('input', verificarCampos);
+direccion.addEventListener('input', verificarCampos);
+
+function verificarCampos() {
+  if (nombre.value && mail.value && telefono.value && direccion.value) {
+    btnAgregarEmpleado.removeAttribute('disabled');
+  } else {
+    btnAgregarEmpleado.setAttribute('disabled', 'true');
+  }
+}
+
 
 // Modal Agregar Empleado
 const agregarEmpleado = document.getElementById("enlaceAgregarEmpleados")
@@ -13,7 +41,6 @@ let modal = document.getElementById("modal-agregar");
 let span = document.getElementsByClassName("close")[0];
 
 agregarEmpleado.onclick = function () {
-  console.log("click agreagr ")
   modal.style.display = "block";
 }
 

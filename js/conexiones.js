@@ -1,19 +1,61 @@
-import { onSnapshot, collection, db, obtenerEmpleados, obtenerServicios, guardarConexion, borrarConexion, obtenerConexion, actualizarConexion } from '../js/firebase.js'
+import {
+  onSnapshot,
+  collection,
+  db,
+  obtenerEmpleados,
+  obtenerServicios,
+  guardarConexion,
+  borrarConexion,
+  obtenerConexion,
+  actualizarConexion
+} from '../js/firebase.js'
 
+
+// Constantes 
 const formAgregarConexion = document.getElementById("formulario-conexion-agregar");
-const btnAgregarConexion = document.getElementById("btn_agregar_conexion")
 const cuerpoTablaConexiones = document.getElementById("cuerpo-tabla-conexiones")
 
+const btnAgregarConexion = document.getElementById("btn_agregar_conexion")
+const serviciosSelecionado = document.getElementById("servicios")
+const empleadoSeleccionado = document.getElementById("empleados")
+const dias = document.getElementById("dias");
+const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
+const fechaInicioSeleccionada = document.getElementById("fecha-inicio")
+const fechaFinSeleccionada = document.getElementById("fecha-fin")
+const horaInicioSeleccionada = document.getElementById("hora-inicio")
+const horaFinSeleccionada = document.getElementById("hora-fin")
+const colorSeleccionado = document.getElementById("color")
+
+// Variables globales
 let editStatus = false
 let idEdit
 
+//Validar formulario
+serviciosSelecionado.addEventListener('input', verificarCampos);
+empleadoSeleccionado.addEventListener('input', verificarCampos);
+dias.addEventListener('input', verificarCampos);
+fechaInicioSeleccionada.addEventListener('input', verificarCampos);
+fechaFinSeleccionada.addEventListener('input', verificarCampos);
+horaInicioSeleccionada.addEventListener('input', verificarCampos);
+horaFinSeleccionada.addEventListener('input', verificarCampos);
+colorSeleccionado.addEventListener('input', verificarCampos);
+
+function verificarCampos() {
+  if (serviciosSelecionado.value && empleadoSeleccionado.value && dias.value && fechaInicioSeleccionada.value && fechaFinSeleccionada.value && horaInicioSeleccionada.value && horaFinSeleccionada.value && colorSeleccionado.value) {
+    btnAgregarConexion.removeAttribute('disabled');
+  } else {
+    btnAgregarConexion.setAttribute('disabled', 'true');
+  }
+}
+
+
+
 // Modal Agregar Conexion
-const agregarConexion = document.getElementById("enlaceAgregarConexion")
+const enlaceAgregarConexion = document.getElementById("enlaceAgregarConexion")
 let modal = document.getElementById("modal-agregar");
 let span = document.getElementsByClassName("close")[0];
 
-agregarConexion.onclick = function () {
-  console.log("click agreagr ")
+enlaceAgregarConexion.onclick = function () {
   modal.style.display = "block";
   cargarFormularioDefault();
 }
@@ -30,12 +72,9 @@ window.onclick = function (event) {
   }
 }
 
-//EventListener
-document.addEventListener("DOMContentLoaded", async () => {
 
-})
-
-btnAgregarConexion.addEventListener("click", (e) => {
+//EventListener agregar y actualizr conexion
+btnAgregarConexion.addEventListener("click", async (e) => {
   e.preventDefault
 
   const serviciosSelecionado = document.getElementById("servicios").value
@@ -46,26 +85,30 @@ btnAgregarConexion.addEventListener("click", (e) => {
   const fechaFinSeleccionada = document.getElementById("fecha-fin").value
   const horaInicioSeleccionada = document.getElementById("hora-inicio").value;
   const horaFinSeleccionada = document.getElementById("hora-fin").value;
+  const colorSeleccionado = document.getElementById("color").value
+
+  const objetoEmpleado = await buscarEmpleadoSeleccionado(empleadoSeleccionado);
+  const objetoServicio = await buscarServicioSeleccionado(serviciosSelecionado)
 
   const newField = {
-    servicioConexion: serviciosSelecionado,
-    nombreEmpleado: empleadoSeleccionado,
     diasATrabajar: diasSeleccionados,
     fechaInicio: fechaInicioSeleccionada,
     fechaFin: fechaFinSeleccionada,
     horaInicio: horaInicioSeleccionada,
-    horaFin: horaFinSeleccionada
-};
-  
+    horaFin: horaFinSeleccionada,
+    color:colorSeleccionado,
+    objetoEmpleado,
+    objetoServicio
+  };
 
-  if (!editStatus) {
-    guardarConexion(serviciosSelecionado, empleadoSeleccionado, diasSeleccionados, fechaInicioSeleccionada, fechaFinSeleccionada, horaInicioSeleccionada, horaFinSeleccionada);
+
+  if (!editStatus) {// guarda la conexion si editStatus es false
+    guardarConexion(newField)
+
   } else {
     console.log("entro")
-    console.log(newField )
-
+    console.log(newField)
     actualizarConexion(idEdit, newField)
-
     editStatus = false;
     btnAgregarConexion.innerText = "Grabar Conexion"
   }
@@ -74,65 +117,23 @@ btnAgregarConexion.addEventListener("click", (e) => {
   modal.style.display = "none";
 })
 
-
-async function cargarFormularioDefault() {
-
-  const empleadosSelectList = document.getElementById("empleados");
-  const serviciosSelectList = document.getElementById("servicios");
-
-  serviciosSelectList.innerHTML = "";
-  empleadosSelectList.innerHTML = "";
-
-  const empleados = await obtenerEmpleados();
-  empleados.forEach((doc) => {
-    const empleado = doc.data();
-    const option = document.createElement("option");
-    option.value = empleado.nombre;
-    option.textContent = empleado.nombre;
-    empleadosSelectList.appendChild(option);
-  });
-
-  const servicios = await obtenerServicios();
-  servicios.forEach((doc) => {
-    const servicio = doc.data();
-    console.log(servicio.servicio)
-    const option = document.createElement("option");
-    option.value = servicio.servicio;
-    option.textContent = servicio.servicio;
-    serviciosSelectList.appendChild(option);
-  });
-
-  const selectDias = document.getElementById("dias");
-
-  // Lista de días de la semana
-  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-
-  // Recorre la lista de días y crea las opciones
-  for (let i = 0; i < diasSemana.length; i++) {
-    const option = document.createElement("option");
-    option.text = diasSemana[i];
-    option.value = diasSemana[i];
-    selectDias.appendChild(option);
-  }
-
-}
-
-
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
+
   onSnapshot(collection(db, "conexiones"), (querySnapshot) => {
     let html = '';
     querySnapshot.forEach(doc => {
       const conexion = doc.data();
       html += `
           <tr>
-            <td>${conexion.servicioConexion}</td>
-            <td>${conexion.nombreEmpleado}</td>
+            <td>${conexion.objetoServicio.servicio}</td>
+            <td>${conexion.objetoEmpleado.nombre}</td>
             <td>${conexion.diasATrabajar}</td>
             <td>${conexion.fechaInicio}</td>
             <td>${conexion.fechaFin}</td>
             <td>${conexion.horaInicio}</td>
             <td>${conexion.horaFin}</td>
+            <td>${conexion.color}</td>
             <td>
               <button class="btn-borrar" doc-id="${doc.id}">Borrar</button>
               <button class="btn-editar" doc-id="${doc.id}">Editar</button>
@@ -161,6 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const dato = await obtenerConexion(id)
         const conexionEditar = dato.data()
+        console.log(conexionEditar)
 
         let modal = document.getElementById("modal-agregar");
         modal.style.display = "block";
@@ -171,12 +173,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         btnAgregarConexion.innerText = "Actualizar Conexion";
 
 
-        //Cargar el formulario de conexion para editar
-
-
-
-        // Datos proporcionados Servicios
-        const servicioConexion = conexionEditar.servicioConexion
+        //Cargar el formulario de conexion con datos para editar
+        const servicioConexion = conexionEditar.objetoServicio.servicio
         console.log(servicioConexion)
         const servicioElement = document.getElementById("servicios");
         const option = document.createElement("option");
@@ -185,8 +183,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         servicioElement.appendChild(option);
         option.selected = true;
 
+        //conexionSeleccionada=servicioConexion
+
         // Datos proporcionados Empleados
-        const empleadoConexion = conexionEditar.nombreEmpleado
+        const empleadoConexion = conexionEditar.objetoEmpleado.nombre
         console.log(empleadoConexion)
         const empleadoElement = document.getElementById("empleados");
         const optionEmpleado = document.createElement("option");
@@ -195,13 +195,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         empleadoElement.appendChild(optionEmpleado);
         optionEmpleado.selected = true;
 
+        //empleadoSelecconado = empleadoConexion
+
 
         // Datos proporcionados Dias de la semana trabajados
-
-
-       
-        
-
         const diasElement = document.getElementById("dias");
         diasElement.innerHTML = "";
 
@@ -209,27 +206,110 @@ document.addEventListener("DOMContentLoaded", async () => {
         const diasATrabajar = conexionEditar.diasATrabajar
         console.log(diasATrabajar)
         console.log(diasSemana)
-      
+
         // Recorre la lista de días y crea las opciones
-        
         for (let i = 0; i < diasSemana.length; i++) {
           const option = document.createElement("option");
           option.text = diasSemana[i];
           option.value = diasSemana[i];
-      
+
           // Verifica si el día debe estar preseleccionado
           if (diasATrabajar.includes(diasSemana[i])) {
-              option.selected = true;
+            option.selected = true;
           }
           diasElement.appendChild(option);
         }
-
 
         formAgregarConexion["fecha-inicio"].value = conexionEditar.fechaInicio
         formAgregarConexion["fecha-fin"].value = conexionEditar.fechaFin
         formAgregarConexion["hora-inicio"].value = conexionEditar.horaInicio
         formAgregarConexion["hora-fin"].value = conexionEditar.horaFin
+        formAgregarConexion["color"].value = conexionEditar.color
       })
     })
   })
 })
+
+
+async function cargarFormularioDefault() {
+
+  const empleadosSelectList = document.getElementById("empleados");
+  const serviciosSelectList = document.getElementById("servicios");
+
+  serviciosSelectList.innerHTML = "";
+  empleadosSelectList.innerHTML = "";
+
+  const empleados = await obtenerEmpleados();
+
+  empleados.forEach((doc) => {
+    const empleado = doc.data();
+    const option = document.createElement("option");
+    option.value = empleado.nombre;
+    option.textContent = empleado.nombre;
+    empleadosSelectList.appendChild(option);
+  });
+
+
+  const servicios = await obtenerServicios();
+  servicios.forEach((doc) => {
+    const servicio = doc.data();
+    const option = document.createElement("option");
+    option.value = servicio.servicio;
+    option.textContent = servicio.servicio;
+    serviciosSelectList.appendChild(option);
+  });
+
+  const selectDias = document.getElementById("dias");
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+  // Recorro la lista de días y creo las opciones
+  for (let i = 0; i < diasSemana.length; i++) {
+    const option = document.createElement("option");
+    option.text = diasSemana[i];
+    option.value = diasSemana[i];
+    selectDias.appendChild(option);
+  }
+
+  const fechaInicio = document.getElementById('fecha-inicio');
+  const fechaFin = document.getElementById('fecha-fin');
+  const fechaActual = new Date();
+
+  // Formatea la fecha en formato DD/MM/YYYY
+  const formatoFecha = `${fechaActual.getDate().toString().padStart(2, '0')}/${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}/${fechaActual.getFullYear()}`;
+
+  fechaInicio.value = formatoFecha;
+  fechaFin.value = formatoFecha;
+
+
+}
+
+async function buscarEmpleadoSeleccionado(empleadoSeleccionado) {
+  const empleados = await obtenerEmpleados();
+  let campoEmpleado = null;
+
+  empleados.forEach((doc) => {
+    const empleado = doc.data();
+
+    if (empleado.nombre === empleadoSeleccionado) {
+      campoEmpleado = empleado;  // Asigno el valor del empleado seleccionado
+    }
+  });
+
+  return campoEmpleado;
+}
+
+
+async function buscarServicioSeleccionado(serviciosSelecionado) {
+  const servicios = await obtenerServicios();
+  let campoServicio = null;
+
+  servicios.forEach((doc) => {
+    const servicio = doc.data();
+
+    if (servicio.servicio === serviciosSelecionado) {
+      campoServicio = servicio;  // Asigno el valor del empleado seleccionado
+    }
+  });
+
+  return campoServicio;
+}

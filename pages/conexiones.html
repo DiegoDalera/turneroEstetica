@@ -49,7 +49,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="selected" >
+                    <a href="#" class="selected">
                         <i class="bi bi-arrows-angle-contract"></i>
                         <span>Conexiones</span>
                     </a>
@@ -130,24 +130,30 @@
                     <div class="elem-group">
                         <label for="dias">Selecciona que dias de semana se va a trabajar</label>
                         <select name="dias" id="dias" size="5" multiple>
-    
+
                         </select>
                     </div>
 
                     <div class="elem-group">
                         <label for="fechas">Rango de fechas</label>
                         <input type="date" value="2017-06-01" id="fecha-inicio" />
-                        <input type="date" value="2017-06-01" id="fecha-fin"/>
+                        <input type="date" value="2017-06-01" id="fecha-fin" />
                     </div>
 
                     <div class="elem-group">
-                        <label for="direccion">Rango de horas diarias</label>
-                        <input type="time" name="hora" id="hora-inicio">
-                        <input type="time" name="hora" id="hora-fin">
+                        <label for="horas">Rango de horas diarias</label>
+                        <input type="time" name="hora" value="08:00" id="hora-inicio">
+                        <input type="time" name="hora" value="16:00" id="hora-fin">
                     </div>
 
                     <div class="elem-group">
-                        <button type="button" id="btn_agregar_conexion">Crear Conexion</button>
+                        <label for="color">Color Seleccionado</label>
+                        <input type="color" id="color" class="color"/>
+                    </div>
+                   
+
+                    <div class="elem-group">
+                        <button type="button" id="btn_agregar_conexion" disabled>Crear Conexion</button>
                     </div>
 
                 </form>
@@ -165,6 +171,7 @@
                         <th>Fecha de Fin</th>
                         <th>Hora de Inicio</th>
                         <th>Hora de fin</th>
+                        <th>Color</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
