@@ -7,9 +7,15 @@
     <title>Anto Lashess - Gestion de Turnos</title>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/index.css">
-    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/modal.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+
+
 </head>
 
 <body>
@@ -97,7 +103,7 @@
 
                 <div class="elem-group">
                     <label for="servicios">Selecciona el servicio</label>
-                    <select name="servicios" id="servicios" >
+                    <select name="servicios" id="servicios">
                         <option value="opcion1">Selecciona lo que deseas</option>
 
                     </select>
@@ -105,35 +111,39 @@
 
                 <div class="elem-group">
                     <label for="esteticistas">Selecciona el servicio</label>
-                    <select name="esteticistas" id="esteticistas" >
+                    <select name="esteticistas" id="esteticistas">
 
                     </select>
                 </div>
 
+                <!-- <div class="elem-group">
+                    <label for="fecha_cita">Turno:</label>
+                    <input type="datetime-local" id="fecha_cita" name="fecha_cita">
+                </div> -->
+
                 <div class="elem-group">
                     <label for="fecha_cita">Turno:</label>
-                    <input type="datetime-local" id="fecha_cita" name="fecha_cita" disabled>
+                    <input type="text" id="datepicker">
                 </div>
 
-                <div class="elem-group">
-                    <textarea id="comentarios" name="comentarios" rows="5" cols="33"></textarea>
-                </div>
+                <!-- <div class="elem-group">
+                                <label for="nombre"> Nombre Completo</label>
+                                <input type="text" id="nombre">
+                            </div>
 
-                <h4>Informacion Personal</h4>
+                            <div class="elem-group">
+                                <label for="email"> Emai</label>
+                                <input type="email" id="email">
+                            </div>
 
-                <div class="elem-group">
-                    <label for="email"> Emai</label>
-                    <input type="email" id="email">
-                </div>
-                <div class="elem-group">
-                    <label for="nombre"> Nombre Completo</label>
-                    <input type="text" id="nombre">
-                </div>
+                            <div class="elem-group">
+                                <label for="telefono"> Telefono</label>
+                                <input type="text" id="telefono">
+                            </div>
 
-                <div class="elem-group">
-                    <label for="telefono"> Telefono</label>
-                    <input type="text" id="telefono">
-                </div>
+                            <div class="elem-group">
+                                <textarea id="comentarios" name="comentarios" rows="5" cols="33"></textarea>
+                            </div> -->
 
                 <input type="submit" value="Confirmar Cita" id="confirma_cita">
             </form>
@@ -141,8 +151,13 @@
     </main>
 
 
+    <script>
+
+    </script>
+
+
     <script type="module" src="../js/firebase.js"></script>
-    <script type="module" src="../js/index.js"></script> 
+    <script type="module" src="../js/index.js"></script>
     <script src="../js/slideBarScript.js"></script>
 </body>
 
