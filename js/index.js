@@ -2,10 +2,13 @@ import {
     obtenerTurnos
 } from './firebase.js'
 
-//Constantes
+//variables
 const arrayDeTurnos = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
+let fechaSeleccionada = undefined;
+
+//Constantes
 const selectServicios = document.getElementById("servicios");
 const selectEsteticistas = document.getElementById("esteticistas");
 
@@ -137,8 +140,13 @@ function cargarTurnosDisponibles() {
 const dateInput = document.getElementById('datepicker');
 dateInput.addEventListener('change', function (e) {
     e.preventDefault
-    const selectedDate = dateInput.value;
-    console.log('Fecha seleccionada:', selectedDate);
+    fechaSeleccionada = dateInput.value;
+    console.log('Fecha seleccionada:', fechaSeleccionada);
     mostrarHorariosDisponibles()
 });
 
+function mostrarHorariosDisponibles(){
+
+
+
+}
