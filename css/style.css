@@ -77,13 +77,13 @@ i{
     align-items: center;
     border-radius: 50%;
     cursor: pointer;
-    background-color: var(--color-boton);
-    color: var(--color-boton-texto);
+    background-color: whitesmoke;
+    color: black;
     right: 15px;
     top: 15px;
     z-index: 100;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
-
 
 /*Barra Lateral*/
 .barra-lateral{
@@ -317,6 +317,9 @@ main.min-main{
     }
 }
 @media (max-width: 600px){
+    main > header.titulo{
+        margin-top: 2rem;
+    }
     .barra-lateral{
         position: fixed;
         left: -250px;

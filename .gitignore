@@ -1,0 +1,5 @@
+# archivos y carpetas a ignorar
+
+
+# carpetas de editores de codigo
+.vscode/ 

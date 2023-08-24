@@ -122,11 +122,16 @@ function cargarTurnosDisponibles() {
         }
     })
 
+    
     const picker = new Pikaday({
         field: document.getElementById('datepicker'),
         format: 'YYYY-MM-DD',
         maxDate: new Date(conexionBuscada.fechaFin),
         minDate: moment().toDate(),
+        onSelect: function (date) {
+            console.log(date);
+            // hacer logica de seleccion de turnos aca
+        },
         disableDayFn: function (date) {
             const day = moment(date).day();
             return !diasHabilitados.includes(day);
