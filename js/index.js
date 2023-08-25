@@ -7,6 +7,7 @@ const arrayDeTurnos = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
 let fechaSeleccionada = undefined;
+let horarioSeleccionado = undefined;
 
 //Constantes
 const selectServicios = document.getElementById("servicios");
@@ -92,7 +93,6 @@ function cargarEsteticistas() {
     });
 }
 
-
 function cargarTurnosDisponibles() {
     console.log(esteticistaSeleccionada)
     console.log(servicioSeleccionado)
@@ -143,11 +143,12 @@ function cargarTurnosDisponibles() {
 
 //seleccion fecha turno
 const dateInput = document.getElementById('datepicker');
+
 dateInput.addEventListener('change', function (e) {
     e.preventDefault
     fechaSeleccionada = dateInput.value;
     console.log('Fecha seleccionada:', fechaSeleccionada);
-    mostrarHorariosDisponibles()
+    //mostrarHorariosDisponibles()
 });
 
 function mostrarHorariosDisponibles(){
@@ -155,3 +156,5 @@ function mostrarHorariosDisponibles(){
 
 
 }
+
+//test
