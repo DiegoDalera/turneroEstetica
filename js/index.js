@@ -143,13 +143,50 @@ dateInput.addEventListener('change', function (e) {
     e.preventDefault
     fechaSeleccionada = dateInput.value;
     console.log('Fecha seleccionada:', fechaSeleccionada);
-    //mostrarHorariosDisponibles()
+    mostrarHorariosDisponibles()
 });
 
-function mostrarHorariosDisponibles(){
+function mostrarHorariosDisponibles() {
+
+    const fechaAlmacenadaStr = fechaSeleccionada;
+    // Filtrar los elementos del array que cumplan con la condición de fecha servicio y empleado
+    const elementosFiltrados = arrayDeTurnos.filter(objeto =>
+        objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
+
+    console.log(elementosFiltrados);
+
+    const horarioInicio = elementosFiltrados[0].horaInicio;
+    const horarioFin = elementosFiltrados[0].horaFin;
+
+    const intervaloMinutos = 60;
+
+    console.log(horarioInicio)
+    console.log(horarioFin)
 
 
+    const divTurnos = document.getElementById("turnosDisponibles");
 
+    // Función para convertir una cadena de tiempo en minutos desde la medianoche
+    function tiempoAMinutos(tiempo) {
+        //console.log(tiempo)
+        const [horas, minutos] = tiempo.split(":").map(Number);
+        return horas * 60 + minutos;
+    }
+
+    // Creo  botones para los horarios de los turnos disponibles 
+    for (let minutos = tiempoAMinutos(horarioInicio); minutos < tiempoAMinutos(horarioFin); minutos += intervaloMinutos) {
+        const horas = Math.floor(minutos / 60);
+        const minutosRestantes = minutos % 60;
+
+        const horario = `${horas.toString().padStart(2, "0")}:${minutosRestantes.toString().padStart(2, "0")}`;
+
+        const boton = document.createElement("button");
+        boton.textContent = horario;
+
+        boton.addEventListener("click", () => {
+            alert(`Has seleccionado el turno a las ${horario}`);
+        });
+        divTurnos.appendChild(boton);
+    }
 }
 
-//test

@@ -27,3 +27,7 @@
 input,textarea,select{
     margin: 10px 0px;
 }
+
+.turnosDisponibles{
+    border:1px solid black
+}
