@@ -1,4 +1,5 @@
 import {
+    guardarTurno,
     obtenerTurnos
 } from './firebase.js'
 
@@ -8,6 +9,7 @@ let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
 let fechaSeleccionada = undefined;
 let horarioSeleccionado = undefined;
+let idConexion = undefined
 
 //Constantes
 const selectServicios = document.getElementById("servicios");
@@ -23,24 +25,22 @@ const btnConfirmaCita = document.getElementById("confirma_cita");
 
 //EventListener
 btnConfirmaCita.addEventListener("click", (e) => {
+    e.preventDefault()
+    // Usar idConexion
 
-    // Definir el ID del servicio y los datos del turno
-    const servicioId = "servicio1"; 
     const turnoData = {
-        fecha: "2023-08-21",
-        horario: "10:00 AM",
-        cliente: "Nombre del Cliente",
+        fecha: fechaSeleccionada,
+        horario: horarioSeleccionado,
+        cliente: nombre.value,
+        email: email.value,
+        telefono: telefono.value,
+        comentarios: comentarios.value,
     };
 
     // Agregar el documento a la subcolección "turnos" del servicio especificado
-    firestore.collection("conexiones").doc(servicioId).collection("turnos").add(turnoData)
-        .then((docRef) => {
-            console.log("Turno agregado con ID:", docRef.id);
-        })
-        .catch((error) => {
-            console.error("Error al agregar el turno:", error);
-        });
-
+    console.log(idConexion)
+    console.log(turnoData)
+    guardarTurno(idConexion,turnoData)
 })
 
 
@@ -186,6 +186,8 @@ function mostrarHorariosDisponibles(e) {
     const elementosFiltrados = arrayDeTurnos.filter(objeto =>
         objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
+
+    idConexion = elementosFiltrados[0].id
     const horarioInicio = elementosFiltrados[0].horaInicio;
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
@@ -211,7 +213,8 @@ function mostrarHorariosDisponibles(e) {
         boton.addEventListener("click", (e) => {
             e.preventDefault()
             alert(`Has seleccionado el turno a las ${horario} el dia ${fechaSeleccionada} para ${servicioSeleccionado} con ${esteticistaSeleccionada}`);
-            horarioSeleccionado === horario
+
+            horarioSeleccionado = horario
             completarDatos();
         });
         divTurnos.appendChild(boton);
@@ -224,5 +227,7 @@ function completarDatos() {
     email.removeAttribute('disabled');
     telefono.removeAttribute('disabled');
     comentarios.removeAttribute('disabled');
+
+
 }
 

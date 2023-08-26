@@ -81,7 +81,17 @@ export const actualizarConexion = (id, newField) =>
 
 export const obtenerTurnos= () => getDocs(collection(db, 'conexiones'))
 
+export const guardarTurno = async (servicioId, turnoData) => {
+    try {
+      const subcoleccionTurnosRef = collection(doc(collection("conexiones"), servicioId), "turnos");
+      const nuevoTurnoRef = await addDoc(subcoleccionTurnosRef, turnoData);
+      console.log("Turno agregado con ID:", nuevoTurnoRef.id);
+    } catch (error) {
+      console.error("Error al agregar el turno:", error);
+    }
+  };
 
-export const grabarTurno = (nuevoTurno) => {
-    addDoc(collection(db, 'conexiones'), nuevoTurno )
-}
+  
+  
+  
+  
