@@ -81,3 +81,7 @@ export const actualizarConexion = (id, newField) =>
 
 export const obtenerTurnos= () => getDocs(collection(db, 'conexiones'))
 
+
+export const grabarTurno = (nuevoTurno) => {
+    addDoc(collection(db, 'conexiones'), nuevoTurno )
+}

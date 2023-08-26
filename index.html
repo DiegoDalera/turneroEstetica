@@ -111,47 +111,40 @@
 
                 <div class="elem-group">
                     <label for="esteticistas">Selecciona el servicio</label>
-                    <select name="esteticistas" id="esteticistas">
+                    <select name="esteticistas" id="esteticistas" disabled>
 
                     </select>
                 </div>
 
-                <!-- <div class="elem-group">
-                    <label for="fecha_cita">Turno:</label>
-                    <input type="datetime-local" id="fecha_cita" name="fecha_cita">
-                </div> -->
-
                 <div class="elem-group">
                     <label for="fecha_cita">Turno:</label>
-                    <input type="text" id="datepicker">
+                    <input type="text" id="datepicker" disabled>
                 </div>
 
                 <div class="elem-group">
                     <div class="turnosDisponibles" id="turnosDisponibles">
-                        <p>turnos</p>
+
                     </div>
                 </div>
 
+                <div class="elem-group">
+                    <label for="nombre"> Nombre Completo</label>
+                    <input type="text" id="nombre" disabled>
+                </div>
 
+                <div class="elem-group">
+                    <label for="email"> Emai</label>
+                    <input type="email" id="email" disabled>
+                </div>
 
-                <!-- <div class="elem-group">
-                                <label for="nombre"> Nombre Completo</label>
-                                <input type="text" id="nombre">
-                            </div>
+                <div class="elem-group">
+                    <label for="telefono"> Telefono</label>
+                    <input type="text" id="telefono" disabled>
+                </div>
 
-                            <div class="elem-group">
-                                <label for="email"> Emai</label>
-                                <input type="email" id="email">
-                            </div>
-
-                            <div class="elem-group">
-                                <label for="telefono"> Telefono</label>
-                                <input type="text" id="telefono">
-                            </div>
-
-                            <div class="elem-group">
-                                <textarea id="comentarios" name="comentarios" rows="5" cols="33"></textarea>
-                            </div> -->
+                <div class="elem-group">
+                    <textarea id="comentarios" name="comentarios" rows="5" cols="33" disabled></textarea>
+                </div>
 
                 <input type="submit" value="Confirmar Cita" id="confirma_cita">
             </form>

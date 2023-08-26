@@ -12,26 +12,63 @@ let horarioSeleccionado = undefined;
 //Constantes
 const selectServicios = document.getElementById("servicios");
 const selectEsteticistas = document.getElementById("esteticistas");
+const dateInput = document.getElementById('datepicker');
+
+const nombre = document.getElementById("nombre");
+const email = document.getElementById("email");
+const telefono = document.getElementById("telefono");
+const comentarios = document.getElementById("comentarios");
+const btnConfirmaCita = document.getElementById("confirma_cita");
 
 
 //EventListener
+btnConfirmaCita.addEventListener("click", (e) => {
+
+    // Definir el ID del servicio y los datos del turno
+    const servicioId = "servicio1"; 
+    const turnoData = {
+        fecha: "2023-08-21",
+        horario: "10:00 AM",
+        cliente: "Nombre del Cliente",
+    };
+
+    // Agregar el documento a la subcolección "turnos" del servicio especificado
+    firestore.collection("conexiones").doc(servicioId).collection("turnos").add(turnoData)
+        .then((docRef) => {
+            console.log("Turno agregado con ID:", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error al agregar el turno:", error);
+        });
+
+})
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     await recuperarTurnos();
     cargarServicios();
 })
 
-
 selectServicios.addEventListener('change', (event) => {
     servicioSeleccionado = event.target.value;
-    //console.log('Opción seleccionada:', opcionSeleccionada);
+    selectEsteticistas.removeAttribute('disabled');
     cargarEsteticistas(servicioSeleccionado)
 });
 
+//cargo los esteticistas
 selectEsteticistas.addEventListener('click', (e) => {
     esteticistaSeleccionada = e.target.value;
     console.log('Opción seleccionada:', esteticistaSeleccionada);
     cargarTurnosDisponibles()
 })
+
+//seleccion fecha turno
+dateInput.addEventListener('change', function (e) {
+    e.preventDefault
+    fechaSeleccionada = dateInput.value;
+    console.log('Fecha seleccionada:', fechaSeleccionada);
+    mostrarHorariosDisponibles()
+});
 
 //recupera turnos y los carga en un array para trabajar
 async function recuperarTurnos() {
@@ -53,21 +90,22 @@ async function recuperarTurnos() {
         };
         arrayDeTurnos.push(objetoDeTurno);
     });
-    console.log(arrayDeTurnos);
 }
 
+//cargo los servicios en el Select
 function cargarServicios() {
     arrayDeTurnos.forEach((conexion) => {
-        //console.log(conexion.objetoServicio.servicio)
         const option = document.createElement("option");
         option.value = conexion.objetoServicio.servicio;
         option.textContent = conexion.objetoServicio.servicio
         selectServicios.appendChild(option);
     });
-
 }
 
+//Cargo los esteticistas en el Select
 function cargarEsteticistas() {
+
+    selectEsteticistas.removeAttribute('disabled');
 
     // Eliminar todas las opciones del select previas
     while (selectEsteticistas.firstChild) {
@@ -93,9 +131,12 @@ function cargarEsteticistas() {
     });
 }
 
+//Cargo las fechas disponibles en el DatePicker
 function cargarTurnosDisponibles() {
     console.log(esteticistaSeleccionada)
     console.log(servicioSeleccionado)
+
+    dateInput.removeAttribute('disabled');
 
     const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
 
@@ -136,39 +177,23 @@ function cargarTurnosDisponibles() {
     picker.show();
 }
 
-//seleccion fecha turno
-const dateInput = document.getElementById('datepicker');
-
-dateInput.addEventListener('change', function (e) {
-    e.preventDefault
-    fechaSeleccionada = dateInput.value;
-    console.log('Fecha seleccionada:', fechaSeleccionada);
-    mostrarHorariosDisponibles()
-});
-
-function mostrarHorariosDisponibles() {
+//Creo los botones con los horarios Disponibles
+function mostrarHorariosDisponibles(e) {
 
     const fechaAlmacenadaStr = fechaSeleccionada;
+
     // Filtrar los elementos del array que cumplan con la condición de fecha servicio y empleado
     const elementosFiltrados = arrayDeTurnos.filter(objeto =>
         objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
-    console.log(elementosFiltrados);
-
     const horarioInicio = elementosFiltrados[0].horaInicio;
     const horarioFin = elementosFiltrados[0].horaFin;
-
     const intervaloMinutos = 60;
-
-    console.log(horarioInicio)
-    console.log(horarioFin)
-
 
     const divTurnos = document.getElementById("turnosDisponibles");
 
     // Función para convertir una cadena de tiempo en minutos desde la medianoche
     function tiempoAMinutos(tiempo) {
-        //console.log(tiempo)
         const [horas, minutos] = tiempo.split(":").map(Number);
         return horas * 60 + minutos;
     }
@@ -177,16 +202,27 @@ function mostrarHorariosDisponibles() {
     for (let minutos = tiempoAMinutos(horarioInicio); minutos < tiempoAMinutos(horarioFin); minutos += intervaloMinutos) {
         const horas = Math.floor(minutos / 60);
         const minutosRestantes = minutos % 60;
-
         const horario = `${horas.toString().padStart(2, "0")}:${minutosRestantes.toString().padStart(2, "0")}`;
 
         const boton = document.createElement("button");
+        boton.classList.add("botonDeHorarios");
         boton.textContent = horario;
 
-        boton.addEventListener("click", () => {
-            alert(`Has seleccionado el turno a las ${horario}`);
+        boton.addEventListener("click", (e) => {
+            e.preventDefault()
+            alert(`Has seleccionado el turno a las ${horario} el dia ${fechaSeleccionada} para ${servicioSeleccionado} con ${esteticistaSeleccionada}`);
+            horarioSeleccionado === horario
+            completarDatos();
         });
         divTurnos.appendChild(boton);
     }
+}
+
+// habilito los inputs inhabilitados
+function completarDatos() {
+    nombre.removeAttribute("disabled")
+    email.removeAttribute('disabled');
+    telefono.removeAttribute('disabled');
+    comentarios.removeAttribute('disabled');
 }
 

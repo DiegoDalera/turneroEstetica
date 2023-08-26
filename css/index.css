@@ -29,5 +29,12 @@ input,textarea,select{
 }
 
 .turnosDisponibles{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     border:1px solid black
+}
+
+.botonDeHorarios{
+    margin: 4px;
 }
