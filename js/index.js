@@ -3,7 +3,7 @@ import {
     obtenerTurnos
 } from './firebase.js'
 
-//variables
+//Variables
 const arrayDeTurnos = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
@@ -26,20 +26,21 @@ const btnConfirmaCita = document.getElementById("confirma_cita");
 //EventListener
 btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault()
-    // Usar idConexion
+    // Usar idConexion 
 
-    const turnoData = {
-        fecha: fechaSeleccionada,
-        horario: horarioSeleccionado,
-        cliente: nombre.value,
-        email: email.value,
-        telefono: telefono.value,
-        comentarios: comentarios.value,
-    };
+     const turnoData = {
+         fecha: fechaSeleccionada,
+         horario: horarioSeleccionado,
+         cliente: nombre.value,
+         email: email.value,
+         telefono: telefono.value,
+         comentarios: comentarios.value,
+     };
+
+
 
     // Agregar el documento a la subcolección "turnos" del servicio especificado
-    console.log(idConexion)
-    console.log(turnoData)
+
     guardarTurno(idConexion,turnoData)
 })
 
@@ -70,7 +71,7 @@ dateInput.addEventListener('change', function (e) {
     mostrarHorariosDisponibles()
 });
 
-//recupera turnos y los carga en un array para trabajar
+//Recupera los turnos guardados  y los carga en un array para trabajar
 async function recuperarTurnos() {
     //traigo todos los turnos y los almaceno en mi array
     const turnos = await obtenerTurnos();
@@ -92,7 +93,7 @@ async function recuperarTurnos() {
     });
 }
 
-//cargo los servicios en el Select
+//cargo los Servicios en el Select
 function cargarServicios() {
     arrayDeTurnos.forEach((conexion) => {
         const option = document.createElement("option");
@@ -102,7 +103,7 @@ function cargarServicios() {
     });
 }
 
-//Cargo los esteticistas en el Select
+//Cargo los Esteticistas en el Select
 function cargarEsteticistas() {
 
     selectEsteticistas.removeAttribute('disabled');
