@@ -1,6 +1,7 @@
 import {
     guardarTurno,
-    obtenerTurnos
+    obtenerTurnos,
+    obtenerTurnosOtorgados
 } from './firebase.js'
 
 //Variables
@@ -10,6 +11,7 @@ let servicioSeleccionado = undefined;
 let fechaSeleccionada = undefined;
 let horarioSeleccionado = undefined;
 let idConexion = undefined
+const arrayDeTurnosTomados = [];
 
 //Constantes
 const selectServicios = document.getElementById("servicios");
@@ -28,20 +30,20 @@ btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault()
     // Usar idConexion 
 
-     const turnoData = {
-         fecha: fechaSeleccionada,
-         horario: horarioSeleccionado,
-         cliente: nombre.value,
-         email: email.value,
-         telefono: telefono.value,
-         comentarios: comentarios.value,
-     };
+    const turnoData = {
+        fecha: fechaSeleccionada,
+        horario: horarioSeleccionado,
+        cliente: nombre.value,
+        email: email.value,
+        telefono: telefono.value,
+        comentarios: comentarios.value,
+    };
 
 
 
     // Agregar el documento a la subcolección "turnos" del servicio especificado
 
-    guardarTurno(idConexion,turnoData)
+    guardarTurno(idConexion, turnoData)
 })
 
 
@@ -71,12 +73,12 @@ dateInput.addEventListener('change', function (e) {
     mostrarHorariosDisponibles()
 });
 
-//Recupera los turnos guardados  y los carga en un array para trabajar
+//Recupera las conexiones y los carga en un array para trabajar
 async function recuperarTurnos() {
-    //traigo todos los turnos y los almaceno en mi array
+
     const turnos = await obtenerTurnos();
-    turnos.forEach(turnoSnapshot => {
-        // Obtener los datos del documento usando .data()
+    turnos.forEach(async turnoSnapshot => {
+
         const turnoData = turnoSnapshot.data();
         const objetoDeTurno = {
             id: turnoSnapshot.id,
@@ -89,9 +91,22 @@ async function recuperarTurnos() {
             objetoEmpleado: turnoData.objetoEmpleado,
             objetoServicio: turnoData.objetoServicio
         };
+
+
+        const turnosColeccion = await obtenerTurnosOtorgados(turnoSnapshot.id);
+        console.log(turnosColeccion);
+        // Accede al campo 'docs' para obtener la lista de documentos
+        const turnosDocumentos = turnosColeccion.docs;
+        turnosDocumentos.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+        });
+
+
         arrayDeTurnos.push(objetoDeTurno);
+        console.log(arrayDeTurnos)
     });
 }
+
 
 //cargo los Servicios en el Select
 function cargarServicios() {

@@ -81,6 +81,9 @@ export const actualizarConexion = (id, newField) =>
 
 export const obtenerTurnos = () => getDocs(collection(db, 'conexiones'))
 
+ export const obtenerTurnosOtorgados =  async (id) => {
+     return  await getDocs(collection(db, "conexiones", id, "turnos"));
+ }
 
 export const guardarTurno = async (servicioId, turnoData) => {
     console.log(turnoData)
@@ -91,6 +94,22 @@ export const guardarTurno = async (servicioId, turnoData) => {
     console.log(nuevoTurnoRef)
     console.log("Turno agregado con ID:", nuevoTurnoRef.id);
 };
+
+// export const obtenerTurnosOtorgados = async (id) => {
+//     const referenciaColeccion = collection(db, "conexiones", id, "turnos");
+//     return referenciaColeccion
+// }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
