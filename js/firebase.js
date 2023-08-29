@@ -81,9 +81,9 @@ export const actualizarConexion = (id, newField) =>
 
 export const obtenerTurnos = () => getDocs(collection(db, 'conexiones'))
 
- export const obtenerTurnosOtorgados =  async (id) => {
-     return  await getDocs(collection(db, "conexiones", id, "turnos"));
- }
+export const obtenerTurnosOtorgados = (id) => {
+    return getDocs(collection(db, "conexiones", id, "turnos"));
+}
 
 export const guardarTurno = async (servicioId, turnoData) => {
     console.log(turnoData)
@@ -95,10 +95,52 @@ export const guardarTurno = async (servicioId, turnoData) => {
     console.log("Turno agregado con ID:", nuevoTurnoRef.id);
 };
 
-// export const obtenerTurnosOtorgados = async (id) => {
-//     const referenciaColeccion = collection(db, "conexiones", id, "turnos");
-//     return referenciaColeccion
+
+// export async function obtenerConexiones() {
+//     const arrayConexiones = []
+//     onSnapshot(collection(db, "conexiones"), (querySnapshot) => {
+//         querySnapshot.forEach(async (docConexion) => {
+//             let conexionData = docConexion.data();
+//             //console.log("Conexion:", conexionData);
+
+//             // Obtener la subcolección
+//             const docTurno = await getDocs(collection(db, "conexiones", docConexion.id, "turnos"))
+//             //console.log("Turno:", docTurno.docs.map(doc => doc.data()));
+//             const listaDeTurnos = docTurno.docs.map(doc => doc.data());
+//             conexionData.turnos = listaDeTurnos
+//             //console.log(conexionData)
+//             arrayConexiones.push(conexionData)
+//         });
+//     });
+//     return arrayConexiones
 // }
+
+export async function obtenerConexiones() {
+    const arrayConexiones = [];
+    const querySnapshot = await getDocs(collection(db, "conexiones"));
+    const promesasTurnos = [];
+
+    querySnapshot.forEach(async (docConexion) => {
+        let conexionData = docConexion.data();
+        let conexionId = docConexion.id
+        conexionData.id = conexionId 
+
+        console.log("conexion data ",conexionData)
+
+        const promesaTurno = getDocs(collection(db, "conexiones", docConexion.id, "turnos"))
+            .then((docTurno) => {
+                const listaDeTurnos = docTurno.docs.map(doc => doc.data());
+                conexionData.turnos = listaDeTurnos;
+                arrayConexiones.push(conexionData);
+            });
+
+        promesasTurnos.push(promesaTurno);
+    });
+
+    await Promise.all(promesasTurnos);
+    return arrayConexiones;
+}
+
 
 
 

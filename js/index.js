@@ -1,17 +1,18 @@
 import {
     guardarTurno,
     obtenerTurnos,
-    obtenerTurnosOtorgados
+    obtenerTurnosOtorgados,
+    obtenerConexiones
 } from './firebase.js'
 
 //Variables
-const arrayDeTurnos = [];
+let arrayDeTurnos = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
 let fechaSeleccionada = undefined;
 let horarioSeleccionado = undefined;
 let idConexion = undefined
-const arrayDeTurnosTomados = [];
+
 
 //Constantes
 const selectServicios = document.getElementById("servicios");
@@ -39,7 +40,8 @@ btnConfirmaCita.addEventListener("click", (e) => {
         comentarios: comentarios.value,
     };
 
-
+    console.log(turnoData)
+    console.log(idConexion)
 
     // Agregar el documento a la subcolección "turnos" del servicio especificado
 
@@ -48,7 +50,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await recuperarTurnos();
+    arrayDeTurnos = await obtenerConexiones();
     cargarServicios();
 })
 
@@ -61,7 +63,6 @@ selectServicios.addEventListener('change', (event) => {
 //cargo los esteticistas
 selectEsteticistas.addEventListener('click', (e) => {
     esteticistaSeleccionada = e.target.value;
-    console.log('Opción seleccionada:', esteticistaSeleccionada);
     cargarTurnosDisponibles()
 })
 
@@ -69,53 +70,62 @@ selectEsteticistas.addEventListener('click', (e) => {
 dateInput.addEventListener('change', function (e) {
     e.preventDefault
     fechaSeleccionada = dateInput.value;
-    console.log('Fecha seleccionada:', fechaSeleccionada);
     mostrarHorariosDisponibles()
 });
 
 //Recupera las conexiones y los carga en un array para trabajar
-async function recuperarTurnos() {
+// async function recuperarTurnos() {
 
-    const turnos = await obtenerTurnos();
-    turnos.forEach(async turnoSnapshot => {
+//     const turnos = await obtenerTurnos();
 
-        const turnoData = turnoSnapshot.data();
-        const objetoDeTurno = {
-            id: turnoSnapshot.id,
-            color: turnoData.color,
-            diasATrabajar: turnoData.diasATrabajar,
-            fechaFin: turnoData.fechaFin,
-            fechaInicio: turnoData.fechaInicio,
-            horaFin: turnoData.horaFin,
-            horaInicio: turnoData.horaInicio,
-            objetoEmpleado: turnoData.objetoEmpleado,
-            objetoServicio: turnoData.objetoServicio
-        };
+//     turnos.forEach(async turnoSnapshot => {
+//         const turnoData = turnoSnapshot.data();
 
+//         const objetoDeTurno = {
+//             id: turnoSnapshot.id,
+//             color: turnoData.color,
+//             diasATrabajar: turnoData.diasATrabajar,
+//             fechaFin: turnoData.fechaFin,
+//             fechaInicio: turnoData.fechaInicio,
+//             horaFin: turnoData.horaFin,
+//             horaInicio: turnoData.horaInicio,
+//             objetoEmpleado: turnoData.objetoEmpleado,
+//             objetoServicio: turnoData.objetoServicio
 
-        const turnosColeccion = await obtenerTurnosOtorgados(turnoSnapshot.id);
-        console.log(turnosColeccion);
-        // Accede al campo 'docs' para obtener la lista de documentos
-        const turnosDocumentos = turnosColeccion.docs;
-        turnosDocumentos.forEach((doc) => {
-            console.log(doc.id, " => ", doc.data());
-        });
+//         };
 
 
-        arrayDeTurnos.push(objetoDeTurno);
-        console.log(arrayDeTurnos)
-    });
-}
+//          const turnosColeccion = await obtenerTurnosOtorgados(turnoSnapshot.id);
+//          const turnosDocumentos = turnosColeccion.docs;
+
+//          const arrayDeObjetos = [];
+
+//          turnosDocumentos.forEach((doc) => {
+//              const objeto = doc.data();
+//              arrayDeObjetos.push(objeto);
+//          });
+
+//         console.log(" array de objetos => ", arrayDeObjetos);
+//         arrayDeTurnos.push(objetoDeTurno);
+//         console.log(" array parcial => ", arrayDeTurnos)
+
+//     });
+
+//     console.log(" array final => ", arrayDeTurnos)
+//     console.log("termina")
+// }
+
 
 
 //cargo los Servicios en el Select
-function cargarServicios() {
-    arrayDeTurnos.forEach((conexion) => {
-        const option = document.createElement("option");
-        option.value = conexion.objetoServicio.servicio;
-        option.textContent = conexion.objetoServicio.servicio
-        selectServicios.appendChild(option);
-    });
+function cargarServicios( ) {
+    
+     arrayDeTurnos.forEach((conexion) => {
+         const option = document.createElement("option");
+         option.value = conexion.objetoServicio.servicio;
+         option.textContent = conexion.objetoServicio.servicio
+         selectServicios.appendChild(option);
+     })
 }
 
 //Cargo los Esteticistas en el Select
@@ -149,8 +159,6 @@ function cargarEsteticistas() {
 
 //Cargo las fechas disponibles en el DatePicker
 function cargarTurnosDisponibles() {
-    console.log(esteticistaSeleccionada)
-    console.log(servicioSeleccionado)
 
     dateInput.removeAttribute('disabled');
 
@@ -202,8 +210,10 @@ function mostrarHorariosDisponibles(e) {
     const elementosFiltrados = arrayDeTurnos.filter(objeto =>
         objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
-
+   
     idConexion = elementosFiltrados[0].id
+    console.log("id conexion" , idConexion)
+    
     const horarioInicio = elementosFiltrados[0].horaInicio;
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
