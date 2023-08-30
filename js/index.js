@@ -5,7 +5,7 @@ import {
     obtenerConexiones
 } from './firebase.js'
 
-//Variables
+//Variables Globales
 let arrayDeTurnos = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
@@ -18,16 +18,17 @@ let idConexion = undefined
 const selectServicios = document.getElementById("servicios");
 const selectEsteticistas = document.getElementById("esteticistas");
 const dateInput = document.getElementById('datepicker');
-
 const nombre = document.getElementById("nombre");
 const email = document.getElementById("email");
 const telefono = document.getElementById("telefono");
 const comentarios = document.getElementById("comentarios");
+const formTurnos = document.getElementById("formulario_turnos");
 const btnConfirmaCita = document.getElementById("confirma_cita");
 
 
 //EventListener
 btnConfirmaCita.addEventListener("click", (e) => {
+
     e.preventDefault()
     // Usar idConexion 
 
@@ -40,12 +41,10 @@ btnConfirmaCita.addEventListener("click", (e) => {
         comentarios: comentarios.value,
     };
 
-    console.log(turnoData)
-    console.log(idConexion)
-
     // Agregar el documento a la subcolección "turnos" del servicio especificado
-
     guardarTurno(idConexion, turnoData)
+    formTurnos.reset()
+
 })
 
 
@@ -70,6 +69,7 @@ selectEsteticistas.addEventListener('click', (e) => {
 dateInput.addEventListener('change', function (e) {
     e.preventDefault
     fechaSeleccionada = dateInput.value;
+    alert("entro")
     mostrarHorariosDisponibles()
 });
 
@@ -117,15 +117,17 @@ dateInput.addEventListener('change', function (e) {
 
 
 
+
 //cargo los Servicios en el Select
-function cargarServicios( ) {
-    
-     arrayDeTurnos.forEach((conexion) => {
-         const option = document.createElement("option");
-         option.value = conexion.objetoServicio.servicio;
-         option.textContent = conexion.objetoServicio.servicio
-         selectServicios.appendChild(option);
-     })
+
+function cargarServicios() {
+
+    arrayDeTurnos.forEach((conexion) => {
+        const option = document.createElement("option");
+        option.value = conexion.objetoServicio.servicio;
+        option.textContent = conexion.objetoServicio.servicio
+        selectServicios.appendChild(option);
+    })
 }
 
 //Cargo los Esteticistas en el Select
@@ -138,7 +140,6 @@ function cargarEsteticistas() {
         selectEsteticistas.removeChild(selectEsteticistas.firstChild);
     }
 
-    console.log(servicioSeleccionado)
     const objetosEncontrados = arrayDeTurnos.filter(objeto => objeto.objetoServicio.servicio === servicioSeleccionado);
     if (objetosEncontrados.length > 0) {
         console.log("Objetos encontrados:", objetosEncontrados);
@@ -210,10 +211,11 @@ function mostrarHorariosDisponibles(e) {
     const elementosFiltrados = arrayDeTurnos.filter(objeto =>
         objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
-   
+    console.log(elementosFiltrados)
+
     idConexion = elementosFiltrados[0].id
-    console.log("id conexion" , idConexion)
-    
+
+    //rango Horario
     const horarioInicio = elementosFiltrados[0].horaInicio;
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
@@ -235,6 +237,8 @@ function mostrarHorariosDisponibles(e) {
         const boton = document.createElement("button");
         boton.classList.add("botonDeHorarios");
         boton.textContent = horario;
+
+        //hacer validacion de horarios disponibles aca
 
         boton.addEventListener("click", (e) => {
             e.preventDefault()
