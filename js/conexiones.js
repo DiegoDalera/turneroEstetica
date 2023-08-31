@@ -5,16 +5,15 @@ import {
   obtenerEmpleados,
   obtenerServicios,
   guardarConexion,
-  borrarConexion,
-  obtenerConexion,
-  actualizarConexion
+  borrar,
+  obtener,
+  actualizar
 } from '../js/firebase.js'
 
 
 // Constantes 
 const formAgregarConexion = document.getElementById("formulario-conexion-agregar");
 const cuerpoTablaConexiones = document.getElementById("cuerpo-tabla-conexiones")
-
 const btnAgregarConexion = document.getElementById("btn_agregar_conexion")
 const serviciosSelecionado = document.getElementById("servicios")
 const empleadoSeleccionado = document.getElementById("empleados")
@@ -47,8 +46,6 @@ function verificarCampos() {
     btnAgregarConexion.setAttribute('disabled', 'true');
   }
 }
-
-
 
 // Modal Agregar Conexion
 const enlaceAgregarConexion = document.getElementById("enlaceAgregarConexion")
@@ -108,7 +105,7 @@ btnAgregarConexion.addEventListener("click", async (e) => {
   } else {
     console.log("entro")
     console.log(newField)
-    actualizarConexion(idEdit, newField)
+    actualizar("conexiones",idEdit, newField)
     editStatus = false;
     btnAgregarConexion.innerText = "Grabar Conexion"
   }
@@ -133,10 +130,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${conexion.fechaFin}</td>
             <td>${conexion.horaInicio}</td>
             <td>${conexion.horaFin}</td>
-            <td>${conexion.color}</td>
+            <td><input type="color" id="colorInput" value="${conexion.color}" disabled></td>
             <td>
-              <button class="btn-borrar" doc-id="${doc.id}">Borrar</button>
-              <button class="btn-editar" doc-id="${doc.id}">Editar</button>
+              <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
+              <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
             </td>
           </tr>
     `
@@ -148,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     botonesBorrarConexion.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
-        borrarConexion(id)
+        borrar("conexiones",id)
       })
     })
 
@@ -160,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
 
-        const dato = await obtenerConexion(id)
+        const dato = await obtener("conexiones",id)
         const conexionEditar = dato.data()
         console.log(conexionEditar)
 

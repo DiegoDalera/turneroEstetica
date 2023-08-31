@@ -38,3 +38,9 @@ input,textarea,select{
 .botonDeHorarios{
     margin: 4px;
 }
+
+.botonDeHorariosDesabilitado{
+    margin: 4px;
+    background-color: pink;
+    /* cursor: not-allowed; */
+}

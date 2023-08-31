@@ -1,0 +1,24 @@
+
+.caja_busqueda{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content:space-between;
+    border: 1px solid black;
+    padding: 4px;
+}
+
+.formulario-busqueda{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.turnos-elem-group{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content:space-between;
+    padding: 4px;
+}

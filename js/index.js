@@ -238,21 +238,53 @@ function mostrarHorariosDisponibles(e) {
         boton.classList.add("botonDeHorarios");
         boton.textContent = horario;
 
-        //hacer validacion de horarios disponibles aca
+        // validacion de horarios disponibles 
+
+        let existeTurno = botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr)
+
+        if (existeTurno) {
+            boton.disabled = true
+            //boton.classList.add("botonDeHorarios");
+            console.log("existe Turno")
+        }
+        else {
+            boton.disabled = false
+        }
+
 
         boton.addEventListener("click", (e) => {
             e.preventDefault()
             alert(`Has seleccionado el turno a las ${horario} el dia ${fechaSeleccionada} para ${servicioSeleccionado} con ${esteticistaSeleccionada}`);
-
             horarioSeleccionado = horario
             completarDatos();
         });
+
         divTurnos.appendChild(boton);
     }
 }
 
+
+function botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr) {
+    let fechaBuscada = fechaAlmacenadaStr;
+    let horarioBuscado = horario;
+
+    for (let i = 0; i < elementosFiltrados.length; i++) {
+        const item = elementosFiltrados[i];
+        const turnoEncontrado = item.turnos.find(turno => turno.fecha === fechaBuscada && turno.horario === horarioBuscado);
+
+        if (turnoEncontrado) {
+            console.log("Se encontró un turno que coincide:");
+            console.log("Fecha:", turnoEncontrado.fecha);
+            console.log("Horario:", turnoEncontrado.horario);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // habilito los inputs inhabilitados
-function completarDatos() {
+function completarDatos(fecha, horario, elemento) {
     nombre.removeAttribute("disabled")
     email.removeAttribute('disabled');
     telefono.removeAttribute('disabled');

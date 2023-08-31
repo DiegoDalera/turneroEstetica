@@ -32,36 +32,46 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
 
-// -----------------------------Funciones Servicios---------------------------------------------------------
+// -----------------------------Funciones ---------------------------------------------------------
 export {
     collection,
     onSnapshot,
     db
 }
+
+export const obtener = (collection, id) => getDoc(doc(db, collection, id))
+export const borrar = (collection, id) => deleteDoc(doc(db, collection, id))
+export const actualizar = (collection, id, newField) =>
+    updateDoc(doc(db, collection, id), newField)
+
+
+//cargar Conexiones
+export const obtenerServicios = () => getDocs(collection(db, 'servicios'))
+export const obtenerEmpleados = () => getDocs(collection(db, 'empleados'))
+// -----------------------------Funciones Servicios---------------------------------------------------------
+
+
 export const guardarServicio = (servicio, duracion, cantidadTurnos, valor) => {
     addDoc(collection(db, 'servicios'), { servicio: servicio, duracion: duracion, cantidadTurnos: cantidadTurnos, valor: valor })
 }
-export const obtenerServicios = () => getDocs(collection(db, 'servicios'))
-
-export const escucharCambios = () => console.log("escuchar servicios")
-export const borrarServicio = id => deleteDoc(doc(db, "servicios", id))
-export const obtenerServicio = id => getDoc(doc(db, "servicios", id))
-export const actualizarServicio = (id, newField) =>
-    updateDoc(doc(db, "servicios", id), newField)
+//export const escucharCambios = () => console.log("escuchar servicios")
+//export const borrarServicio = id => deleteDoc(doc(db, "servicios", id))
+//export const obtenerServicio = id => getDoc(doc(db, "servicios", id))
+// export const actualizarServicio = (id, newField) =>
+//     updateDoc(doc(db, "servicios", id), newField)
 
 
 // --------------------------------Funciones Empleados--------------------------------------------------------
 export const guardarEmpleado = (nombre, mail, telefono, direccion) => {
     addDoc(collection(db, 'empleados'), { nombre: nombre, mail: mail, telefono: telefono, direccion: direccion })
 }
-export const obtenerEmpleados = () => getDocs(collection(db, 'empleados'))
 
-export const escucharCambiosEmpleado = () => console.log("escuchar empleados")
-export const borrarEmpleado = id => deleteDoc(doc(db, "empleados", id))
+//export const escucharCambiosEmpleado = () => console.log("escuchar empleados")
+//export const borrarEmpleado = id => deleteDoc(doc(db, "empleados", id))
 //obtengo solo un Empleado
-export const obtenerEmpleado = id => getDoc(doc(db, "empleados", id))
-export const actualizarEmpleado = (id, newField) =>
-    updateDoc(doc(db, "empleados", id), newField)
+//export const obtenerEmpleado = id => getDoc(doc(db, "empleados", id))
+// export const actualizarEmpleado = (id, newField) =>
+//     updateDoc(doc(db, "empleados", id), newField)
 
 
 
@@ -69,11 +79,10 @@ export const actualizarEmpleado = (id, newField) =>
 export const guardarConexion = (newField) => {
     addDoc(collection(db, 'conexiones'), newField)
 }
-export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
-
-export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
-export const actualizarConexion = (id, newField) =>
-    updateDoc(doc(db, "conexiones", id), newField)
+//export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
+//export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
+// export const actualizarConexion = (id, newField) =>
+//     updateDoc(doc(db, "conexiones", id), newField)
 
 
 // ----------------------------------Funciones Turnos-------------------------------------------------------
@@ -86,34 +95,10 @@ export const obtenerTurnosOtorgados = (id) => {
 }
 
 export const guardarTurno = async (servicioId, turnoData) => {
-    console.log(turnoData)
-    console.log(servicioId)
     const subcoleccionTurnosRef = collection(doc(db, "conexiones", servicioId), "turnos");
-    console.log(subcoleccionTurnosRef)
     const nuevoTurnoRef = await addDoc(subcoleccionTurnosRef, turnoData);
-    console.log(nuevoTurnoRef)
     console.log("Turno agregado con ID:", nuevoTurnoRef.id);
 };
-
-
-// export async function obtenerConexiones() {
-//     const arrayConexiones = []
-//     onSnapshot(collection(db, "conexiones"), (querySnapshot) => {
-//         querySnapshot.forEach(async (docConexion) => {
-//             let conexionData = docConexion.data();
-//             //console.log("Conexion:", conexionData);
-
-//             // Obtener la subcolección
-//             const docTurno = await getDocs(collection(db, "conexiones", docConexion.id, "turnos"))
-//             //console.log("Turno:", docTurno.docs.map(doc => doc.data()));
-//             const listaDeTurnos = docTurno.docs.map(doc => doc.data());
-//             conexionData.turnos = listaDeTurnos
-//             //console.log(conexionData)
-//             arrayConexiones.push(conexionData)
-//         });
-//     });
-//     return arrayConexiones
-// }
 
 export async function obtenerConexiones() {
     const arrayConexiones = [];
@@ -123,9 +108,9 @@ export async function obtenerConexiones() {
     querySnapshot.forEach(async (docConexion) => {
         let conexionData = docConexion.data();
         let conexionId = docConexion.id
-        conexionData.id = conexionId 
+        conexionData.id = conexionId
 
-        console.log("conexion data ",conexionData)
+        console.log("conexion data ", conexionData)
 
         const promesaTurno = getDocs(collection(db, "conexiones", docConexion.id, "turnos"))
             .then((docTurno) => {

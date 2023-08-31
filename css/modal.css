@@ -17,6 +17,8 @@
 }
 
 .modal-content {
+  display: flex;
+  flex-direction: column;
   background-color: #fefefe;
   margin: 15% auto; 
   padding: 20px;

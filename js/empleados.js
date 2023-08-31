@@ -1,17 +1,16 @@
 import {
   guardarEmpleado,
-  obtenerEmpleado,
+  obtener,
   onSnapshot,
   collection,
   db,
-  borrarEmpleado,
-  actualizarEmpleado
+  borrar,
+  actualizar
 } from '../js/firebase.js'
 
 const formAgregarEmpleado = document.getElementById("formulario-empleado-agregar");
 const btnAgregarEmpleado = document.getElementById("btn_agregar_empleado")
 const cuerpoTablaEmpleados = document.getElementById("cuerpo-tabla-empleados")
-
 const nombre = document.getElementById("nombre")
 const mail = document.getElementById("mail")
 const telefono = document.getElementById("telefono")
@@ -68,8 +67,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${empleado.telefono}</td>
             <td>${empleado.direccion}</td>
             <td>
-              <button class="btn-borrar" doc-id="${doc.id}">Borrar</button>
-              <button class="btn-editar" doc-id="${doc.id}">Editar</button>
+              <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
+              <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
             </td>
           </tr>
     `
@@ -82,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     botonesBorrarEmpleados.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
-        borrarEmpleado(id)
+        borrar("empleados",id)
       })
     })
 
@@ -93,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
 
-        const dato = await obtenerEmpleado(id)
+        const dato = await obtener("empleados",id)
         const empleadoEditar = dato.data()
 
         let modal = document.getElementById("modal-agregar");
@@ -129,7 +128,7 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
   } else {
     console.log("actualizar")
 
-    actualizarEmpleado(idEdit, { nombre, mail, telefono, direccion })
+    actualizar("empleados",idEdit, { nombre, mail, telefono, direccion })
     editStatus = false;
     btnAgregarEmpleado.innerText = "Grabar Empleado"
   }

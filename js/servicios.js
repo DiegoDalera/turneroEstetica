@@ -1,15 +1,14 @@
 import {
   guardarServicio,
-  obtenerServicio,
   onSnapshot, collection,
   db,
-  borrarServicio,
-  actualizarServicio
+  actualizar,
+  obtener,
+  borrar
 } from '../js/firebase.js'
 
 const formAgregarServicio = document.getElementById("formulario-servicio-agregar");
 const cuerpoTablaServicios = document.getElementById("cuerpo-tabla-servicios")
-
 const servicio = document.getElementById("nombre_servicio_ag")
 const duracion = document.getElementById("duracion_ag")
 const cantidadTurnos = document.getElementById("cantidad_turnos_ag")
@@ -19,7 +18,7 @@ const btnAgregarServicio = document.getElementById("btn_agregar_servicio")
 let editStatus = false
 let idEdit
 
-//Validar formulario
+//Validar Formulario
 servicio.addEventListener('input', verificarCampos);
 duracion.addEventListener('input', verificarCampos);
 cantidadTurnos.addEventListener('input', verificarCampos);
@@ -45,10 +44,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${servicio.servicio}</td>
             <td>${servicio.duracion}</td>
             <td>${servicio.cantidadTurnos}</td>
-            <td>${servicio.valor}</td>
+            <td>${servicio.valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
             <td>
-              <button class="btn-borrar" doc-id="${doc.id}">Borrar</button>
-              <button class="btn-editar" doc-id="${doc.id}">Editar</button>
+              <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
+              <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
             </td>
           </tr>
     `
@@ -63,7 +62,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
         console.log(id)
-        borrarServicio(id)
+        borrar("servicios",id)
+        //borrarServicio(id)
       })
     })
 
@@ -75,7 +75,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
 
-        const dato = await obtenerServicio(id)
+        //const dato = await obtenerServicio(id)
+        const dato = await obtener("servicios",id)
         console.log(dato.data())
         const servicioEditar = dato.data()
 
@@ -106,7 +107,7 @@ btnAgregarServicio.addEventListener("click", (e) => {
   if (!editStatus) {
     guardarServicio(servicio, duracion, cantidadTurnos, valor);
   } else {
-    actualizarServicio(idEdit, { servicio, duracion, cantidadTurnos, valor })
+    actualizar("servicios",idEdit, { servicio, duracion, cantidadTurnos, valor })
     editStatus = false;
     btnAgregarServicio.innerText = "Grabar"
   }
