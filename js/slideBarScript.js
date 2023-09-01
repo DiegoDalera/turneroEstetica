@@ -29,7 +29,7 @@ menu.addEventListener("click",()=>{
 palanca.addEventListener("click",()=>{
     let body = document.body;
     body.classList.toggle("dark-mode");
-    body.classList.toggle("");
+    body.classList.toggle("ligth-mode");
     circulo.classList.toggle("prendido");
 });
 

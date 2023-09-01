@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup} from 'https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js'
 
 import {
     getFirestore,
@@ -31,6 +32,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
+const auth = getAuth(app);
+
+
+// -----------------------------Funciones Autentificacion---------------------------------------------------------
+const provider = new GoogleAuthProvider();
+
+export let user;
+
+export async function loginWithGoogle() {
+    const response = await signInWithPopup(auth, provider)
+    const credential = GoogleAuthProvider.credentialFromResult(response)
+    const token = credential.accessToken;
+    
+    localStorage.setItem("token", token)
+    if ( token ){
+        user = response.user
+    }
+
+}
 
 // -----------------------------Funciones ---------------------------------------------------------
 export {
@@ -44,21 +64,16 @@ export const borrar = (collection, id) => deleteDoc(doc(db, collection, id))
 export const actualizar = (collection, id, newField) =>
     updateDoc(doc(db, collection, id), newField)
 
-
 //cargar Conexiones
 export const obtenerServicios = () => getDocs(collection(db, 'servicios'))
 export const obtenerEmpleados = () => getDocs(collection(db, 'empleados'))
+
 // -----------------------------Funciones Servicios---------------------------------------------------------
 
 
 export const guardarServicio = (servicio, duracion, cantidadTurnos, valor) => {
     addDoc(collection(db, 'servicios'), { servicio: servicio, duracion: duracion, cantidadTurnos: cantidadTurnos, valor: valor })
 }
-//export const escucharCambios = () => console.log("escuchar servicios")
-//export const borrarServicio = id => deleteDoc(doc(db, "servicios", id))
-//export const obtenerServicio = id => getDoc(doc(db, "servicios", id))
-// export const actualizarServicio = (id, newField) =>
-//     updateDoc(doc(db, "servicios", id), newField)
 
 
 // --------------------------------Funciones Empleados--------------------------------------------------------
@@ -66,27 +81,13 @@ export const guardarEmpleado = (nombre, mail, telefono, direccion) => {
     addDoc(collection(db, 'empleados'), { nombre: nombre, mail: mail, telefono: telefono, direccion: direccion })
 }
 
-//export const escucharCambiosEmpleado = () => console.log("escuchar empleados")
-//export const borrarEmpleado = id => deleteDoc(doc(db, "empleados", id))
-//obtengo solo un Empleado
-//export const obtenerEmpleado = id => getDoc(doc(db, "empleados", id))
-// export const actualizarEmpleado = (id, newField) =>
-//     updateDoc(doc(db, "empleados", id), newField)
-
-
 
 // ----------------------------------Funciones Conexiones-------------------------------------------------------
 export const guardarConexion = (newField) => {
     addDoc(collection(db, 'conexiones'), newField)
 }
-//export const borrarConexion = id => deleteDoc(doc(db, "conexiones", id))
-//export const obtenerConexion = id => getDoc(doc(db, "conexiones", id))
-// export const actualizarConexion = (id, newField) =>
-//     updateDoc(doc(db, "conexiones", id), newField)
-
 
 // ----------------------------------Funciones Turnos-------------------------------------------------------
-
 
 export const obtenerTurnos = () => getDocs(collection(db, 'conexiones'))
 

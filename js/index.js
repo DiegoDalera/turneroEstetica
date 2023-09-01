@@ -1,7 +1,5 @@
 import {
     guardarTurno,
-    obtenerTurnos,
-    obtenerTurnosOtorgados,
     obtenerConexiones
 } from './firebase.js'
 
@@ -24,6 +22,7 @@ const telefono = document.getElementById("telefono");
 const comentarios = document.getElementById("comentarios");
 const formTurnos = document.getElementById("formulario_turnos");
 const btnConfirmaCita = document.getElementById("confirma_cita");
+const divTurnos = document.getElementById("turnosDisponibles");
 
 
 //EventListener
@@ -54,22 +53,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 selectServicios.addEventListener('change', (event) => {
+    desabilitarInputs();
     servicioSeleccionado = event.target.value;
     selectEsteticistas.removeAttribute('disabled');
     cargarEsteticistas(servicioSeleccionado)
 });
 
-//cargo los esteticistas
+//Cargo los esteticistas
 selectEsteticistas.addEventListener('click', (e) => {
     esteticistaSeleccionada = e.target.value;
     cargarTurnosDisponibles()
 })
 
-//seleccion fecha turno
+//Seleccion fecha turno
 dateInput.addEventListener('change', function (e) {
     e.preventDefault
     fechaSeleccionada = dateInput.value;
-    alert("entro")
     mostrarHorariosDisponibles()
 });
 
@@ -205,6 +204,8 @@ function cargarTurnosDisponibles() {
 //Creo los botones con los horarios Disponibles
 function mostrarHorariosDisponibles(e) {
 
+    divTurnos.innerHTML='';
+
     const fechaAlmacenadaStr = fechaSeleccionada;
 
     // Filtrar los elementos del array que cumplan con la condición de fecha servicio y empleado
@@ -220,7 +221,7 @@ function mostrarHorariosDisponibles(e) {
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
 
-    const divTurnos = document.getElementById("turnosDisponibles");
+  
 
     // Función para convertir una cadena de tiempo en minutos desde la medianoche
     function tiempoAMinutos(tiempo) {
@@ -283,13 +284,36 @@ function botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr)
     return false;
 }
 
-// habilito los inputs inhabilitados
+// Habilito los inputs inhabilitados
 function completarDatos(fecha, horario, elemento) {
     nombre.removeAttribute("disabled")
     email.removeAttribute('disabled');
     telefono.removeAttribute('disabled');
     comentarios.removeAttribute('disabled');
+   
+}
 
+function desabilitarInputs() {
+    nombre.disabled=true
+    email.disabled=true
+    telefono.disabled=true
+    comentarios.disabled=true
+    dateInput.innerHTML=''
+    dateInput.disabled=true
+    divTurnos.innerHTML='';
+}
 
+//Validar formulario
+nombre.addEventListener('input', verificarCampos);
+email.addEventListener('input', verificarCampos);
+telefono.addEventListener('input', verificarCampos);
+comentarios.addEventListener('input', verificarCampos);
+
+function verificarCampos() {
+  if (nombre.value && email.value && telefono.value) {
+    btnConfirmaCita.removeAttribute('disabled');
+  } else {
+    btnConfirmaCita.setAttribute('disabled', 'true');
+  }
 }
 
