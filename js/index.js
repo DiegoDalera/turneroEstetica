@@ -49,6 +49,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
 
 document.addEventListener("DOMContentLoaded", async () => {
     arrayDeTurnos = await obtenerConexiones();
+    console.log(arrayDeTurnos, "array turnos")
     cargarServicios();
 })
 
@@ -120,7 +121,6 @@ dateInput.addEventListener('change', function (e) {
 //cargo los Servicios en el Select
 
 function cargarServicios() {
-
     arrayDeTurnos.forEach((conexion) => {
         const option = document.createElement("option");
         option.value = conexion.objetoServicio.servicio;
@@ -204,15 +204,19 @@ function cargarTurnosDisponibles() {
 //Creo los botones con los horarios Disponibles
 function mostrarHorariosDisponibles(e) {
 
-    divTurnos.innerHTML='';
+    divTurnos.innerHTML = '';
 
     const fechaAlmacenadaStr = fechaSeleccionada;
 
     // Filtrar los elementos del array que cumplan con la condición de fecha servicio y empleado
-    const elementosFiltrados = arrayDeTurnos.filter(objeto =>
-        objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
+    // const elementosFiltrados = arrayDeTurnos.filter(objeto =>
+    //     objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
-    console.log(elementosFiltrados)
+    // const turnosByServiceSelec = arrayDeTurnos.filter(el => el.objetoServicio.servicio === servicioSeleccionado)
+    // const turnosByDateSelect = turnosByServiceSelec?.turnos.filter(el => el.fecha === fechaSeleccionada)
+
+    console.log(turnosByServiceSelec, "Turnos")
+    //console.log(turnosByDateSelect, "TurnosBy Fehca")
 
     idConexion = elementosFiltrados[0].id
 
@@ -221,7 +225,7 @@ function mostrarHorariosDisponibles(e) {
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
 
-  
+
 
     // Función para convertir una cadena de tiempo en minutos desde la medianoche
     function tiempoAMinutos(tiempo) {
@@ -290,17 +294,17 @@ function completarDatos(fecha, horario, elemento) {
     email.removeAttribute('disabled');
     telefono.removeAttribute('disabled');
     comentarios.removeAttribute('disabled');
-   
+
 }
 
 function desabilitarInputs() {
-    nombre.disabled=true
-    email.disabled=true
-    telefono.disabled=true
-    comentarios.disabled=true
-    dateInput.innerHTML=''
-    dateInput.disabled=true
-    divTurnos.innerHTML='';
+    nombre.disabled = true
+    email.disabled = true
+    telefono.disabled = true
+    comentarios.disabled = true
+    dateInput.innerHTML = ''
+    dateInput.disabled = true
+    divTurnos.innerHTML = '';
 }
 
 //Validar formulario
@@ -310,10 +314,10 @@ telefono.addEventListener('input', verificarCampos);
 comentarios.addEventListener('input', verificarCampos);
 
 function verificarCampos() {
-  if (nombre.value && email.value && telefono.value) {
-    btnConfirmaCita.removeAttribute('disabled');
-  } else {
-    btnConfirmaCita.setAttribute('disabled', 'true');
-  }
+    if (nombre.value && email.value && telefono.value) {
+        btnConfirmaCita.removeAttribute('disabled');
+    } else {
+        btnConfirmaCita.setAttribute('disabled', 'true');
+    }
 }
 
