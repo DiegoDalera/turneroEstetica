@@ -50,6 +50,7 @@ export async function loginWithGoogle() {
         user = response.user
     }
 
+    return user
 }
 
 // -----------------------------Funciones ---------------------------------------------------------

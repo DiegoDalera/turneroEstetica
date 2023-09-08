@@ -7,24 +7,12 @@
 </head>
 <body>
     <h1>Loguearse con Google</h1>
+    <section id="section"></section>
     <button id="login-google">Google</button>
 
 
 
-<script src="../../js/firebase.js"></script>
-
-<script>
-
- function login () {
-    loginWithGoogle().then( ()=>{
-        alert("logeado : " , user)
-    } )
-
-    .cath( (error) => {alert(error)})
- }   
-
-document.getElementById("login-google").addEventListener("click",login)
-
+<script type="module" src="../../js/auth/loginGoogle.js">
 </script>
 
 </body>
