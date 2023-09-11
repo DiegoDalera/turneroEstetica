@@ -5,33 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <style>
-        .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto 15% auto;
-        border: 1px solid #888;
-        width: 60%;
-        padding: 20px; 
-      }
-    </style>
-  
-
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/login.css">
 </head>
 
 <body>
     <h1>Loguearse</h1>
-    <!-- <section id="section"></section>
-    <button id="login-google">Google</button> -->
-
     <form class="modal-content animate" action="#" method="post" id="formulario_logueo">
         <div class="formulario">
-            <label for="uname"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" id="userNameAdmin">
 
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" id="pswAdmin">
+            <div class="elem-group">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" id="userNameAdmin">
+            </div>
 
-            <button type="submit" id="enviarAdmin">Login</button>
+            <div class="elem-group">
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" id="pswAdmin">
+            </div>
+            <div class="elem-group">
+                <button type="submit" id="enviarAdmin">Login</button>
+            </div>
         </div>
     </form>
 
