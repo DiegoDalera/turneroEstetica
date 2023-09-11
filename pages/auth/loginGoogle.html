@@ -1,21 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto 15% auto;
+        border: 1px solid #888;
+        width: 60%;
+        padding: 20px; 
+      }
+    </style>
+  
+
 </head>
+
 <body>
-    <h1>Loguearse con Google</h1>
-    <section id="section"></section>
-    <button id="login-google">Google</button>
+    <h1>Loguearse</h1>
+    <!-- <section id="section"></section>
+    <button id="login-google">Google</button> -->
 
-    <!-- crear un formulario para hacer login con email y password -->
+    <form class="modal-content animate" action="#" method="post" id="formulario_logueo">
+        <div class="formulario">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" id="userNameAdmin">
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" id="pswAdmin">
+
+            <button type="submit" id="enviarAdmin">Login</button>
+        </div>
+    </form>
 
 
 
-<script type="module" src="../../js/auth/loginGoogle.js">
-</script>
+    <script type="module" src="../../js/auth/loginGoogle.js">
+    </script>
 
 </body>
+
 </html>
