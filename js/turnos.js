@@ -94,48 +94,43 @@ function cargarTabla(turnoFinal) {
     gridContainer.appendChild(hourRow);
   }
 }
-
-// Función para construir el calendario en base a un rango de fechas y los turnos disponibles.
+//Funcion para pintar la tabla en base a las fechas por defecto de la conexion y sus turnos.
 function construirCalendario(fechaInicio, fechaFin, turnos) {
-  // Limpiamos cualquier contenido previo del contenedor.
-  gridContainer.innerHTML = "";
+  gridContainer.innerHTML = ""; // Limpiamos el contenedor
 
-  // Creamos una tabla.
+  // Crear tabla
   const table = document.createElement("table");
   table.border = "1";
 
-  // Creamos la fila para los horarios.
+  // Fila de horarios
   const timeRow = document.createElement("tr");
   const timeHeader = document.createElement("th");
   timeHeader.textContent = "Horario/Fecha";
   timeRow.appendChild(timeHeader);
 
-  // Llenamos la fila con las horas de 8 a 18.
+  //Rellenamos de 08:00 a 18:00
   for (let i = 8; i <= 18; i++) {
     const timeCell = document.createElement("th");
     timeCell.textContent = `${i}:00 - ${i + 1}:00`;
     timeRow.appendChild(timeCell);
   }
 
-  // Añadimos la fila de horarios a la tabla.
   table.appendChild(timeRow);
 
-  // Establecemos la fecha actual a la fecha de inicio y definimos la fecha de fin.
+  //establecemos las fechas
   const currentDate = new Date(fechaInicio);
   const endDate = new Date(fechaFin);
 
-  // Mientras la fecha actual no sea posterior a la fecha de fin, seguimos creando filas.
   while (currentDate <= endDate) {
     const dateRow = document.createElement("tr");
     const dateHeader = document.createElement("td");
-    dateHeader.textContent = currentDate.toISOString().split("T")[0]; // Convertimos la fecha a formato YYYY-MM-DD
+    dateHeader.textContent = currentDate.toISOString().split("T")[0];
     dateRow.appendChild(dateHeader);
 
-    // Para cada hora del día, verificamos si hay un turno y lo mostramos.
     for (let i = 8; i <= 18; i++) {
       const cell = document.createElement("td");
 
-      // Buscamos si hay un turno reservado para la fecha y hora actuales.
+      // Revisa si el turno para esa fecha y hora ya está tomado
       const turno = turnos.find((t) => {
         return (
           t.fecha === currentDate.toISOString().split("T")[0] &&
@@ -143,56 +138,34 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
         );
       });
 
-      // Si hay un turno, pintamos la celda de dorado y mostramos el cliente.
       if (turno) {
-        cell.style.backgroundColor = "#FFD700";
-        cell.innerText = turno.cliente;
+        console.log("turno: ", turno);
+        cell.style.backgroundColor = "#FFD700"; // Pintamos de color dorado
+        cell.innerText = turno.docID;
+        cell.id = turno.docID; // Muestra el nombre del cliente en la celda
       }
 
       dateRow.appendChild(cell);
     }
 
-    // Añadimos la fila completa a la tabla.
     table.appendChild(dateRow);
-
-    // Avanzamos al día siguiente.
-    currentDate.setDate(currentDate.getDate() + 1);
+    currentDate.setDate(currentDate.getDate() + 1); // Avanzamos al siguiente día
   }
 
-  // Finalmente, añadimos la tabla completa al contenedor.
   gridContainer.appendChild(table);
 }
 
-// Evento para cuando se hace clic en el botón de buscar.
+//Funcion ONCLICK del button
 document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
   const fechaInicio = document.getElementById("fecha-inicio-turnos").value;
   const fechaFin = document.getElementById("fecha-fin-turnos").value;
   filtrarTurnosPorFecha(fechaInicio, fechaFin);
 });
 
-// Función para filtrar los turnos en base a un rango de fechas.
+
+//FUncion de filtrado por 2 fechas
 function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
-  // Filtramos el array de turnos basándonos en el rango de fechas.
-  const turnosFiltrados = turnoFinal.filter((turno) => {
-    const fechaTurno = new Date(turno.fecha);
-    return (
-      fechaTurno >= new Date(fechaInicio) && fechaTurno <= new Date(fechaFin)
-    );
-  });
-
-  // Usamos los turnos filtrados para construir el calendario.
-  construirCalendario(fechaInicio, fechaFin, turnoFinal[0].turnos);
-}
-
-
-document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
-  const fechaInicio = document.getElementById("fecha-inicio-turnos").value;
-  const fechaFin = document.getElementById("fecha-fin-turnos").value;
-  filtrarTurnosPorFecha(fechaInicio, fechaFin);
-});
-
-function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
-  const turnosFiltrados = turnoFinal.filter((turno) => {
+  const turnosFiltrados = turnoFinal[0].turnos.filter((turno) => {
     const fechaTurno = new Date(turno.fecha);
     return (
       fechaTurno >= new Date(fechaInicio) && fechaTurno <= new Date(fechaFin)
@@ -200,5 +173,5 @@ function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
   });
 
   // Luego, con esos turnos filtrados, construye tu calendario:
-  construirCalendario(fechaInicio, fechaFin, turnoFinal[0].turnos);
+  construirCalendario(fechaInicio, fechaFin, turnosFiltrados);
 }
