@@ -11,7 +11,6 @@ let fechaSeleccionada = undefined;
 let horarioSeleccionado = undefined;
 let idConexion = undefined
 
-
 //Constantes
 const selectServicios = document.getElementById("servicios");
 const selectEsteticistas = document.getElementById("esteticistas");
@@ -24,13 +23,9 @@ const formTurnos = document.getElementById("formulario_turnos");
 const btnConfirmaCita = document.getElementById("confirma_cita");
 const divTurnos = document.getElementById("turnosDisponibles");
 
-
 //EventListener
 btnConfirmaCita.addEventListener("click", (e) => {
-
     e.preventDefault()
-    // Usar idConexion 
-
     const turnoData = {
         fecha: fechaSeleccionada,
         horario: horarioSeleccionado,
@@ -41,9 +36,11 @@ btnConfirmaCita.addEventListener("click", (e) => {
     };
 
     // Agregar el documento a la subcolección "turnos" del servicio especificado
-    guardarTurno(idConexion, turnoData)
-    formTurnos.reset()
-
+    // Llama a guardarTurno y usa await para esperar a que se complete antes de recargar la página
+    (async () => {
+        await guardarTurno(idConexion, turnoData);
+        location.reload();
+    })();
 })
 
 
@@ -60,11 +57,83 @@ selectServicios.addEventListener('change', (event) => {
     cargarEsteticistas(servicioSeleccionado)
 });
 
+//Cargo los Esteticistas en el Select
+function cargarEsteticistas() {
+
+    selectEsteticistas.removeAttribute('disabled');
+
+    // Eliminar todas las opciones del select previas
+    while (selectEsteticistas.firstChild) {
+        selectEsteticistas.removeChild(selectEsteticistas.firstChild);
+    }
+
+    const objetosEncontrados = arrayDeTurnos.filter(objeto => objeto.objetoServicio.servicio === servicioSeleccionado);
+    if (objetosEncontrados.length > 0) {
+        console.log("Objetos encontrados:", objetosEncontrados);
+    } else {
+        console.log("Objetos no encontrados - ojo no deberia entrar aqui nunca");
+    }
+
+    objetosEncontrados.forEach(objeto => {
+        const nombreEmpleado = objeto.objetoEmpleado.nombre;
+        console.log(nombreEmpleado);
+        const option = document.createElement("option");
+        option.value = nombreEmpleado;
+        option.textContent = nombreEmpleado;
+        selectEsteticistas.appendChild(option);
+        selectEsteticistas.disabled = false;
+    });
+}
+
 //Cargo los esteticistas
 selectEsteticistas.addEventListener('click', (e) => {
     esteticistaSeleccionada = e.target.value;
     cargarTurnosDisponibles()
 })
+
+//Cargo las fechas disponibles en el DatePicker
+function cargarTurnosDisponibles() {
+
+    dateInput.removeAttribute('disabled');
+
+    const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
+
+    const diasDeTurnos = conexionBuscada.diasATrabajar;
+
+    const diasHabilitados = diasDeTurnos.map(dia => {
+        switch (dia) {
+            case "Lunes":
+                return 1;
+            case "Martes":
+                return 2;
+            case "Miercoles":
+                return 3;
+            case "Jueves":
+                return 4;
+            case "Viernes":
+                return 5;
+            case "Sabado":
+                return 6;
+            case "Domingo":
+                return 0;
+            default:
+                return null;
+        }
+    })
+
+    const picker = new Pikaday({
+        field: document.getElementById('datepicker'),
+        format: 'YYYY-MM-DD',
+        maxDate: new Date(conexionBuscada.fechaFin),
+        minDate: moment().toDate(),
+        disableDayFn: function (date) {
+            const day = moment(date).day();
+            return !diasHabilitados.includes(day);
+        }
+    });
+
+    picker.show();
+}
 
 //Seleccion fecha turno
 dateInput.addEventListener('change', function (e) {
@@ -129,103 +198,24 @@ function cargarServicios() {
     })
 }
 
-//Cargo los Esteticistas en el Select
-function cargarEsteticistas() {
-
-    selectEsteticistas.removeAttribute('disabled');
-
-    // Eliminar todas las opciones del select previas
-    while (selectEsteticistas.firstChild) {
-        selectEsteticistas.removeChild(selectEsteticistas.firstChild);
-    }
-
-    const objetosEncontrados = arrayDeTurnos.filter(objeto => objeto.objetoServicio.servicio === servicioSeleccionado);
-    if (objetosEncontrados.length > 0) {
-        console.log("Objetos encontrados:", objetosEncontrados);
-    } else {
-        console.log("Objetos no encontrados - ojo no deberia entrar aqui nunca");
-    }
-
-    objetosEncontrados.forEach(objeto => {
-        const nombreEmpleado = objeto.objetoEmpleado.nombre;
-        console.log(nombreEmpleado);
-        const option = document.createElement("option");
-        option.value = nombreEmpleado;
-        option.textContent = nombreEmpleado;
-        selectEsteticistas.appendChild(option);
-        selectEsteticistas.disabled = false;
-    });
-}
-
-//Cargo las fechas disponibles en el DatePicker
-function cargarTurnosDisponibles() {
-
-    dateInput.removeAttribute('disabled');
-
-    const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
-
-    const diasDeTurnos = conexionBuscada.diasATrabajar;
-
-    const diasHabilitados = diasDeTurnos.map(dia => {
-        switch (dia) {
-            case "Lunes":
-                return 1;
-            case "Martes":
-                return 2;
-            case "Miercoles":
-                return 3;
-            case "Jueves":
-                return 4;
-            case "Viernes":
-                return 5;
-            case "Sabado":
-                return 6;
-            case "Domingo":
-                return 0;
-            default:
-                return null;
-        }
-    })
-
-    const picker = new Pikaday({
-        field: document.getElementById('datepicker'),
-        format: 'YYYY-MM-DD',
-        maxDate: new Date(conexionBuscada.fechaFin),
-        minDate: moment().toDate(),
-        disableDayFn: function (date) {
-            const day = moment(date).day();
-            return !diasHabilitados.includes(day);
-        }
-    });
-
-    picker.show();
-}
 
 //Creo los botones con los horarios Disponibles
 function mostrarHorariosDisponibles(e) {
-
     divTurnos.innerHTML = '';
 
     const fechaAlmacenadaStr = fechaSeleccionada;
 
     // Filtrar los elementos del array que cumplan con la condición de fecha servicio y empleado
-    // const elementosFiltrados = arrayDeTurnos.filter(objeto =>
-    //     objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
-
-    // const turnosByServiceSelec = arrayDeTurnos.filter(el => el.objetoServicio.servicio === servicioSeleccionado)
-    // const turnosByDateSelect = turnosByServiceSelec?.turnos.filter(el => el.fecha === fechaSeleccionada)
-
-    console.log(turnosByServiceSelec, "Turnos")
-    //console.log(turnosByDateSelect, "TurnosBy Fehca")
+    const elementosFiltrados = arrayDeTurnos.filter(objeto =>
+        objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado && objeto.fechaInicio < fechaAlmacenadaStr && objeto.fechaFin > fechaAlmacenadaStr);
 
     idConexion = elementosFiltrados[0].id
+    console.log(elementosFiltrados[0])
 
     //rango Horario
     const horarioInicio = elementosFiltrados[0].horaInicio;
     const horarioFin = elementosFiltrados[0].horaFin;
     const intervaloMinutos = 60;
-
-
 
     // Función para convertir una cadena de tiempo en minutos desde la medianoche
     function tiempoAMinutos(tiempo) {
@@ -244,7 +234,6 @@ function mostrarHorariosDisponibles(e) {
         boton.textContent = horario;
 
         // validacion de horarios disponibles 
-
         let existeTurno = botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr)
 
         if (existeTurno) {
@@ -256,7 +245,6 @@ function mostrarHorariosDisponibles(e) {
             boton.disabled = false
         }
 
-
         boton.addEventListener("click", (e) => {
             e.preventDefault()
             alert(`Has seleccionado el turno a las ${horario} el dia ${fechaSeleccionada} para ${servicioSeleccionado} con ${esteticistaSeleccionada}`);
@@ -267,7 +255,6 @@ function mostrarHorariosDisponibles(e) {
         divTurnos.appendChild(boton);
     }
 }
-
 
 function botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr) {
     let fechaBuscada = fechaAlmacenadaStr;
@@ -294,7 +281,6 @@ function completarDatos(fecha, horario, elemento) {
     email.removeAttribute('disabled');
     telefono.removeAttribute('disabled');
     comentarios.removeAttribute('disabled');
-
 }
 
 function desabilitarInputs() {
@@ -307,7 +293,7 @@ function desabilitarInputs() {
     divTurnos.innerHTML = '';
 }
 
-//Validar formulario
+// Validar Formulario
 nombre.addEventListener('input', verificarCampos);
 email.addEventListener('input', verificarCampos);
 telefono.addEventListener('input', verificarCampos);
