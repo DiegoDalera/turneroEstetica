@@ -67,6 +67,13 @@ function cargarEsteticistas() {
         selectEsteticistas.removeChild(selectEsteticistas.firstChild);
     }
 
+    const option = document.createElement("option");
+    option.value = "1";
+    option.textContent = "Selecciona con quien";
+    selectEsteticistas.appendChild(option);
+
+
+
     const objetosEncontrados = arrayDeTurnos.filter(objeto => objeto.objetoServicio.servicio === servicioSeleccionado);
     if (objetosEncontrados.length > 0) {
         console.log("Objetos encontrados:", objetosEncontrados);

@@ -22,3 +22,70 @@
     flex-direction: row;
     justify-content:center;
 }
+
+.contenedor-turnos{
+  width: 100%;
+  display: flex;
+
+}
+#gridContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+  }
+
+  .gridRow {
+    display: flex;
+    flex-direction: row;
+    padding: 4px;
+  }
+
+  .gridCell {
+    border: 1px solid lightgray;
+    padding: 4px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .tabla-turnos{
+    border: 1px solid black;
+    width: 100%;
+  }
+
+  .tabla-turnos tr, .tabla-turnos td{
+    border: 1px solid black;
+    width: 10%;
+  }
+
+/* estilos modal turnos */
+/* Estilo para ocultar el modal inicialmente */
+.modalTurnos {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+
+/* Estilo para el contenido del modal */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  max-width: 600px;
+  position: relative;
+}
+
+/* Estilo para el botón de cerrar */
+.cerrar-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+}

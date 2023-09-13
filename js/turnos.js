@@ -1,27 +1,18 @@
 import {
-  onSnapshot,
-  collection,
-  db,
-  obtenerEmpleados,
-  obtenerServicios,
-  guardarConexion,
-  borrar,
-  obtener,
   obtenerConexiones,
-  actualizar,
 } from "../js/firebase.js";
 
 //Variables
 let arrayDeTurnos = undefined;
 let servicioSeleccionadoAdmin = "";
 let turnoFinal = [];
+
 //Constantes
 const selectServiciosAdmin = document.getElementById("serviciosAdmin");
 const gridContainer = document.getElementById("gridContainer");
 
 document.addEventListener("DOMContentLoaded", async () => {
   arrayDeTurnos = await obtenerConexiones();
-  console.log(arrayDeTurnos);
   cargarServicios();
 });
 
@@ -38,6 +29,7 @@ selectServiciosAdmin.addEventListener("change", (event) => {
   );
 });
 
+//Carga los servivios en el Select
 function cargarServicios() {
   arrayDeTurnos.forEach((conexion) => {
     const option = document.createElement("option");
@@ -94,13 +86,73 @@ function cargarTabla(turnoFinal) {
     gridContainer.appendChild(hourRow);
   }
 }
+
 //Funcion para pintar la tabla en base a las fechas por defecto de la conexion y sus turnos.
+// function construirCalendario(fechaInicio, fechaFin, turnos) {
+//   gridContainer.innerHTML = ""; // Limpiamos el contenedor
+
+//   // Crear tabla
+//   const table = document.createElement("table");
+//   table.classList.add("tabla-turnos"); 
+
+//   // Fila de horarios
+//   const timeRow = document.createElement("tr");
+//   const timeHeader = document.createElement("th");
+//   timeHeader.textContent = "Horario/Fecha";
+//   timeRow.appendChild(timeHeader);
+
+//   //Rellenamos de 08:00 a 18:00
+//   for (let i = 8; i <= 18; i++) {
+//     const timeCell = document.createElement("th");
+//     timeCell.textContent = `${i}:00 - ${i + 1}:00`;
+//     timeRow.appendChild(timeCell);
+//   }
+
+//   table.appendChild(timeRow);
+
+//   //establecemos las fechas
+//   const currentDate = new Date(fechaInicio);
+//   const endDate = new Date(fechaFin);
+
+//   while (currentDate <= endDate) {
+//     const dateRow = document.createElement("tr");
+//     const dateHeader = document.createElement("td");
+//     dateHeader.textContent = currentDate.toISOString().split("T")[0];
+//     dateRow.appendChild(dateHeader);
+
+//     for (let i = 8; i <= 18; i++) {
+//       const cell = document.createElement("td");
+
+//       // Revisa si el turno para esa fecha y hora ya está tomado
+//       const turno = turnos.find((t) => {
+//         return (
+//           t.fecha === currentDate.toISOString().split("T")[0] &&
+//           t.horario === `${i}:00`
+//         );
+//       });
+
+//       if (turno) {
+//         console.log("turno: ", turno);
+//         cell.style.backgroundColor = "#FFD700"; // Pintamos de color dorado
+//         cell.innerText = turno.docID;
+//         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
+//       }
+
+//       dateRow.appendChild(cell);
+//     }
+
+//     table.appendChild(dateRow);
+//     currentDate.setDate(currentDate.getDate() + 1); // Avanzamos al siguiente día
+//   }
+
+//   gridContainer.appendChild(table);
+// }
+
 function construirCalendario(fechaInicio, fechaFin, turnos) {
   gridContainer.innerHTML = ""; // Limpiamos el contenedor
-
   // Crear tabla
   const table = document.createElement("table");
-  table.border = "1";
+  table.classList.add("tabla-turnos");
 
   // Fila de horarios
   const timeRow = document.createElement("tr");
@@ -117,7 +169,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
 
   table.appendChild(timeRow);
 
-  //establecemos las fechas
+  //Establecemos las fechas
   const currentDate = new Date(fechaInicio);
   const endDate = new Date(fechaFin);
 
@@ -139,10 +191,15 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
       });
 
       if (turno) {
-        console.log("turno: ", turno);
         cell.style.backgroundColor = "#FFD700"; // Pintamos de color dorado
         cell.innerText = turno.docID;
         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
+
+        // Agregar el manejador de eventos clic
+        cell.addEventListener("click", () => {
+          // Muestra la información del turno
+          mostrarInformacionDelTurno(turno);
+        });
       }
 
       dateRow.appendChild(cell);
@@ -151,9 +208,60 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
     table.appendChild(dateRow);
     currentDate.setDate(currentDate.getDate() + 1); // Avanzamos al siguiente día
   }
-
   gridContainer.appendChild(table);
 }
+
+
+const spanCerrarModalTurnos = document.getElementById("cerrarModalTurnos");
+
+function mostrarInformacionDelTurno(turno) {
+
+  console.log(turno)
+  
+  const modalTurnos = document.getElementById("modalTurnos");
+
+  const spanEmail = document.getElementById("email");
+  const spanCliente = document.getElementById("cliente");
+  const spanFecha = document.getElementById("fecha");
+  const spanTelefono = document.getElementById("telefono");
+  const spanHorario = document.getElementById("horario");
+  const spanComentarios = document.getElementById("comentarios");
+
+  // Objeto con la información del turno
+  let  turnoInfo = {
+    "email": turno.email ,
+    "cliente": turno.cliente,
+    "fecha": turno.fecha,
+    "telefono": turno.telefono,
+    "comentarios": turno.comentarios,
+    "horario": turno.horario,
+    "docID": turno.docID
+  };
+
+    spanEmail.textContent = turnoInfo.email;
+    spanCliente.textContent = turnoInfo.cliente;
+    spanFecha.textContent = turnoInfo.fecha;
+    spanTelefono.textContent = turnoInfo.telefono;
+    spanHorario.textContent = turnoInfo.horario;
+    spanComentarios.textContent = turnoInfo.comentarios;
+
+    // Muestra el modal
+    modalTurnos.style.display = "block";
+  }
+
+
+  // Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
+  spanCerrarModalTurnos.onclick = function () {
+    modalTurnos.style.display = "none";
+  }
+
+
+  // window.onclick = function (event) {
+  //   if (event.target == modalTurnos) {
+  //     modalTurnos.style.display = "none";
+  //   }
+  // }
+
 
 //Funcion ONCLICK del button
 document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
@@ -161,7 +269,6 @@ document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
   const fechaFin = document.getElementById("fecha-fin-turnos").value;
   filtrarTurnosPorFecha(fechaInicio, fechaFin);
 });
-
 
 //FUncion de filtrado por 2 fechas
 function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
