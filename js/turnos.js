@@ -21,11 +21,13 @@ selectServiciosAdmin.addEventListener("change", (event) => {
   servicioSeleccionadoAdmin = event.target.value;
   //Filtro de Conexiones(arrayTUrno) x Servicio Select
   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
+
   //cargarTabla(turnoFinal[0])
   construirCalendario(
     turnoFinal[0].fechaInicio,
     turnoFinal[0].fechaFin,
-    turnoFinal[0].turnos
+    turnoFinal[0].turnos,
+    turnoFinal[0].color
   );
 });
 
@@ -43,49 +45,48 @@ function arrayTurnosByService(servicioSeleccionado) {
   let result = arrayDeTurnos.filter(
     (el) => el.objetoServicio.servicio === servicioSeleccionado
   );
-  console.log(result, "resultFilter");
   return result;
 }
 
-function cargarTabla(turnoFinal) {
-  let startHour = parseInt(turnoFinal.horaInicio.slice(0, 2)); //
-  let endHour = parseInt(turnoFinal.horaFin.slice(0, 2));
-  let startDate = new Date(turnoFinal.fechaInicio);
-  let endDate = new Date(turnoFinal.fechaFin); // Por ejemplo, rango de fechas
-  const oneDay = 24 * 60 * 60 * 1000; // 1 día en milisegundos
-  const oneHour = 60 * 60 * 1000; // 1 hora en milisegundos
+// function cargarTabla(turnoFinal) {
+//   let startHour = parseInt(turnoFinal.horaInicio.slice(0, 2)); //
+//   let endHour = parseInt(turnoFinal.horaFin.slice(0, 2));
+//   let startDate = new Date(turnoFinal.fechaInicio);
+//   let endDate = new Date(turnoFinal.fechaFin); // Por ejemplo, rango de fechas
+//   const oneDay = 24 * 60 * 60 * 1000; // 1 día en milisegundos
+//   const oneHour = 60 * 60 * 1000; // 1 hora en milisegundos
 
-  console.log(startDate, endDate, startHour, endHour, "hola");
-  // Llenar las celdas para los días
-  let currentDate = new Date(startDate);
+//   console.log(startDate, endDate, startHour, endHour, "hola");
+//   // Llenar las celdas para los días
+//   let currentDate = new Date(startDate);
 
-  while (currentDate <= endDate) {
-    const dateCell = document.createElement("div");
-    dateCell.classList.add("gridCell");
-    dateCell.textContent = currentDate.toISOString().substring(0, 10);
-    gridContainer.querySelector(".gridRow").appendChild(dateCell);
-    currentDate.setTime(currentDate.getTime() + oneDay);
-  }
+//   while (currentDate <= endDate) {
+//     const dateCell = document.createElement("div");
+//     dateCell.classList.add("gridCell");
+//     dateCell.textContent = currentDate.toISOString().substring(0, 10);
+//     gridContainer.querySelector(".gridRow").appendChild(dateCell);
+//     currentDate.setTime(currentDate.getTime() + oneDay);
+//   }
 
-  // Llenar las celdas para las horas
-  for (let i = startHour; i <= endHour; i++) {
-    const hourRow = document.createElement("div");
-    hourRow.classList.add("gridRow");
+//   // Llenar las celdas para las horas
+//   for (let i = startHour; i <= endHour; i++) {
+//     const hourRow = document.createElement("div");
+//     hourRow.classList.add("gridRow");
 
-    const hourCell = document.createElement("div");
-    hourCell.classList.add("gridCell");
-    hourCell.textContent = `${i.toString().padStart(2, "0")}:00`;
-    hourRow.appendChild(hourCell);
+//     const hourCell = document.createElement("div");
+//     hourCell.classList.add("gridCell");
+//     hourCell.textContent = `${i.toString().padStart(2, "0")}:00`;
+//     hourRow.appendChild(hourCell);
 
-    for (let j = 1; j <= (endDate - startDate) / oneDay + 1; j++) {
-      const emptyCell = document.createElement("div");
-      emptyCell.classList.add("gridCell");
-      hourRow.appendChild(emptyCell);
-    }
+//     for (let j = 1; j <= (endDate - startDate) / oneDay + 1; j++) {
+//       const emptyCell = document.createElement("div");
+//       emptyCell.classList.add("gridCell");
+//       hourRow.appendChild(emptyCell);
+//     }
 
-    gridContainer.appendChild(hourRow);
-  }
-}
+//     gridContainer.appendChild(hourRow);
+//   }
+// }
 
 //Funcion para pintar la tabla en base a las fechas por defecto de la conexion y sus turnos.
 // function construirCalendario(fechaInicio, fechaFin, turnos) {
@@ -148,8 +149,9 @@ function cargarTabla(turnoFinal) {
 //   gridContainer.appendChild(table);
 // }
 
-function construirCalendario(fechaInicio, fechaFin, turnos) {
-  gridContainer.innerHTML = ""; // Limpiamos el contenedor
+function construirCalendario(fechaInicio, fechaFin, turnos,color) {
+  gridContainer.innerHTML = ""; 
+
   // Crear tabla
   const table = document.createElement("table");
   table.classList.add("tabla-turnos");
@@ -191,13 +193,13 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
       });
 
       if (turno) {
-        cell.style.backgroundColor = "#FFD700"; // Pintamos de color dorado
-        cell.innerText = turno.docID;
+        console.log("dentro if turnos ", turno)
+        cell.style.backgroundColor = color; // Pintamos de color dorado
+        cell.innerText = turno.cliente;
         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
 
         // Agregar el manejador de eventos clic
         cell.addEventListener("click", () => {
-          // Muestra la información del turno
           mostrarInformacionDelTurno(turno);
         });
       }
@@ -211,7 +213,32 @@ function construirCalendario(fechaInicio, fechaFin, turnos) {
   gridContainer.appendChild(table);
 }
 
+//Funcion ONCLICK del button
+document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
+  const fechaInicio = document.getElementById("fecha-inicio-turnos").value;
+  const fechaFin = document.getElementById("fecha-fin-turnos").value;
+  filtrarTurnosPorFecha(fechaInicio, fechaFin);
+});
 
+//Funcion de filtrado por 2 fechas
+function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
+
+  let color = turnoFinal[0].color
+
+  const turnosFiltrados = turnoFinal[0].turnos.filter((turno) => {
+    const fechaTurno = new Date(turno.fecha);
+    return (
+      fechaTurno >= new Date(fechaInicio) && fechaTurno <= new Date(fechaFin)
+    );
+  });
+
+  // Luego, con esos turnos filtrados, construye tu calendario:
+  construirCalendario(fechaInicio, fechaFin, turnosFiltrados,color);
+}
+
+
+
+// Modal de muestra individual
 const spanCerrarModalTurnos = document.getElementById("cerrarModalTurnos");
 
 function mostrarInformacionDelTurno(turno) {
@@ -249,12 +276,10 @@ function mostrarInformacionDelTurno(turno) {
     modalTurnos.style.display = "block";
   }
 
-
   // Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
   spanCerrarModalTurnos.onclick = function () {
     modalTurnos.style.display = "none";
   }
-
 
   // window.onclick = function (event) {
   //   if (event.target == modalTurnos) {
@@ -263,22 +288,3 @@ function mostrarInformacionDelTurno(turno) {
   // }
 
 
-//Funcion ONCLICK del button
-document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
-  const fechaInicio = document.getElementById("fecha-inicio-turnos").value;
-  const fechaFin = document.getElementById("fecha-fin-turnos").value;
-  filtrarTurnosPorFecha(fechaInicio, fechaFin);
-});
-
-//FUncion de filtrado por 2 fechas
-function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
-  const turnosFiltrados = turnoFinal[0].turnos.filter((turno) => {
-    const fechaTurno = new Date(turno.fecha);
-    return (
-      fechaTurno >= new Date(fechaInicio) && fechaTurno <= new Date(fechaFin)
-    );
-  });
-
-  // Luego, con esos turnos filtrados, construye tu calendario:
-  construirCalendario(fechaInicio, fechaFin, turnosFiltrados);
-}
