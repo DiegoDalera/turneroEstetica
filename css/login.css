@@ -1,7 +1,25 @@
-.modal-content {
+.modal-content-login {
     background-color: #fefefe;
     margin: 5% auto 15% auto;
     border: 1px solid #888;
-    width: 60%;
+    width: 40%;
     padding: 20px;
 }
+
+.formulario{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.elem-group{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5PX;
+}
+
+.titulo h1{
+  text-align: center;
+}
+
