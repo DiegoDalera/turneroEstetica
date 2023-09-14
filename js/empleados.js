@@ -1,5 +1,5 @@
 import {
-  guardarEmpleado,
+  guardar,
   obtener,
   onSnapshot,
   collection,
@@ -32,7 +32,6 @@ function verificarCampos() {
     btnAgregarEmpleado.setAttribute('disabled', 'true');
   }
 }
-
 
 // Modal Agregar Empleado
 const agregarEmpleado = document.getElementById("enlaceAgregarEmpleados")
@@ -103,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         btnAgregarEmpleado.innerText = "Actualizar Empleado";
         formAgregarEmpleado["nombre"].value = empleadoEditar.nombre
+        formAgregarEmpleado["nombre"].disabled = true;
         formAgregarEmpleado["mail"].value = empleadoEditar.mail
         formAgregarEmpleado["telefono"].value = empleadoEditar.telefono
         formAgregarEmpleado["direccion"].value = empleadoEditar.direccion
@@ -121,18 +121,22 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
   const telefono = document.getElementById("telefono").value
   const direccion = document.getElementById("direccion").value
 
-  console.log(nombre, mail, telefono, direccion)
+  const newField = {
+    nombre: nombre,
+    mail: mail,
+    telefono: telefono,
+    direccion: direccion,
+  };
 
   if (!editStatus) {
-    guardarEmpleado(nombre, mail, telefono, direccion);
+    guardar(newField,"empleados");
   } else {
-    console.log("actualizar")
-
     actualizar("empleados",idEdit, { nombre, mail, telefono, direccion })
     editStatus = false;
     btnAgregarEmpleado.innerText = "Grabar Empleado"
   }
 
+  formAgregarEmpleado["nombre"].disabled = false;
   formAgregarEmpleado.reset();
   modal.style.display = "none";
 })

@@ -1,5 +1,5 @@
 import {
-  guardarServicio,
+  guardar,
   onSnapshot, collection,
   db,
   actualizar,
@@ -24,13 +24,6 @@ duracion.addEventListener('input', verificarCampos);
 cantidadTurnos.addEventListener('input', verificarCampos);
 valor.addEventListener('input', verificarCampos);
 
-function verificarCampos() {
-  if (servicio.value && duracion.value && cantidadTurnos.value && valor.value) {
-    btnAgregarServicio.removeAttribute('disabled');
-  } else {
-    btnAgregarServicio.setAttribute('disabled', 'true');
-  }
-}
 
 
 //EventListener
@@ -62,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
         console.log(id)
-        borrar("servicios",id)
+        borrar("servicios", id)
         //borrarServicio(id)
       })
     })
@@ -76,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         var id = btn.getAttribute('doc-id');
 
         //const dato = await obtenerServicio(id)
-        const dato = await obtener("servicios",id)
+        const dato = await obtener("servicios", id)
         console.log(dato.data())
         const servicioEditar = dato.data()
 
@@ -88,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         btnAgregarServicio.innerText = "Actualizar";
         formAgregarServicio["nombre_servicio_ag"].value = servicioEditar.servicio
+        formAgregarServicio["nombre_servicio_ag"].disabled = true;
         formAgregarServicio["duracion_ag"].value = servicioEditar.duracion
         formAgregarServicio["cantidad_turnos_ag"].value = servicioEditar.cantidadTurnos
         formAgregarServicio["valor_ag"].value = servicioEditar.valor
@@ -99,23 +93,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 //Agregar y editar Servicio
 btnAgregarServicio.addEventListener("click", (e) => {
   e.preventDefault
+
   const servicio = document.getElementById("nombre_servicio_ag").value
   const duracion = parseInt(document.getElementById("duracion_ag").value)
   const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos_ag").value)
   const valor = parseFloat(document.getElementById("valor_ag").value)
 
+  const newField = {
+    servicio: servicio,
+    duracion: duracion,
+    cantidadTurnos: cantidadTurnos,
+    valor: valor,
+  };
+
   if (!editStatus) {
-    guardarServicio(servicio, duracion, cantidadTurnos, valor);
+    guardar(newField, "servicios");
   } else {
-    actualizar("servicios",idEdit, { servicio, duracion, cantidadTurnos, valor })
+    actualizar("servicios", idEdit, { servicio, duracion, cantidadTurnos, valor })
     editStatus = false;
     btnAgregarServicio.innerText = "Grabar"
   }
 
+  formAgregarServicio["nombre_servicio_ag"].disabled = false;
   formAgregarServicio.reset();
   modal.style.display = "none";
 
 })
+
+function verificarCampos() {
+  if (servicio.value && duracion.value && cantidadTurnos.value && valor.value) {
+    btnAgregarServicio.removeAttribute('disabled');
+  } else {
+    btnAgregarServicio.setAttribute('disabled', 'true');
+  }
+}
 
 // Modal Agregar Servicio
 const agregarServicio = document.getElementById("enlaceAgregarServicios")

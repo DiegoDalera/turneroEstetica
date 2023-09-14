@@ -52,7 +52,6 @@ export async function loginWithGoogle() {
   if (token) {
     user = response.user;
   }
-
   return user;
 }
 
@@ -64,44 +63,24 @@ export async function loginWithCredecials(email, password) {
 // -----------------------------Funciones ---------------------------------------------------------
 export { collection, onSnapshot, db };
 
+export const guardar = (newField, coleccion) => {
+  addDoc(collection(db, coleccion), newField);
+};
 export const obtener = (collection, id) => getDoc(doc(db, collection, id));
 export const borrar = (collection, id) => deleteDoc(doc(db, collection, id));
 export const actualizar = (collection, id, newField) =>
   updateDoc(doc(db, collection, id), newField);
 
-//cargar Conexiones
+
+//Cargar Conexiones
+
+export const obtenerConexion = () => getDocs(collection(db, conexion));
+
 export const obtenerServicios = () => getDocs(collection(db, "servicios"));
 export const obtenerEmpleados = () => getDocs(collection(db, "empleados"));
-
-// -----------------------------Funciones Servicios---------------------------------------------------------
-
-export const guardarServicio = (servicio, duracion, cantidadTurnos, valor) => {
-  addDoc(collection(db, "servicios"), {
-    servicio: servicio,
-    duracion: duracion,
-    cantidadTurnos: cantidadTurnos,
-    valor: valor,
-  });
-};
-
-// --------------------------------Funciones Empleados--------------------------------------------------------
-export const guardarEmpleado = (nombre, mail, telefono, direccion) => {
-  addDoc(collection(db, "empleados"), {
-    nombre: nombre,
-    mail: mail,
-    telefono: telefono,
-    direccion: direccion,
-  });
-};
-
-// ----------------------------------Funciones Conexiones-------------------------------------------------------
-export const guardarConexion = (newField) => {
-  addDoc(collection(db, "conexiones"), newField);
-};
+export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));
 
 // ----------------------------------Funciones Turnos-------------------------------------------------------
-
-export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));
 
 export const obtenerTurnosOtorgados = (id) => {
   return getDocs(collection(db, "conexiones", id, "turnos"));

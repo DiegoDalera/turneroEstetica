@@ -4,7 +4,7 @@ import {
   db,
   obtenerEmpleados,
   obtenerServicios,
-  guardarConexion,
+  guardar,
   borrar,
   obtener,
   actualizar
@@ -93,19 +93,17 @@ btnAgregarConexion.addEventListener("click", async (e) => {
     fechaFin: fechaFinSeleccionada,
     horaInicio: horaInicioSeleccionada,
     horaFin: horaFinSeleccionada,
-    color:colorSeleccionado,
+    color: colorSeleccionado,
     objetoEmpleado,
     objetoServicio
   };
 
 
   if (!editStatus) {// guarda la conexion si editStatus es false
-    guardarConexion(newField)
-
+    guardar(newField, "conexiones")
   } else {
-    console.log("entro")
     console.log(newField)
-    actualizar("conexiones",idEdit, newField)
+    actualizar("conexiones", idEdit, newField)
     editStatus = false;
     btnAgregarConexion.innerText = "Grabar Conexion"
   }
@@ -145,21 +143,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     botonesBorrarConexion.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
-        borrar("conexiones",id)
+        borrar("conexiones", id)
       })
     })
 
     //agrego event listener editar
     const botonesEditarConexion = document.querySelectorAll(".btn-editar")
 
-
     botonesEditarConexion.forEach(btn => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
 
-        const dato = await obtener("conexiones",id)
+        const dato = await obtener("conexiones", id)
         const conexionEditar = dato.data()
-        console.log(conexionEditar)
 
         let modal = document.getElementById("modal-agregar");
         modal.style.display = "block";
@@ -171,29 +167,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         //Cargar el formulario de conexion con datos para editar
+
         const servicioConexion = conexionEditar.objetoServicio.servicio
-        console.log(servicioConexion)
+
+        //borrar opciones previas
+
+
         const servicioElement = document.getElementById("servicios");
+        servicioElement.innerHTML = '';
         const option = document.createElement("option");
         option.value = servicioConexion;
         option.text = servicioConexion;
         servicioElement.appendChild(option);
         option.selected = true;
 
-        //conexionSeleccionada=servicioConexion
 
         // Datos proporcionados Empleados
         const empleadoConexion = conexionEditar.objetoEmpleado.nombre
-        console.log(empleadoConexion)
         const empleadoElement = document.getElementById("empleados");
+        empleadoElement.innerHTML = '';
         const optionEmpleado = document.createElement("option");
         optionEmpleado.value = empleadoConexion;
         optionEmpleado.text = empleadoConexion;
         empleadoElement.appendChild(optionEmpleado);
         optionEmpleado.selected = true;
-
-        //empleadoSelecconado = empleadoConexion
-
 
         // Datos proporcionados Dias de la semana trabajados
         const diasElement = document.getElementById("dias");
