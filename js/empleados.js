@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
         borrar("empleados",id)
+        Swal.fire('Empleado Eliminado');
       })
     })
 
@@ -113,33 +114,51 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 //Agregar y editar Servicio
+
 btnAgregarEmpleado.addEventListener("click", (e) => {
-  e.preventDefault
+  e.preventDefault();
 
-  const nombre = document.getElementById("nombre").value
-  const mail = document.getElementById("mail").value
-  const telefono = document.getElementById("telefono").value
-  const direccion = document.getElementById("direccion").value
+  try {
+    const nombre = document.getElementById("nombre").value;
+    const mail = document.getElementById("mail").value;
+    const telefono = document.getElementById("telefono").value;
+    const direccion = document.getElementById("direccion").value;
 
-  const newField = {
-    nombre: nombre,
-    mail: mail,
-    telefono: telefono,
-    direccion: direccion,
-  };
+    const newField = {
+      nombre: nombre,
+      mail: mail,
+      telefono: telefono,
+      direccion: direccion,
+    };
 
-  if (!editStatus) {
-    guardar(newField,"empleados");
-  } else {
-    actualizar("empleados",idEdit, { nombre, mail, telefono, direccion })
-    editStatus = false;
-    btnAgregarEmpleado.innerText = "Grabar Empleado"
+    if (!editStatus) {
+      guardar(newField, "empleados");
+      Swal.fire({
+        icon: 'success',
+        title: 'El Nuevo empleado ha sido grabado',
+        showConfirmButton: false,
+        timer: 2500
+      });
+    } else {
+      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion });
+      Swal.fire({
+        icon: 'success',
+        title: 'El Nuevo empleado ha sido actualizado',
+        showConfirmButton: false,
+        timer: 2500
+      });
+      editStatus = false;
+      btnAgregarEmpleado.innerText = "Grabar Empleado";
+    }
+
+    formAgregarEmpleado["nombre"].disabled = false;
+    formAgregarEmpleado.reset();
+    modal.style.display = "none";
+  } catch (error) {
+    console.error("Ocurrió un error:", error);
   }
+});
 
-  formAgregarEmpleado["nombre"].disabled = false;
-  formAgregarEmpleado.reset();
-  modal.style.display = "none";
-})
 
 
 

@@ -71,46 +71,59 @@ window.onclick = function (event) {
 
 
 //EventListener agregar y actualizr conexion
+
 btnAgregarConexion.addEventListener("click", async (e) => {
-  e.preventDefault
+  e.preventDefault();
 
-  const serviciosSelecionado = document.getElementById("servicios").value
-  const empleadoSeleccionado = document.getElementById("empleados").value
-  const dias = document.getElementById("dias");
-  const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
-  const fechaInicioSeleccionada = document.getElementById("fecha-inicio").value;
-  const fechaFinSeleccionada = document.getElementById("fecha-fin").value
-  const horaInicioSeleccionada = document.getElementById("hora-inicio").value;
-  const horaFinSeleccionada = document.getElementById("hora-fin").value;
-  const colorSeleccionado = document.getElementById("color").value
+  try {
+    const serviciosSelecionado = document.getElementById("servicios").value;
+    const empleadoSeleccionado = document.getElementById("empleados").value;
+    const dias = document.getElementById("dias");
+    const diasSeleccionados = Array.from(dias.selectedOptions).map(
+      (option) => option.value
+    );
+    const fechaInicioSeleccionada = document.getElementById("fecha-inicio")
+      .value;
+    const fechaFinSeleccionada = document.getElementById("fecha-fin").value;
+    const horaInicioSeleccionada = document.getElementById("hora-inicio")
+      .value;
+    const horaFinSeleccionada = document.getElementById("hora-fin").value;
+    const colorSeleccionado = document.getElementById("color").value;
 
-  const objetoEmpleado = await buscarEmpleadoSeleccionado(empleadoSeleccionado);
-  const objetoServicio = await buscarServicioSeleccionado(serviciosSelecionado)
+    const objetoEmpleado = await buscarEmpleadoSeleccionado(empleadoSeleccionado);
+    const objetoServicio = await buscarServicioSeleccionado(
+      serviciosSelecionado
+    );
 
-  const newField = {
-    diasATrabajar: diasSeleccionados,
-    fechaInicio: fechaInicioSeleccionada,
-    fechaFin: fechaFinSeleccionada,
-    horaInicio: horaInicioSeleccionada,
-    horaFin: horaFinSeleccionada,
-    color: colorSeleccionado,
-    objetoEmpleado,
-    objetoServicio
-  };
+    const newField = {
+      diasATrabajar: diasSeleccionados,
+      fechaInicio: fechaInicioSeleccionada,
+      fechaFin: fechaFinSeleccionada,
+      horaInicio: horaInicioSeleccionada,
+      horaFin: horaFinSeleccionada,
+      color: colorSeleccionado,
+      objetoEmpleado,
+      objetoServicio,
+    };
 
+    if (!editStatus) {
+      guardar(newField, "conexiones");
+      Swal.fire('La conexion ha sido guardada')
+    } else {
+      console.log(newField);
+      actualizar("conexiones", idEdit, newField);
+      Swal.fire('La conexion ha sido actualizada')
+      editStatus = false;
+      btnAgregarConexion.innerText = "Grabar Conexion";
+    }
 
-  if (!editStatus) {// guarda la conexion si editStatus es false
-    guardar(newField, "conexiones")
-  } else {
-    console.log(newField)
-    actualizar("conexiones", idEdit, newField)
-    editStatus = false;
-    btnAgregarConexion.innerText = "Grabar Conexion"
+    formAgregarConexion.reset();
+    modal.style.display = "none";
+  } catch (error) {
+    console.error("Ocurrió un error:", error);
   }
+});
 
-  formAgregarConexion.reset();
-  modal.style.display = "none";
-})
 
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
@@ -143,7 +156,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     botonesBorrarConexion.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
-        borrar("conexiones", id)
+        Swal.fire({
+          title: 'Estas seguro que queres borrar esta conexion?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Eliminar',
+          denyButtonText: `No eliminar`,
+        }).then((result) => {
+          
+          if (result.isConfirmed) {
+            borrar("conexiones", id)
+            Swal.fire('Borrada', '', 'success')
+          } else if (result.isDenied) {
+            Swal.fire('La conexion no ha sido borrada', '', 'info')
+          }
+        })
+
+       
+
       })
     })
 
@@ -167,12 +197,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         //Cargar el formulario de conexion con datos para editar
-
         const servicioConexion = conexionEditar.objetoServicio.servicio
 
         //borrar opciones previas
-
-
         const servicioElement = document.getElementById("servicios");
         servicioElement.innerHTML = '';
         const option = document.createElement("option");
@@ -301,7 +328,7 @@ async function buscarServicioSeleccionado(serviciosSelecionado) {
     const servicio = doc.data();
 
     if (servicio.servicio === serviciosSelecionado) {
-      campoServicio = servicio;  // Asigno el valor del empleado seleccionado
+      campoServicio = servicio;  
     }
   });
 

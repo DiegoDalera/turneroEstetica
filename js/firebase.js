@@ -19,8 +19,6 @@ import {
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -73,9 +71,9 @@ export const actualizar = (collection, id, newField) =>
 
 
 //Cargar Conexiones
+export const obtenerColl = () => getDocs(collection(db, coll));
 
 export const obtenerConexion = () => getDocs(collection(db, conexion));
-
 export const obtenerServicios = () => getDocs(collection(db, "servicios"));
 export const obtenerEmpleados = () => getDocs(collection(db, "empleados"));
 export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));

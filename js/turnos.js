@@ -19,8 +19,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 //OnChange del Select Service Admin
 selectServiciosAdmin.addEventListener("change", (event) => {
   servicioSeleccionadoAdmin = event.target.value;
+  console.log("servicio seleccionado " , servicioSeleccionadoAdmin)
+
   //Filtro de Conexiones(arrayTUrno) x Servicio Select
   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
+
+  console.log("antes de construir calendarios " , turnoFinal[0].turnos)
+
 
   //cargarTabla(turnoFinal[0])
   construirCalendario(
@@ -192,9 +197,11 @@ function construirCalendario(fechaInicio, fechaFin, turnos,color) {
         );
       });
 
+      console.log("esta tomado ",turno)
+
       if (turno) {
         console.log("dentro if turnos ", turno)
-        cell.style.backgroundColor = color; // Pintamos de color dorado
+        cell.style.backgroundColor = color; // Pintamos de color 
         cell.innerText = turno.cliente;
         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
 

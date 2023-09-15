@@ -25,7 +25,6 @@ cantidadTurnos.addEventListener('input', verificarCampos);
 valor.addEventListener('input', verificarCampos);
 
 
-
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
   onSnapshot(collection(db, "servicios"), (querySnapshot) => {
@@ -56,11 +55,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         var id = btn.getAttribute('doc-id');
         console.log(id)
         borrar("servicios", id)
-        //borrarServicio(id)
+        Swal.fire('Servicio Eliminado');
       })
     })
 
-    //agrego event listener editar
+    //Agrego event listener editar
     const botonesEditarServicios = document.querySelectorAll(".btn-editar")
     console.log(botonesEditarServicios);
 
@@ -68,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", async (event) => {
         var id = btn.getAttribute('doc-id');
 
-        //const dato = await obtenerServicio(id)
         const dato = await obtener("servicios", id)
         console.log(dato.data())
         const servicioEditar = dato.data()
@@ -90,45 +88,67 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 })
 
-//Agregar y editar Servicio
+//Agregar y Editar Servicio
 btnAgregarServicio.addEventListener("click", (e) => {
-  e.preventDefault
+  e.preventDefault();
 
-  const servicio = document.getElementById("nombre_servicio_ag").value
-  const duracion = parseInt(document.getElementById("duracion_ag").value)
-  const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos_ag").value)
-  const valor = parseFloat(document.getElementById("valor_ag").value)
+  try {
+    const servicio = document.getElementById("nombre_servicio_ag").value;
+    const duracion = parseInt(document.getElementById("duracion_ag").value);
+    const cantidadTurnos = parseInt(document.getElementById("cantidad_turnos_ag").value);
+    const valor = parseFloat(document.getElementById("valor_ag").value);
 
-  const newField = {
-    servicio: servicio,
-    duracion: duracion,
-    cantidadTurnos: cantidadTurnos,
-    valor: valor,
-  };
+    const newField = {
+      servicio: servicio,
+      duracion: duracion,
+      cantidadTurnos: cantidadTurnos,
+      valor: valor,
+    };
 
-  if (!editStatus) {
-    guardar(newField, "servicios");
-  } else {
-    actualizar("servicios", idEdit, { servicio, duracion, cantidadTurnos, valor })
-    editStatus = false;
-    btnAgregarServicio.innerText = "Grabar"
+    if (!editStatus) {
+      guardar(newField, "servicios");
+      Swal.fire({
+        icon: 'success',
+        title: 'El Nuevo servicio a sido grabado',
+        showConfirmButton: false,
+        timer: 2500
+      })
+    } else {
+      actualizar("servicios", idEdit, { servicio, duracion, cantidadTurnos, valor });
+      Swal.fire({
+        icon: 'success',
+        title: 'El Nuevo servicio a sido actualizado',
+        showConfirmButton: false,
+        timer: 2500
+      })
+
+      editStatus = false;
+      btnAgregarServicio.innerText = "Grabar";
+    }
+
+    formAgregarServicio["nombre_servicio_ag"].disabled = false;
+    formAgregarServicio.reset();
+    modal.style.display = "none";
+  } catch (error) {
+    console.error("Ocurrió un error:", error);
   }
+});
 
-  formAgregarServicio["nombre_servicio_ag"].disabled = false;
-  formAgregarServicio.reset();
-  modal.style.display = "none";
-
-})
 
 function verificarCampos() {
-  if (servicio.value && duracion.value && cantidadTurnos.value && valor.value) {
+  const servicio = document.getElementById("nombre_servicio_ag").value;
+  const duracion = document.getElementById("duracion_ag").value;
+  const cantidadTurnos = document.getElementById("cantidad_turnos_ag").value;
+  const valor = document.getElementById("valor_ag").value;
+
+  if (servicio && duracion && cantidadTurnos && valor) {
     btnAgregarServicio.removeAttribute('disabled');
   } else {
     btnAgregarServicio.setAttribute('disabled', 'true');
   }
 }
 
-// Modal Agregar Servicio
+
 const agregarServicio = document.getElementById("enlaceAgregarServicios")
 let modal = document.getElementById("modal-agregar");
 let span = document.getElementsByClassName("close")[0];

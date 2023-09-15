@@ -35,9 +35,14 @@ btnConfirmaCita.addEventListener("click", (e) => {
         comentarios: comentarios.value,
     };
 
-    // Agregar el documento a la subcolección "turnos" del servicio especificado
-    // Llama a guardarTurno y usa await para esperar a que se complete antes de recargar la página
+
     (async () => {
+        Swal.fire({
+            icon: 'success',
+            title: 'El Nuevo Turnos ha sido confirmado',
+            showConfirmButton: false,
+            timer: 2500
+          })
         await guardarTurno(idConexion, turnoData);
         location.reload();
     })();
@@ -100,10 +105,12 @@ selectEsteticistas.addEventListener('click', (e) => {
 
 //Cargo las fechas disponibles en el DatePicker
 function cargarTurnosDisponibles() {
-
     dateInput.removeAttribute('disabled');
 
+console.log("array de turnos " , arrayDeTurnos)
     const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
+    console.log("conexion buscada  " , conexionBuscada)
+
 
     const diasDeTurnos = conexionBuscada.diasATrabajar;
 
