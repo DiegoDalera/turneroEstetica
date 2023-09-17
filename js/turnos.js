@@ -19,13 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 //OnChange del Select Service Admin
 selectServiciosAdmin.addEventListener("change", (event) => {
   servicioSeleccionadoAdmin = event.target.value;
-  console.log("servicio seleccionado " , servicioSeleccionadoAdmin)
 
   //Filtro de Conexiones(arrayTUrno) x Servicio Select
   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
-
-  console.log("antes de construir calendarios " , turnoFinal[0].turnos)
-
 
   //cargarTabla(turnoFinal[0])
   construirCalendario(
@@ -154,8 +150,8 @@ function arrayTurnosByService(servicioSeleccionado) {
 //   gridContainer.appendChild(table);
 // }
 
-function construirCalendario(fechaInicio, fechaFin, turnos,color) {
-  gridContainer.innerHTML = ""; 
+function construirCalendario(fechaInicio, fechaFin, turnos, color) {
+  gridContainer.innerHTML = "";
 
   // Crear tabla
   const table = document.createElement("table");
@@ -197,7 +193,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos,color) {
         );
       });
 
-      console.log("esta tomado ",turno)
+      console.log("esta tomado ", turno)
 
       if (turno) {
         console.log("dentro if turnos ", turno)
@@ -240,7 +236,7 @@ function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
   });
 
   // Luego, con esos turnos filtrados, construye tu calendario:
-  construirCalendario(fechaInicio, fechaFin, turnosFiltrados,color);
+  construirCalendario(fechaInicio, fechaFin, turnosFiltrados, color);
 }
 
 
@@ -249,11 +245,7 @@ function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
 const spanCerrarModalTurnos = document.getElementById("cerrarModalTurnos");
 
 function mostrarInformacionDelTurno(turno) {
-
-  console.log(turno)
-  
   const modalTurnos = document.getElementById("modalTurnos");
-
   const spanEmail = document.getElementById("email");
   const spanCliente = document.getElementById("cliente");
   const spanFecha = document.getElementById("fecha");
@@ -261,9 +253,13 @@ function mostrarInformacionDelTurno(turno) {
   const spanHorario = document.getElementById("horario");
   const spanComentarios = document.getElementById("comentarios");
 
+  //botones
+  const eliminarTurnoButton = document.getElementById("eliminarTurno");
+  const marcarPagadoButton = document.getElementById("marcarPagado");
+
   // Objeto con la información del turno
-  let  turnoInfo = {
-    "email": turno.email ,
+  let turnoInfo = {
+    "email": turno.email,
     "cliente": turno.cliente,
     "fecha": turno.fecha,
     "telefono": turno.telefono,
@@ -272,26 +268,40 @@ function mostrarInformacionDelTurno(turno) {
     "docID": turno.docID
   };
 
-    spanEmail.textContent = turnoInfo.email;
-    spanCliente.textContent = turnoInfo.cliente;
-    spanFecha.textContent = turnoInfo.fecha;
-    spanTelefono.textContent = turnoInfo.telefono;
-    spanHorario.textContent = turnoInfo.horario;
-    spanComentarios.textContent = turnoInfo.comentarios;
+  spanEmail.textContent = turnoInfo.email;
+  spanCliente.textContent = turnoInfo.cliente;
+  spanFecha.textContent = turnoInfo.fecha;
+  spanTelefono.textContent = turnoInfo.telefono;
+  spanHorario.textContent = turnoInfo.horario;
+  spanComentarios.textContent = turnoInfo.comentarios;
 
-    // Muestra el modal
-    modalTurnos.style.display = "block";
-  }
+  // Muestra el modal
+  modalTurnos.style.display = "block";
 
-  // Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
-  spanCerrarModalTurnos.onclick = function () {
+  eliminarTurnoButton.addEventListener("click", function () {
+    // Puedes usar el ID del turno (turnoInfo.docID) para identificar y eliminar el turno en tu base de datos.
+
+    
     modalTurnos.style.display = "none";
-  }
+  });
 
-  // window.onclick = function (event) {
-  //   if (event.target == modalTurnos) {
-  //     modalTurnos.style.display = "none";
-  //   }
-  // }
+  // Manejador de evento para marcar como pagado
+  marcarPagadoButton.addEventListener("click", function () {
+    // Puedes usar el ID del turno (turnoInfo.docID) para identificar el turno y actualizar su estado como pagado.
+    modalTurnos.style.display = "none";
+  });
+}
+
+
+// Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
+spanCerrarModalTurnos.onclick = function () {
+  modalTurnos.style.display = "none";
+}
+
+// window.onclick = function (event) {
+//   if (event.target == modalTurnos) {
+//     modalTurnos.style.display = "none";
+//   }
+// }
 
 
