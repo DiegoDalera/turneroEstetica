@@ -22,6 +22,9 @@ selectServiciosAdmin.addEventListener("change", (event) => {
 
   //Filtro de Conexiones(arrayTUrno) x Servicio Select
   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
+  
+  console.log("ser seleccionado " ,servicioSeleccionadoAdmin);
+  console.log("turno final " , turnoFinal);
 
   //cargarTabla(turnoFinal[0])
   construirCalendario(
@@ -193,13 +196,22 @@ function construirCalendario(fechaInicio, fechaFin, turnos, color) {
         );
       });
 
-      console.log("esta tomado ", turno)
 
       if (turno) {
-        console.log("dentro if turnos ", turno)
+
+        if (turno.seña) {
+          cell.innerText = turno.cliente + "seña pagada";
+          cell.classList.add("bandera");
+        } else {
+          cell.innerText = turno.cliente;
+          cell.classList.remove("bandera");
+        }
+
         cell.style.backgroundColor = color; // Pintamos de color 
-        cell.innerText = turno.cliente;
         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
+
+
+
 
         // Agregar el manejador de eventos clic
         cell.addEventListener("click", () => {
@@ -279,9 +291,7 @@ function mostrarInformacionDelTurno(turno) {
   modalTurnos.style.display = "block";
 
   eliminarTurnoButton.addEventListener("click", function () {
-    // Puedes usar el ID del turno (turnoInfo.docID) para identificar y eliminar el turno en tu base de datos.
-
-    
+    console.log("subcolecion nro: ", turnoInfo.docID)
     modalTurnos.style.display = "none";
   });
 

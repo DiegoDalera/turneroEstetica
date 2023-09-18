@@ -33,6 +33,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
         email: email.value,
         telefono: telefono.value,
         comentarios: comentarios.value,
+        seña:false
     };
 
 
