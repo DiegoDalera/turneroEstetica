@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
 import {
@@ -18,7 +19,6 @@ import {
   updateDoc,
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -68,7 +68,6 @@ export const obtener = (collection, id) => getDoc(doc(db, collection, id));
 export const borrar = (collection, id) => deleteDoc(doc(db, collection, id));
 export const actualizar = (collection, id, newField) =>
   updateDoc(doc(db, collection, id), newField);
-
 
 //Cargar Conexiones
 export const obtenerColl = () => getDocs(collection(db, coll));
@@ -123,4 +122,49 @@ export async function obtenerConexiones() {
 
   await Promise.all(promesasTurnos);
   return arrayConexiones;
+}
+//----- Registrar Usuario ----
+const registroForm = document.getElementById("registerForm");
+if (registroForm) {
+  registroForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
+
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        alert("Usuario registrado con éxito",user.email);
+        window.location.href = "loginFirebase.html";
+        // Puedes redireccionar al usuario o hacer otra acción después del registro
+      })
+      .catch((error) => {
+        alert("Error al registrar: " + error.message);
+      });
+  });
+}
+
+//______ INICIAR SESION USER -------
+// Comprueba si existe el formulario de inicio de sesión
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        alert("Sesión iniciada con éxito");
+        window.location.href = "/pages/servicios.html";
+
+        // Redireccionar o hacer algo después de iniciar sesión
+      })
+      .catch((error) => {
+        alert("Error al iniciar sesión: " + error.message);
+      });
+  });
 }
