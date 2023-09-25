@@ -120,9 +120,12 @@ export async function obtenerConexiones() {
     promesasTurnos.push(promesaTurno);
   });
 
+  //
+
   await Promise.all(promesasTurnos);
   return arrayConexiones;
 }
+
 //----- Registrar Usuario ----
 const registroForm = document.getElementById("registerForm");
 if (registroForm) {
@@ -144,6 +147,19 @@ if (registroForm) {
       });
   });
 }
+// Filtrar , Checkear Documentacion FIrebase.
+db.collection('Turnos')
+  .where('profesionalId', '==', profesionalId)
+  .where('fecha', '>=', inicio)
+  .where('fecha', '<=', fin)
+  .where('servicio','==',servicioSeleccionado)
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      // Aquí puedes procesar cada documento de turno
+      console.log(doc.id, '=>', doc.data());
+    });
+  })
 
 //______ INICIAR SESION USER -------
 // Comprueba si existe el formulario de inicio de sesión

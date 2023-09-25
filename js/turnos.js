@@ -1,6 +1,4 @@
-import {
-  obtenerConexiones,
-} from "../js/firebase.js";
+import { obtenerConexiones } from "../js/firebase.js";
 
 //Variables
 let arrayDeTurnos = undefined;
@@ -22,9 +20,27 @@ selectServiciosAdmin.addEventListener("change", (event) => {
 
   //Filtro de Conexiones(arrayTUrno) x Servicio Select
   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
-  
-  console.log("ser seleccionado " ,servicioSeleccionadoAdmin);
-  console.log("turno final " , turnoFinal);
+
+  console.log("ser seleccionado ", servicioSeleccionadoAdmin);
+  console.log("turno final ", turnoFinal);
+  // Ejemplo de uso
+  const profesional = {
+    horario: {
+      inicio: "09:00",
+      fin: "18:00",
+    },
+    almuerzo: {
+      inicio: "13:00",
+      fin: "14:00",
+    },
+  };
+  const duracionServicio = 60; // duración en minutos
+  const horariosDisponibles = calcularHorariosDisponibles(
+    profesional,
+    duracionServicio
+  );
+
+  console.log(horariosDisponibles, "horarios Disponibles");
 
   //cargarTabla(turnoFinal[0])
   construirCalendario(
@@ -98,7 +114,7 @@ function arrayTurnosByService(servicioSeleccionado) {
 
 //   // Crear tabla
 //   const table = document.createElement("table");
-//   table.classList.add("tabla-turnos"); 
+//   table.classList.add("tabla-turnos");
 
 //   // Fila de horarios
 //   const timeRow = document.createElement("tr");
@@ -196,9 +212,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos, color) {
         );
       });
 
-
       if (turno) {
-
         if (turno.seña) {
           cell.innerText = turno.cliente + "seña pagada";
           cell.classList.add("bandera");
@@ -207,11 +221,8 @@ function construirCalendario(fechaInicio, fechaFin, turnos, color) {
           cell.classList.remove("bandera");
         }
 
-        cell.style.backgroundColor = color; // Pintamos de color 
+        cell.style.backgroundColor = color; // Pintamos de color
         cell.id = turno.docID; // Muestra el nombre del cliente en la celda
-
-
-
 
         // Agregar el manejador de eventos clic
         cell.addEventListener("click", () => {
@@ -237,8 +248,7 @@ document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
 
 //Funcion de filtrado por 2 fechas
 function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
-
-  let color = turnoFinal[0].color
+  let color = turnoFinal[0].color;
 
   const turnosFiltrados = turnoFinal[0].turnos.filter((turno) => {
     const fechaTurno = new Date(turno.fecha);
@@ -250,8 +260,6 @@ function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
   // Luego, con esos turnos filtrados, construye tu calendario:
   construirCalendario(fechaInicio, fechaFin, turnosFiltrados, color);
 }
-
-
 
 // Modal de muestra individual
 const spanCerrarModalTurnos = document.getElementById("cerrarModalTurnos");
@@ -271,13 +279,13 @@ function mostrarInformacionDelTurno(turno) {
 
   // Objeto con la información del turno
   let turnoInfo = {
-    "email": turno.email,
-    "cliente": turno.cliente,
-    "fecha": turno.fecha,
-    "telefono": turno.telefono,
-    "comentarios": turno.comentarios,
-    "horario": turno.horario,
-    "docID": turno.docID
+    email: turno.email,
+    cliente: turno.cliente,
+    fecha: turno.fecha,
+    telefono: turno.telefono,
+    comentarios: turno.comentarios,
+    horario: turno.horario,
+    docID: turno.docID,
   };
 
   spanEmail.textContent = turnoInfo.email;
@@ -291,7 +299,7 @@ function mostrarInformacionDelTurno(turno) {
   modalTurnos.style.display = "block";
 
   eliminarTurnoButton.addEventListener("click", function () {
-    console.log("subcolecion nro: ", turnoInfo.docID)
+    console.log("subcolecion nro: ", turnoInfo.docID);
     modalTurnos.style.display = "none";
   });
 
@@ -302,11 +310,10 @@ function mostrarInformacionDelTurno(turno) {
   });
 }
 
-
 // Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
 spanCerrarModalTurnos.onclick = function () {
   modalTurnos.style.display = "none";
-}
+};
 
 // window.onclick = function (event) {
 //   if (event.target == modalTurnos) {
@@ -314,4 +321,35 @@ spanCerrarModalTurnos.onclick = function () {
 //   }
 // }
 
+function stringAHora(horaString) {
+  const [horas, minutos] = horaString.split(":").map(Number);
+  const hora = new Date();
+  hora.setHours(horas, minutos, 0, 0);
+  return hora;
+}
+function calcularHorariosDisponibles(profesional, duracionServicio) {
+  const horariosDisponibles = [];
 
+  // Convertir horarios a objetos Date
+  let horaActual = stringAHora(profesional.horario.inicio);
+  const horaFinJornada = stringAHora(profesional.horario.fin);
+  const horaInicioAlmuerzo = stringAHora(profesional.almuerzo.inicio);
+  const horaFinAlmuerzo = stringAHora(profesional.almuerzo.fin);
+
+  // Recorrer horario del profesional en bloques de 30 minutos
+  while (horaActual < horaFinJornada) {
+    // Si la hora actual está dentro del horario de almuerzo, saltar al final del almuerzo
+    if (horaActual >= horaInicioAlmuerzo && horaActual < horaFinAlmuerzo) {
+      horaActual = new Date(horaFinAlmuerzo);
+    }
+
+    // Verificar si hay suficiente tiempo disponible antes del próximo turno o del fin de la jornada
+    if (horaActual + duracionServicio <= horaFinJornada) {
+      horariosDisponibles.push(new Date(horaActual));
+    }
+
+    horaActual.setMinutes(horaActual.getMinutes() + 30); // Avanzar 30 minutos
+  }
+
+  return horariosDisponibles;
+}
