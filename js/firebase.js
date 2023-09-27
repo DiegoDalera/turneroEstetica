@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -34,11 +35,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
-const auth = getAuth(app);
-
 // -----------------------------Funciones Autentificacion---------------------------------------------------------
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-
 export let user;
 
 export async function loginWithGoogle() {
@@ -70,7 +69,8 @@ export const actualizar = (collection, id, newField) =>
   updateDoc(doc(db, collection, id), newField);
 
 //Cargar Conexiones
-export const obtenerColl = () => getDocs(collection(db, coll));
+export const obtenerColl = (coll) => getDocs(collection(db, coll));
+
 
 export const obtenerConexion = () => getDocs(collection(db, conexion));
 export const obtenerServicios = () => getDocs(collection(db, "servicios"));
@@ -148,18 +148,19 @@ if (registroForm) {
   });
 }
 // Filtrar , Checkear Documentacion FIrebase.
-db.collection('Turnos')
-  .where('profesionalId', '==', profesionalId)
-  .where('fecha', '>=', inicio)
-  .where('fecha', '<=', fin)
-  .where('servicio','==',servicioSeleccionado)
-  .get()
-  .then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      // Aquí puedes procesar cada documento de turno
-      console.log(doc.id, '=>', doc.data());
-    });
-  })
+
+// db.collection('Turnos')
+//   .where('profesionalId', '==', profesionalId)
+//   .where('fecha', '>=', inicio)
+//   .where('fecha', '<=', fin)
+//   .where('servicio','==',servicioSeleccionado)
+//   .get()
+//   .then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//       // Aquí puedes procesar cada documento de turno
+//       console.log(doc.id, '=>', doc.data());
+//     });
+//   })
 
 //______ INICIAR SESION USER -------
 // Comprueba si existe el formulario de inicio de sesión

@@ -300,8 +300,6 @@ async function cargarFormularioDefault() {
 
   fechaInicio.value = formatoFecha;
   fechaFin.value = formatoFecha;
-
-
 }
 
 async function buscarEmpleadoSeleccionado(empleadoSeleccionado) {

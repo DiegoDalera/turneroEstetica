@@ -129,9 +129,24 @@
                     </div>
 
                     <div class="elem-group">
-                        <button type="button" id="btn_agregar_empleado" disabled>Agregar</button>
+                        <label for="serviciosOfrecidos">Selecciona los servicios que ofrecera</label>
+                        <select name="serviciosOfrecidos" id="serviciosOfrecidos" size="3" multiple>
+
+                        </select>
                     </div>
 
+                    <div class="elem-group">
+                        <label for="horas-entrada">Horario de entrada</label>
+                        <input type="time" name="hora" value="08:00" id="hora-inicio">
+                    </div>
+                    <div class="elem-group">
+                        <label for="horas-salida">Horario de salida</label>
+                        <input type="time" name="hora" value="16:00" id="hora-fin">
+                    </div>
+
+                    <div class="elem-group">
+                        <button type="button" id="btn_agregar_empleado" disabled>Agregar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -146,6 +161,9 @@
                         <th>E-Mail</th>
                         <th>Telefono</th>
                         <th>Direccion</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Servicis Ofrecidos</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>

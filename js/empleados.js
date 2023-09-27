@@ -1,6 +1,7 @@
 import {
   guardar,
   obtener,
+  obtenerColl,
   onSnapshot,
   collection,
   db,
@@ -39,19 +40,17 @@ let modal = document.getElementById("modal-agregar");
 let span = document.getElementsByClassName("close")[0];
 
 agregarEmpleado.onclick = function () {
+  cargarFormularioDefault();
   modal.style.display = "block";
 }
-
 span.onclick = function () {
   modal.style.display = "none";
 }
-
 window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
-
 
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
@@ -65,6 +64,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${empleado.mail}</td>
             <td>${empleado.telefono}</td>
             <td>${empleado.direccion}</td>
+            <td>${empleado.horaInicio}</td>
+            <td>${empleado.horaFin}</td>
+            <td>${empleado.serviciosOfrecidos}</td>
             <td>
               <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
               <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
@@ -76,25 +78,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     //agrego event listener borrar
     const botonesBorrarEmpleados = document.querySelectorAll(".btn-borrar")
-
     botonesBorrarEmpleados.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
-        borrar("empleados",id)
+        borrar("empleados", id)
         Swal.fire('Empleado Eliminado');
       })
     })
 
     //agrego event listener editar
     const botonesEditarEmpleado = document.querySelectorAll(".btn-editar")
-
     botonesEditarEmpleado.forEach(btn => {
       btn.addEventListener("click", async (event) => {
+
+        cargarFormularioDefault();
+
         var id = btn.getAttribute('doc-id');
-
-        const dato = await obtener("empleados",id)
+        const dato = await obtener("empleados", id)
         const empleadoEditar = dato.data()
-
+        console.log("empleado a editar :", empleadoEditar)
         let modal = document.getElementById("modal-agregar");
         modal.style.display = "block";
 
@@ -107,14 +109,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         formAgregarEmpleado["mail"].value = empleadoEditar.mail
         formAgregarEmpleado["telefono"].value = empleadoEditar.telefono
         formAgregarEmpleado["direccion"].value = empleadoEditar.direccion
+        formAgregarEmpleado["hora-inicio"].value = empleadoEditar.horaInicio
+        formAgregarEmpleado["hora-fin"].value = empleadoEditar.horaFin
+
+        // Obtén una referencia al select
+        const serviciosSelect = document.getElementById("serviciosOfrecidos");
+
+        // Recorre todas las opciones del select
+        for (let i = 0; i < serviciosSelect.options.length; i++) {
+          const option = serviciosSelect.options[i];
+          const servicio = option.value;
+
+          // Verifica si el servicio está en la lista de serviciosOfrecidos
+          if (empleadoEditar.serviciosOfrecidos.includes(servicio)) {
+            option.selected = true; // Marca la opción como seleccionada
+          }
+        }
+
       })
     })
   })
 })
 
+async function cargarFormularioDefault() {
+
+  const serviciosSelectList = document.getElementById("serviciosOfrecidos");
+  serviciosSelectList.innerHTML = "";
+
+  const servicios = await obtenerColl("servicios");
+
+  servicios.forEach((doc) => {
+    const servicio = doc.data();
+    const option = document.createElement("option");
+    option.value = servicio.servicio;
+    option.textContent = servicio.servicio;
+    serviciosSelectList.appendChild(option);
+  });
+}
 
 //Agregar y editar Servicio
-
 btnAgregarEmpleado.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -123,12 +156,22 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
     const mail = document.getElementById("mail").value;
     const telefono = document.getElementById("telefono").value;
     const direccion = document.getElementById("direccion").value;
+    const horaInicio = document.getElementById("hora-inicio").value;
+    const horaFin = document.getElementById("hora-fin").value;
+
+    const serviciosOfrecidos = document.getElementById("serviciosOfrecidos");
+    const serviciosOfrecidosSeleccionados = Array.from(serviciosOfrecidos.selectedOptions).map(
+      (option) => option.value
+    );
 
     const newField = {
       nombre: nombre,
       mail: mail,
       telefono: telefono,
       direccion: direccion,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+      serviciosOfrecidos: serviciosOfrecidosSeleccionados
     };
 
     if (!editStatus) {
@@ -140,7 +183,8 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
         timer: 2500
       });
     } else {
-      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion });
+      alert("llego")
+      actualizar("empleados", idEdit, { nombre , mail,telefono,direccion, horaInicio,horaFin,serviciosOfrecidos:serviciosOfrecidosSeleccionados });
       Swal.fire({
         icon: 'success',
         title: 'El Nuevo empleado ha sido actualizado',
