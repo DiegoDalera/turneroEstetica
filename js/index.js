@@ -6,6 +6,7 @@ import {
 
 //Variables Globales
 let arrayDeTurnos = [];
+let arrayDeEmpleados = [];
 let esteticistaSeleccionada = undefined;
 let servicioSeleccionado = undefined;
 let fechaSeleccionada = undefined;
@@ -13,7 +14,7 @@ let horarioSeleccionado = undefined;
 let idConexion = undefined
 
 //Constantes
-const selectServicios = document.getElementById("servicios");
+const selectServicios = document.getElementById("select-servicios");
 const selectEsteticistas = document.getElementById("esteticistas");
 const dateInput = document.getElementById('datepicker');
 const nombre = document.getElementById("nombre");
@@ -27,32 +28,104 @@ const divTurnos = document.getElementById("turnosDisponibles");
 //EventListener
 
 document.addEventListener("DOMContentLoaded", async () => {
-    arrayDeTurnos = await obtenerColl("turnos");
-    console.log(arrayDeTurnos, " array turnos")
-
+    cargarArrayTurnos()
+    cargarArrayEmpleados()
     cargarServicios();
-})
+});
+
+async function cargarArrayTurnos() {
+    try {
+        const querySnapshot = await obtenerColl("turnos");
+        querySnapshot.forEach((doc) => {
+            // Acceder a los datos de cada documento
+            const data = doc.data();
+            arrayDeTurnos.push(data);
+            console.log(data, " data");
+        });
+    } catch (error) {
+        console.error("Error al obtener los turnos:", error);
+    }
+}
+
+
+async function cargarArrayEmpleados() {
+    try {
+        const querySnapshot = await obtenerColl("empleados");
+        querySnapshot.forEach((doc) => {
+            // Acceder a los datos de cada documento
+            const data = doc.data();
+            arrayDeEmpleados.push(data);
+        });
+    } catch (error) {
+        console.error("Error al obtener los empeados:", error);
+    }
+
+}
 
 //carga los servicios disponibles en el select
-
 async function cargarServicios() {
     try {
-        const serviciosDisponibles = await obtenerColl("servicios");        
+        const serviciosDisponibles = await obtenerColl("servicios");
         const selectElement = document.getElementById('select-servicios');
         selectElement.innerHTML = '';
 
         serviciosDisponibles.forEach(servicio => {
             const nombreServicio = servicio._document.data.value.mapValue.fields.servicio.stringValue;
             const option = document.createElement('option');
-            option.value = nombreServicio; 
+            option.value = nombreServicio;
             option.textContent = nombreServicio;
             selectElement.appendChild(option);
         });
         return serviciosDisponibles;
     } catch (error) {
         console.error("Error al cargar los servicios:", error);
-        throw error; 
+        throw error;
     }
+}
+
+selectServicios.addEventListener('change', (event) => {
+    desabilitarInputs();
+    servicioSeleccionado = event.target.value;
+    cargarEsteticistas(servicioSeleccionado)
+});
+
+//Cargo los Esteticistas en el Select
+function cargarEsteticistas(servicioSeleccionado) {
+
+    console.log(arrayDeEmpleados)
+    console.log(servicioSeleccionado)
+
+    selectEsteticistas.removeAttribute('disabled');
+    // Eliminar todas las opciones del select previas
+    while (selectEsteticistas.firstChild) {
+        selectEsteticistas.removeChild(selectEsteticistas.firstChild);
+    }
+
+
+    const option = document.createElement("option");
+    option.value = "1";
+    option.textContent = "Selecciona con quien";
+    selectEsteticistas.appendChild(option);
+
+
+    const empleadosQueOfrecenServicio = arrayDeEmpleados.filter((empleado) => {
+        return empleado.serviciosOfrecidos.includes(servicioSeleccionado);
+    });
+
+    if (empleadosQueOfrecenServicio.length > 0) {
+        console.log("Objetos encontrados:", empleadosQueOfrecenServicio);
+    } else {
+        console.log("Objetos no encontrados - ojo no deberia entrar aqui nunca");
+    }
+
+    console.log(empleadosQueOfrecenServicio, " empleados encontrados")
+
+    // Llenar el select con los empleados que ofrecen el servicio seleccionado
+    empleadosQueOfrecenServicio.forEach((empleado) => {
+        const option = document.createElement("option");
+        option.text = empleado.nombre;
+        selectEsteticistas.appendChild(option);
+    });
 }
 
 
@@ -65,7 +138,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
         email: email.value,
         telefono: telefono.value,
         comentarios: comentarios.value,
-        seña:false
+        seña: false
     };
 
 
@@ -75,53 +148,12 @@ btnConfirmaCita.addEventListener("click", (e) => {
             title: 'El Nuevo Turnos ha sido confirmado',
             showConfirmButton: false,
             timer: 2500
-          })
+        })
         await guardarTurno(idConexion, turnoData);
         location.reload();
     })();
 })
 
-selectServicios.addEventListener('change', (event) => {
-    desabilitarInputs();
-    servicioSeleccionado = event.target.value;
-    selectEsteticistas.removeAttribute('disabled');
-    cargarEsteticistas(servicioSeleccionado)
-});
-
-//Cargo los Esteticistas en el Select
-function cargarEsteticistas() {
-
-    selectEsteticistas.removeAttribute('disabled');
-
-    // Eliminar todas las opciones del select previas
-    while (selectEsteticistas.firstChild) {
-        selectEsteticistas.removeChild(selectEsteticistas.firstChild);
-    }
-
-    const option = document.createElement("option");
-    option.value = "1";
-    option.textContent = "Selecciona con quien";
-    selectEsteticistas.appendChild(option);
-
-
-
-    const objetosEncontrados = arrayDeTurnos.filter(objeto => objeto.objetoServicio.servicio === servicioSeleccionado);
-    if (objetosEncontrados.length > 0) {
-        console.log("Objetos encontrados:", objetosEncontrados);
-    } else {
-        console.log("Objetos no encontrados - ojo no deberia entrar aqui nunca");
-    }
-
-    objetosEncontrados.forEach(objeto => {
-        const nombreEmpleado = objeto.objetoEmpleado.nombre;
-        console.log(nombreEmpleado);
-        const option = document.createElement("option");
-        option.value = nombreEmpleado;
-        option.textContent = nombreEmpleado;
-        selectEsteticistas.appendChild(option);
-        selectEsteticistas.disabled = false;
-    });
-}
 
 //Cargo los esteticistas
 selectEsteticistas.addEventListener('click', (e) => {
@@ -133,9 +165,9 @@ selectEsteticistas.addEventListener('click', (e) => {
 function cargarTurnosDisponibles() {
     dateInput.removeAttribute('disabled');
 
-console.log("array de turnos " , arrayDeTurnos)
+    console.log("array de turnos ", arrayDeTurnos)
     const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
-    console.log("conexion buscada  " , conexionBuscada)
+    console.log("conexion buscada  ", conexionBuscada)
 
 
     const diasDeTurnos = conexionBuscada.diasATrabajar;
