@@ -17,6 +17,9 @@ const mail = document.getElementById("mail")
 const telefono = document.getElementById("telefono")
 const direccion = document.getElementById("direccion")
 
+const dias = document.getElementById("dias");
+const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
+
 let editStatus = false
 let idEdit
 
@@ -67,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${empleado.horaInicio}</td>
             <td>${empleado.horaFin}</td>
             <td>${empleado.serviciosOfrecidos}</td>
+            <td>${empleado.diasTrabajar}</td>
             <td>
               <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
               <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
@@ -126,6 +130,29 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
 
+
+        // Datos proporcionados Dias de la semana trabajados
+        const diasElement = document.getElementById("dias");
+        diasElement.innerHTML = "";
+
+        const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+        const diasATrabajar = empleadoEditar.diasTrabajar
+        console.log(diasATrabajar)
+        console.log(diasSemana)
+
+        // Recorre la lista de días y crea las opciones
+        for (let i = 0; i < diasSemana.length; i++) {
+          const option = document.createElement("option");
+          option.text = diasSemana[i];
+          option.value = diasSemana[i];
+
+          // Verifica si el día debe estar preseleccionado
+          if (diasATrabajar.includes(diasSemana[i])) {
+            option.selected = true;
+          }
+          diasElement.appendChild(option);
+        }
+
       })
     })
   })
@@ -145,6 +172,18 @@ async function cargarFormularioDefault() {
     option.textContent = servicio.servicio;
     serviciosSelectList.appendChild(option);
   });
+
+
+  const selectDias = document.getElementById("dias");
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+  // Recorro la lista de días y creo las opciones
+  for (let i = 0; i < diasSemana.length; i++) {
+    const option = document.createElement("option");
+    option.text = diasSemana[i];
+    option.value = diasSemana[i];
+    selectDias.appendChild(option);
+  }
 }
 
 //Agregar y editar Servicio
@@ -164,6 +203,11 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
       (option) => option.value
     );
 
+    const dias = document.getElementById("dias");
+    const diasSeleccionados = Array.from(dias.selectedOptions).map(
+      (option) => option.value
+    );
+
     const newField = {
       nombre: nombre,
       mail: mail,
@@ -171,7 +215,8 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
       direccion: direccion,
       horaInicio: horaInicio,
       horaFin: horaFin,
-      serviciosOfrecidos: serviciosOfrecidosSeleccionados
+      serviciosOfrecidos: serviciosOfrecidosSeleccionados,
+      diasTrabajar: diasSeleccionados
     };
 
     if (!editStatus) {
@@ -183,8 +228,7 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
         timer: 2500
       });
     } else {
-      alert("llego")
-      actualizar("empleados", idEdit, { nombre , mail,telefono,direccion, horaInicio,horaFin,serviciosOfrecidos:serviciosOfrecidosSeleccionados });
+      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion, horaInicio, horaFin, serviciosOfrecidos: serviciosOfrecidosSeleccionados, diasTrabajar:diasSeleccionados });
       Swal.fire({
         icon: 'success',
         title: 'El Nuevo empleado ha sido actualizado',

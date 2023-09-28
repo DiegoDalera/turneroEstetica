@@ -1,5 +1,6 @@
 import {
     guardarTurno,
+    obtenerColl,
     obtenerConexiones
 } from './firebase.js'
 
@@ -24,6 +25,37 @@ const btnConfirmaCita = document.getElementById("confirma_cita");
 const divTurnos = document.getElementById("turnosDisponibles");
 
 //EventListener
+
+document.addEventListener("DOMContentLoaded", async () => {
+    arrayDeTurnos = await obtenerColl("turnos");
+    console.log(arrayDeTurnos, " array turnos")
+
+    cargarServicios();
+})
+
+//carga los servicios disponibles en el select
+
+async function cargarServicios() {
+    try {
+        const serviciosDisponibles = await obtenerColl("servicios");        
+        const selectElement = document.getElementById('select-servicios');
+        selectElement.innerHTML = '';
+
+        serviciosDisponibles.forEach(servicio => {
+            const nombreServicio = servicio._document.data.value.mapValue.fields.servicio.stringValue;
+            const option = document.createElement('option');
+            option.value = nombreServicio; 
+            option.textContent = nombreServicio;
+            selectElement.appendChild(option);
+        });
+        return serviciosDisponibles;
+    } catch (error) {
+        console.error("Error al cargar los servicios:", error);
+        throw error; 
+    }
+}
+
+
 btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault()
     const turnoData = {
@@ -47,13 +79,6 @@ btnConfirmaCita.addEventListener("click", (e) => {
         await guardarTurno(idConexion, turnoData);
         location.reload();
     })();
-})
-
-
-document.addEventListener("DOMContentLoaded", async () => {
-    arrayDeTurnos = await obtenerConexiones();
-    console.log(arrayDeTurnos, "array turnos")
-    cargarServicios();
 })
 
 selectServicios.addEventListener('change', (event) => {
@@ -204,14 +229,7 @@ dateInput.addEventListener('change', function (e) {
 
 //cargo los Servicios en el Select
 
-function cargarServicios() {
-    arrayDeTurnos.forEach((conexion) => {
-        const option = document.createElement("option");
-        option.value = conexion.objetoServicio.servicio;
-        option.textContent = conexion.objetoServicio.servicio
-        selectServicios.appendChild(option);
-    })
-}
+
 
 
 //Creo los botones con los horarios Disponibles

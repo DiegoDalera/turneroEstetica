@@ -72,10 +72,10 @@ export const actualizar = (collection, id, newField) =>
 export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
 
-export const obtenerConexion = () => getDocs(collection(db, conexion));
-export const obtenerServicios = () => getDocs(collection(db, "servicios"));
-export const obtenerEmpleados = () => getDocs(collection(db, "empleados"));
-export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));
+// export const obtenerConexion = () => getDocs(collection(db, conexion));
+// export const obtenerServicios = () => getDocs(collection(db, "servicios"));
+// export const obtenerEmpleados = () => getDocs(collection(db, "empleados"));
+// export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));
 
 // ----------------------------------Funciones Turnos-------------------------------------------------------
 
