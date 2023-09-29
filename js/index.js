@@ -47,7 +47,6 @@ async function cargarArrayTurnos() {
     }
 }
 
-
 async function cargarArrayEmpleados() {
     try {
         const querySnapshot = await obtenerColl("empleados");
@@ -92,15 +91,11 @@ selectServicios.addEventListener('change', (event) => {
 //Cargo los Esteticistas en el Select
 function cargarEsteticistas(servicioSeleccionado) {
 
-    console.log(arrayDeEmpleados)
-    console.log(servicioSeleccionado)
-
     selectEsteticistas.removeAttribute('disabled');
-    // Eliminar todas las opciones del select previas
+
     while (selectEsteticistas.firstChild) {
         selectEsteticistas.removeChild(selectEsteticistas.firstChild);
     }
-
 
     const option = document.createElement("option");
     option.value = "1";
@@ -118,8 +113,6 @@ function cargarEsteticistas(servicioSeleccionado) {
         console.log("Objetos no encontrados - ojo no deberia entrar aqui nunca");
     }
 
-    console.log(empleadosQueOfrecenServicio, " empleados encontrados")
-
     // Llenar el select con los empleados que ofrecen el servicio seleccionado
     empleadosQueOfrecenServicio.forEach((empleado) => {
         const option = document.createElement("option");
@@ -127,6 +120,65 @@ function cargarEsteticistas(servicioSeleccionado) {
         selectEsteticistas.appendChild(option);
     });
 }
+
+//Cargo los esteticistas
+selectEsteticistas.addEventListener('change', (e) => {
+    esteticistaSeleccionada = e.target.value;
+    cargarTurnosDisponibles()
+})
+
+//Cargo las fechas disponibles en el DatePicker
+function cargarTurnosDisponibles() {
+
+    console.log(esteticistaSeleccionada, " y ", servicioSeleccionado)
+    dateInput.removeAttribute('disabled');
+    const esteticistaUnico = arrayDeEmpleados.find(function (empleado) {
+        return empleado.nombre === esteticistaSeleccionada;
+    });
+
+ 
+    const diasDeTurnos = esteticistaUnico.diasTrabajar;
+    const diasHabilitados = diasDeTurnos.map(dia => {
+        switch (dia) {
+            case "Lunes":
+                return 1;
+            case "Martes":
+                return 2;
+            case "Miercoles":
+                return 3;
+            case "Jueves":
+                return 4;
+            case "Viernes":
+                return 5;
+            case "Sabado":
+                return 6;
+            case "Domingo":
+                return 0;
+            default:
+                return null;
+        }
+    })
+
+    const picker = new Pikaday({
+        field: document.getElementById('datepicker'),
+        format: 'YYYY-MM-DD',
+        maxDate: new Date(arrayDeEmpleados.fechaFin),
+        minDate: moment().toDate(),
+        disableDayFn: function (date) {
+            const day = moment(date).day();
+            return !diasHabilitados.includes(day);
+        }
+    });
+    picker.show();
+}
+
+//Seleccion fecha turno
+dateInput.addEventListener('change', function (e) {
+    e.preventDefault
+    fechaSeleccionada = dateInput.value;
+    console.log("fecha seleccionada " , fechaSeleccionada)
+    mostrarHorariosDisponibles()
+});
 
 
 btnConfirmaCita.addEventListener("click", (e) => {
@@ -154,65 +206,6 @@ btnConfirmaCita.addEventListener("click", (e) => {
     })();
 })
 
-
-//Cargo los esteticistas
-selectEsteticistas.addEventListener('click', (e) => {
-    esteticistaSeleccionada = e.target.value;
-    cargarTurnosDisponibles()
-})
-
-//Cargo las fechas disponibles en el DatePicker
-function cargarTurnosDisponibles() {
-    dateInput.removeAttribute('disabled');
-
-    console.log("array de turnos ", arrayDeTurnos)
-    const conexionBuscada = arrayDeTurnos.find(objeto => objeto.objetoEmpleado.nombre === esteticistaSeleccionada && objeto.objetoServicio.servicio === servicioSeleccionado);
-    console.log("conexion buscada  ", conexionBuscada)
-
-
-    const diasDeTurnos = conexionBuscada.diasATrabajar;
-
-    const diasHabilitados = diasDeTurnos.map(dia => {
-        switch (dia) {
-            case "Lunes":
-                return 1;
-            case "Martes":
-                return 2;
-            case "Miercoles":
-                return 3;
-            case "Jueves":
-                return 4;
-            case "Viernes":
-                return 5;
-            case "Sabado":
-                return 6;
-            case "Domingo":
-                return 0;
-            default:
-                return null;
-        }
-    })
-
-    const picker = new Pikaday({
-        field: document.getElementById('datepicker'),
-        format: 'YYYY-MM-DD',
-        maxDate: new Date(conexionBuscada.fechaFin),
-        minDate: moment().toDate(),
-        disableDayFn: function (date) {
-            const day = moment(date).day();
-            return !diasHabilitados.includes(day);
-        }
-    });
-
-    picker.show();
-}
-
-//Seleccion fecha turno
-dateInput.addEventListener('change', function (e) {
-    e.preventDefault
-    fechaSeleccionada = dateInput.value;
-    mostrarHorariosDisponibles()
-});
 
 //Recupera las conexiones y los carga en un array para trabajar
 // async function recuperarTurnos() {

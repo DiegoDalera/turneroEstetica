@@ -16,6 +16,8 @@ const nombre = document.getElementById("nombre")
 const mail = document.getElementById("mail")
 const telefono = document.getElementById("telefono")
 const direccion = document.getElementById("direccion")
+const fechaInicio = document.getElementById("fecha-inicio")
+const fechaFin = document.getElementById("fecha-fin")
 
 const dias = document.getElementById("dias");
 const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
@@ -71,6 +73,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${empleado.horaFin}</td>
             <td>${empleado.serviciosOfrecidos}</td>
             <td>${empleado.diasTrabajar}</td>
+            <td>${empleado.fechaInicio}</td>
+            <td>${empleado.fechaFin}</td>
             <td>
               <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
               <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
@@ -197,6 +201,8 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
     const direccion = document.getElementById("direccion").value;
     const horaInicio = document.getElementById("hora-inicio").value;
     const horaFin = document.getElementById("hora-fin").value;
+    const fechaInicio = document.getElementById("fecha-inicio").value
+    const fechaFin = document.getElementById("fecha-fin").value
 
     const serviciosOfrecidos = document.getElementById("serviciosOfrecidos");
     const serviciosOfrecidosSeleccionados = Array.from(serviciosOfrecidos.selectedOptions).map(
@@ -216,7 +222,9 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
       horaInicio: horaInicio,
       horaFin: horaFin,
       serviciosOfrecidos: serviciosOfrecidosSeleccionados,
-      diasTrabajar: diasSeleccionados
+      diasTrabajar: diasSeleccionados,
+      fechaInicio:fechaInicio,
+      fechaFin:fechaFin
     };
 
     if (!editStatus) {
@@ -228,7 +236,7 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
         timer: 2500
       });
     } else {
-      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion, horaInicio, horaFin, serviciosOfrecidos: serviciosOfrecidosSeleccionados, diasTrabajar:diasSeleccionados });
+      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion, horaInicio, horaFin, serviciosOfrecidos: serviciosOfrecidosSeleccionados, diasTrabajar: diasSeleccionados, fechaInicio,fechaFin });
       Swal.fire({
         icon: 'success',
         title: 'El Nuevo empleado ha sido actualizado',
