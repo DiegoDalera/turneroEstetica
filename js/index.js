@@ -1,13 +1,13 @@
 import {
     guardarTurno,
     obtenerColl,
-    obtenerConexiones
+
 } from './firebase.js'
 
 //Variables Globales
 let arrayDeTurnos = [];
 let arrayDeEmpleados = [];
-let arrayDeSertvicios = [];
+let arrayDeServicios = [];
 
 let esteticistaSeleccionada = undefined;
 let esteticistaSeleccionadaId = undefined;
@@ -80,12 +80,12 @@ async function cargarArrayServicios() {
             const data = doc.data();
             // Agregar el ID como una propiedad en el objeto de datos
             data.id = doc.id;
-            arrayDeSertvicios.push(data);
+            arrayDeServicios.push(data);
         });
     } catch (error) {
         console.error("Error al obtener los servicios:", error);
     }
-    console.log("array de servicios: ", arrayDeSertvicios);
+    console.log("array de servicios: ", arrayDeServicios);
 }
 
 
