@@ -240,51 +240,9 @@ function mostrarHorariosDisponibles(e) {
 
     console.log("turnos filtrados ", turnosFiltrados);
     console.log(calcularHorariosDisponibles(turnosFiltrados), "disponibles turnos");
-
     const horariosDisponibles = calcularHorariosDisponibles(turnosFiltrados)
-    //rango Horario
-    // const horarioInicio = empleadoEncontrado.horaInicio;
-    // const horarioFin = empleadoEncontrado.horaFin;
-    // const intervaloMinutos = 60;
-
-    // Función para convertir una cadena de tiempo en minutos desde la medianoche
-    // function tiempoAMinutos(tiempo) {
-    //     const [horas, minutos] = tiempo.split(":").map(Number);
-    //     return horas * 60 + minutos;
-    // }
-
-    // Creo  botones para los horarios de los turnos disponibles
-    // for (let minutos = tiempoAMinutos(horarioInicio); minutos < tiempoAMinutos(horarioFin); minutos += intervaloMinutos) {
-    //     const horas = Math.floor(minutos / 60);
-    //     const minutosRestantes = minutos % 60;
-    //     const horario = `${horas.toString().padStart(2, "0")}:${minutosRestantes.toString().padStart(2, "0")}`;
-
-    //     const boton = document.createElement("button");
-    //     boton.classList.add("botonDeHorarios");
-    //     boton.textContent = horario;
-
-    //     // validacion de horarios disponibles
-    //     let existeTurno = botonHorarioHabilitado(elementosFiltrados, horario, fechaAlmacenadaStr)
-
-    //     if (existeTurno) {
-    //         boton.disabled = true
-    //         //boton.classList.add("botonDeHorarios");
-    //         console.log("existe Turno")
-    //     }
-    //     else {
-    //         boton.disabled = false
-    //     }
-
-    //     boton.addEventListener("click", (e) => {
-    //         e.preventDefault()
-    //         alert(`Has seleccionado el turno a las ${horario} el dia ${fechaSeleccionada} para ${servicioSeleccionado} con ${esteticistaSeleccionada}`);
-    //         horarioSeleccionado = horario
-    //         completarDatos();
-    //     });
-
-    //     divTurnos.appendChild(boton);
-    // }
     botonHorarioHabilitado(horariosDisponibles)
+    
 }
 
 // NUEVA FUNCION
@@ -353,29 +311,35 @@ function calcularHorariosDisponibles(turnosFiltrados) {
     return horariosDisponibles;
 }
 
-
 //Creo los botones con los horarios Disponibles
-function botonHorarioHabilitado(horariosDisponibles){
-        // Itera a través de los horarios y crea botones para cada uno
-        horariosDisponibles.forEach(horario => {
-            const boton = document.createElement("button");
-            boton.textContent = horario; // Establece el texto del botón como el horario
-            boton.classList.add("btn-horario"); // Agrega la clase "btn-horario" al botón
-            boton.addEventListener("click", () => {
-                // Aquí puedes agregar la lógica que deseas cuando se hace clic en un horario
-                alert(`Has seleccionado el horario: ${horario}`);
-            });
-            divTurnos.appendChild(boton); // Agrega el botón al div
+function botonHorarioHabilitado(horariosDisponibles) {
+    horariosDisponibles.forEach(horario => {
+        const boton = document.createElement("button");
+        boton.textContent = horario; 
+        boton.classList.add("btn-horario");
+        boton.addEventListener("click", (e) => {
+            e.preventDefault()
+            const horarioSeleccionado = horario;
+            alert(`Has seleccionado el horario: ${horarioSeleccionado}`);
+            habilitarInputs()
         });
+        divTurnos.appendChild(boton); // Agrega el botón al div
+    });
 }
-
-
 
 function stringAHora(horaString) {
     const [horas, minutos] = horaString.split(":").map(Number);
     const hora = new Date();
     hora.setHours(horas, minutos, 0, 0);
     return hora;
+}
+
+// Habilito los inputs inhabilitados
+function habilitarInputs(e) {
+    nombre.removeAttribute("disabled");
+    email.removeAttribute("disabled");
+    telefono.removeAttribute("disabled");
+    comentarios.removeAttribute("disabled");
 }
 
 btnConfirmaCita.addEventListener("click", (e) => {
@@ -404,13 +368,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
 
 
 
-// Habilito los inputs inhabilitados
-function completarDatos(fecha, horario, elemento) {
-    nombre.removeAttribute("disabled");
-    email.removeAttribute("disabled");
-    telefono.removeAttribute("disabled");
-    comentarios.removeAttribute("disabled");
-}
+
 
 function desabilitarInputs() {
     nombre.disabled = true;
