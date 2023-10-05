@@ -180,7 +180,7 @@ function cargarTurnosDisponibles() {
     });
 
     // Utiliza la función find para buscar el por su ID
-    servicioEncontrado = arrayDeSertvicios.find(function (servicio) {
+    servicioEncontrado = arrayDeServicios.find(function (servicio) {
         return servicio.id === servicioSeleccionadoId;
     });
 
@@ -235,15 +235,22 @@ function mostrarHorariosDisponibles(e) {
     divTurnos.innerHTML = '';
     const fechaAlmacenadaStr = fechaSeleccionada;
 
-    // Filtrar los elementos del array turnos que cumplan con la condición de fecha servicio y empleado
-    const turnosFiltrados = arrayDeTurnos.filter(objeto =>
-        objeto.idEsteticista === esteticistaSeleccionadaId && objeto.idServicio === servicioSeleccionadoId);
-    console.log("turnos filtrados ", turnosFiltrados)
-
     // Empleado  y servicio encontrados 
     console.log("empleado encontrado", empleadoEncontrado)
     console.log("servicio  encontrado en horarios ", servicioEncontrado)
+    console.log("array de turnos: ", arrayDeTurnos)
 
+  
+    console.log(esteticistaSeleccionadaId)
+    console.log(servicioSeleccionadoId)
+
+
+    // Filtrar los elementos del array turnos que cumplan con la condición de fecha servicio y empleado
+    const turnosFiltrados = arrayDeTurnos.filter(objeto =>
+        objeto.idEmpleado === esteticistaSeleccionadaId && objeto.idServicio === servicioSeleccionadoId
+      );
+    
+    console.log("turnos filtrados ", turnosFiltrados)
     console.log(calcularHorariosDisponibles());
 
     //rango Horario
@@ -297,7 +304,7 @@ function calcularHorariosDisponibles() {
     let horaActual = stringAHora(empleadoEncontrado.horaInicio);
     const horaFinJornada = stringAHora(empleadoEncontrado.horaFin);
     const horaInicioAlmuerzo = stringAHora("12:00");
-    const horaFinAlmuerzo = stringAHora("14:00");
+    const horaFinAlmuerzo = stringAHora("13:00");
 
     // Recorrer horario del profesional en bloques de 30 minutos
     while (horaActual < horaFinJornada) {
@@ -322,9 +329,9 @@ function stringAHora(horaString) {
     const hora = new Date();
     hora.setHours(horas, minutos, 0, 0);
     return hora;
-  }
+}
 
-  
+
 btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault()
     const turnoData = {
