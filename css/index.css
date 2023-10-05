@@ -17,6 +17,10 @@ select {
   flex-wrap: wrap;
 }
 
+.btn-horario{
+  margin: 4px;
+}
+
 .botonDeHorarios {
   margin: 4px;
 }
