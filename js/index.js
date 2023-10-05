@@ -236,17 +236,13 @@ function mostrarHorariosDisponibles(e) {
   const turnosFiltrados = arrayDeTurnos.filter(
     (objeto) =>
       objeto.idEmpleado === esteticistaSeleccionadaId &&
-      objeto.idServicio === servicioSeleccionadoId
+      objeto.fechaTurno === fechaAlmacenadaStr
   );
 
   console.log("turnos filtrados ", turnosFiltrados);
 
   console.log(
-    calcularHorariosDisponibles(
-      empleadoEncontrado,
-      servicioEncontrado,
-      turnosFiltrados
-    ),
+    calcularHorariosDisponibles(turnosFiltrados),
     "disponibles turnos"
   );
 
@@ -293,7 +289,7 @@ function mostrarHorariosDisponibles(e) {
   //     divTurnos.appendChild(boton);
   // }
 }
-
+//ESTE ES EL VIEJO ...
 // function calcularHorariosDisponibles() {
 
 //     const horariosDisponibles = [];
@@ -324,13 +320,13 @@ function mostrarHorariosDisponibles(e) {
 
 //     return horariosDisponibles;
 // }
-function calcularHorariosDisponibles(
-  empleadoEncontrado,
-  servicioEncontrado,
-  turnosFiltrados
-) {
-  const horariosDisponibles = []; // Aquí almacenaremos los horarios disponibles.
 
+// NUEVA FUNCION
+function calcularHorariosDisponibles(turnosFiltrados) {
+  const horariosDisponibles = []; // Aquí almacenaremos los horarios disponibles.
+  if (turnosFiltrados.length === 0) {
+    console.log("No hay turnos en esta fecha.");
+  }
   // Convertimos las horas de inicio y fin de la jornada laboral a objetos Date.
   let horaActual = stringAHora(empleadoEncontrado.horaInicio);
   const horaFinJornada = stringAHora(empleadoEncontrado.horaFin);
@@ -342,7 +338,10 @@ function calcularHorariosDisponibles(
   // Iteramos sobre cada bloque de tiempo en la jornada laboral del profesional.
   while (horaActual < horaFinJornada) {
     // Si la hora actual está dentro del período de almuerzo, saltamos al final del almuerzo.
-    if (horaActual >= horaInicioAlmuerzo && horaActual < horaFinAlmuerzo) {
+    if (
+      (horaActual >= horaInicioAlmuerzo && horaActual < horaFinAlmuerzo) ||
+      horaActual + servicioEncontrado.duracion >= horaInicioAlmuerzo
+    ) {
       horaActual = new Date(horaFinAlmuerzo);
       continue;
     }
@@ -357,21 +356,22 @@ function calcularHorariosDisponibles(
       let disponible = true;
 
       // Iteramos sobre cada turno reservado para verificar si el bloque de tiempo está disponible.
-      //   for (const turno of turnosFiltrado) {
-      //     const inicioTurno = stringAHora(turno.horaTurno);
-      //     const finTurno = new Date(
-      //       inicioTurno.getTime() + turno.duracion * 60000
-      //     );
-      //     // Comprobamos si hay solapamiento entre el bloque de tiempo y algún turno reservado.
-      //     if (
-      //       (horaActual >= inicioTurno && horaActual < finTurno) ||
-      //       (finServicio > inicioTurno && finServicio <= finTurno) ||
-      //       (horaActual <= inicioTurno && finServicio >= finTurno)
-      //     ) {
-      //       disponible = false;
-      //       break;
-      //     }
-      //   }
+      for (const turno of turnosFiltrados) {
+        console.log("Turno Tomado: ", turno.horaTurno);
+        const inicioTurno = stringAHora(turno.horaTurno);
+        const finTurno = new Date(
+          inicioTurno.getTime() + turno.duracion * 60000
+        );
+        // Comprobamos si hay solapamiento entre el bloque de tiempo y algún turno reservado.
+        if (
+          (horaActual >= inicioTurno && horaActual < finTurno) ||
+          (finServicio > inicioTurno && finServicio <= finTurno) ||
+          (horaActual <= inicioTurno && finServicio >= finTurno)
+        ) {
+          disponible = false;
+          break;
+        }
+      }
 
       // Si el bloque de tiempo está disponible, lo añadimos a la lista de horarios disponibles.
       if (disponible) {
@@ -380,14 +380,13 @@ function calcularHorariosDisponibles(
     }
 
     // Avanzamos la hora actual por la duración del servicio.
-    horaActual.setMinutes(
-      horaActual.getMinutes() + servicioEncontrado.duracion
-    );
+    horaActual.setMinutes(horaActual.getMinutes() + 30);
   }
 
   // Devolvemos la lista de horarios disponibles.
   return horariosDisponibles;
 }
+
 function stringAHora(horaString) {
   const [horas, minutos] = horaString.split(":").map(Number);
   const hora = new Date();
