@@ -1,4 +1,4 @@
-import { guardarTurno, obtenerColl } from "./firebase.js";
+import { guardarTurno, obtenerColl, guardar } from "./firebase.js";
 
 //Variables Globales
 let arrayDeTurnos = [];
@@ -14,6 +14,7 @@ let horarioSeleccionado = undefined;
 let idConexion = undefined;
 let empleadoEncontrado = undefined;
 let servicioEncontrado = undefined;
+let duracion = undefined;
 
 //Constantes
 const selectServicios = document.getElementById("select-servicios");
@@ -164,12 +165,13 @@ selectEsteticistas.addEventListener("change", (e) => {
 
 //Cargo las fechas disponibles en el DatePicker
 function cargarTurnosDisponibles() {
+
     // Utiliza la función find para buscar al empleado por su ID
     empleadoEncontrado = arrayDeEmpleados.find(function (empleado) {
         return empleado.id === esteticistaSeleccionadaId;
     });
 
-    // Utiliza la función find para buscar el por su ID
+    // Utiliza la función find para buscar el servicio por su ID
     servicioEncontrado = arrayDeServicios.find(function (servicio) {
         return servicio.id === servicioSeleccionadoId;
     });
@@ -230,6 +232,7 @@ function mostrarHorariosDisponibles(e) {
 
     console.log(esteticistaSeleccionadaId);
     console.log(servicioSeleccionadoId);
+    console.log("duracion " , servicioEncontrado.duracion)
 
     // Filtrar los elementos del array turnos que cumplan con la condición de fecha servicio y empleado
     const turnosFiltrados = arrayDeTurnos.filter(
@@ -319,7 +322,7 @@ function botonHorarioHabilitado(horariosDisponibles) {
         boton.classList.add("btn-horario");
         boton.addEventListener("click", (e) => {
             e.preventDefault()
-            const horarioSeleccionado = horario;
+            horarioSeleccionado = horario;
             alert(`Has seleccionado el horario: ${horarioSeleccionado}`);
             habilitarInputs()
         });
@@ -342,27 +345,33 @@ function habilitarInputs(e) {
     comentarios.removeAttribute("disabled");
 }
 
+
 btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault();
     const turnoData = {
-        fecha: fechaSeleccionada,
-        horario: horarioSeleccionado,
         cliente: nombre.value,
-        email: email.value,
-        telefono: telefono.value,
         comentarios: comentarios.value,
-        seña: false,
+        duracion:servicioEncontrado.duracion,
+        email: email.value,
+        fechaTurno: fechaSeleccionada,
+        horaTurno: horarioSeleccionado,
+        idEmpleado:esteticistaSeleccionadaId,
+        idServicio:servicioSeleccionadoId,
+        señado: false,
+        telefono: telefono.value,
     };
 
     (async () => {
         Swal.fire({
             icon: "success",
-            title: "El Nuevo Turnos ha sido confirmado",
+            title: "El Nuevo Turno ha sido confirmado",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 3000,
         });
-        await guardarTurno(idConexion, turnoData);
-        location.reload();
+        guardar(turnoData, "turnos");
+        setTimeout(function() {
+            location.reload();
+        }, 3000); // 3000 milisegundos (3 segundos)
     })();
 });
 
