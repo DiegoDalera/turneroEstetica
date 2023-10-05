@@ -7,6 +7,8 @@ let arrayDeServicios = [];
 
 //Constantes
 const selectEsteticistaAdmin = document.getElementById("esteticistasAdmin");
+const fechaInicio = document.getElementById("fecha-inicio-turnos")
+const fechaFin = document.getElementById("fecha-fin-turnos")
 const gridContainer = document.getElementById("gridContainer");
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -67,7 +69,7 @@ function cargarEsteticistas() {
 
   arrayDeEmpleados.forEach((conexion) => {
     const option = document.createElement("option");
-    option.value = conexion.nombre;
+    option.value = conexion.id;
     option.textContent = conexion.nombre;
     selectEsteticistaAdmin.appendChild(option);
 
@@ -76,26 +78,31 @@ function cargarEsteticistas() {
 
 //Funcion ONCLICK del button
 document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
-  const fechaInicio = document.getElementById("fecha-inicio-turnos").value;
-  const fechaFin = document.getElementById("fecha-fin-turnos").value;
-  filtrarTurnosPorFecha(fechaInicio, fechaFin);
+  const fInicio = fechaInicio.value;
+  const fFin = fechaFin.value
+  const esteticistaID = selectEsteticistaAdmin.value
+  const esteticistaNombre = selectEsteticistaAdmin.options[selectEsteticistaAdmin.selectedIndex].text;
+
+
+
+  filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre);
 });
 
-function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
-  let color = turnoFinal[0].color;
+function filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre) {
 
-  const turnosFiltrados = turnoFinal[0].turnos.filter((turno) => {
-    const fechaTurno = new Date(turno.fecha);
+  console.log(fInicio, fFin, esteticistaID, esteticistaNombre);
+  console.log(arrayDeTurnos)
+
+  const turnosFiltrados = arrayDeTurnos.filter((turno) => {
+    const fechaTurno = new Date(turno.fechaTurno);
     return (
-      fechaTurno >= new Date(fechaInicio) && fechaTurno <= new Date(fechaFin)
+      fechaTurno >= new Date(fInicio) && fechaTurno <= new Date(fFin)
     );
   });
 
   // Luego, con esos turnos filtrados, construye tu calendario:
-  construirCalendario(fechaInicio, fechaFin, turnosFiltrados, color);
+  construirCalendario(fInicio, fFin, turnosFiltrados, esteticistaID, esteticistaNombre);
 }
-
-
 
 //OnChange del Select Service Admin
 // selectEsteticistaAdmin.addEventListener("change", (event) => {
@@ -134,6 +141,136 @@ function filtrarTurnosPorFecha(fechaInicio, fechaFin) {
 //   );
 // });
 
+function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre) {
+
+  console.log("construir calendarios ", fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre)
+
+  //calcular horario minimo y maximo de atencion
+
+  const esteticistaEncontrado = arrayDeEmpleados.find(function (esteticista) {
+    return esteticista.id === esteticistaID;
+  });
+
+  console.log("esteticista encontrado ", esteticistaEncontrado)
+
+
+  gridContainer.innerHTML = "";
+
+  // Crear tabla
+  const table = document.createElement("table");
+  table.classList.add("tabla-turnos");
+
+  // Fila de horarios
+  const timeRow = document.createElement("tr");
+  const timeHeader = document.createElement("th");
+  timeHeader.textContent = "Horario/Fecha";
+  timeRow.appendChild(timeHeader);
+
+  let hi = esteticistaEncontrado.horaInicio;
+  let hf = esteticistaEncontrado.horaFin;
+
+  //Rellenamos de 08:00 a 18:00
+  for (let i = 8; i <= 18; i++) {
+    const timeCell = document.createElement("th");
+    timeCell.textContent = `${i}:00 - ${i + 1}:00`;
+    timeRow.appendChild(timeCell);
+  }
+
+  table.appendChild(timeRow);
+
+  //Establecemos las fechas
+  const currentDate = new Date(fechaInicio);
+  const endDate = new Date(fechaFin);
+
+  while (currentDate <= endDate) {
+    const dateRow = document.createElement("tr");
+    const dateHeader = document.createElement("td");
+    dateHeader.textContent = currentDate.toISOString().split("T")[0];
+    dateRow.appendChild(dateHeader);
+
+    for (let i = 8; i <= 18; i++) {
+      const cell = document.createElement("td");
+
+      // Revisa si el turno para esa fecha y hora ya está tomado
+      const turno = turnos.find((t) => {
+        return (
+          t.fechaTurno === currentDate.toISOString().split("T")[0] &&
+          t.horaTurno === `${i}:00`
+        );
+      });
+
+      if (turno) {
+        if (turno.señado) {
+          cell.innerText = turno.cliente + "seña pagada";
+          cell.classList.add("bandera");
+        } else {
+          cell.innerText = turno.cliente;
+          cell.classList.remove("bandera");
+        }
+
+        cell.style.backgroundColor = "#FFFF00"; // Pintamos de color amarillo
+        cell.id = turno.docID; // Muestra el nombre del cliente en la celda
+
+        // Agregar el manejador de eventos clic
+        cell.addEventListener("click", () => {
+          mostrarInformacionDelTurno(turno);
+        });
+      }
+
+      dateRow.appendChild(cell);
+    }
+
+    table.appendChild(dateRow);
+    currentDate.setDate(currentDate.getDate() + 1); // Avanzamos al siguiente día
+  }
+  gridContainer.appendChild(table);
+}
+
+function mostrarInformacionDelTurno(turno) {
+  const modalTurnos = document.getElementById("modalTurnos");
+  const spanEmail = document.getElementById("email");
+  const spanCliente = document.getElementById("cliente");
+  const spanFecha = document.getElementById("fecha");
+  const spanTelefono = document.getElementById("telefono");
+  const spanHorario = document.getElementById("horario");
+  const spanComentarios = document.getElementById("comentarios");
+
+  //botones
+  const eliminarTurnoButton = document.getElementById("eliminarTurno");
+  const marcarPagadoButton = document.getElementById("marcarPagado");
+
+  // Objeto con la información del turno
+  let turnoInfo = {
+    email: turno.email,
+    cliente: turno.cliente,
+    fecha: turno.fecha,
+    telefono: turno.telefono,
+    comentarios: turno.comentarios,
+    horario: turno.horario,
+    docID: turno.docID,
+  };
+
+  spanEmail.textContent = turnoInfo.email;
+  spanCliente.textContent = turnoInfo.cliente;
+  spanFecha.textContent = turnoInfo.fecha;
+  spanTelefono.textContent = turnoInfo.telefono;
+  spanHorario.textContent = turnoInfo.horario;
+  spanComentarios.textContent = turnoInfo.comentarios;
+
+  // Muestra el modal
+  modalTurnos.style.display = "block";
+
+  eliminarTurnoButton.addEventListener("click", function () {
+    console.log("subcolecion nro: ", turnoInfo.docID);
+    modalTurnos.style.display = "none";
+  });
+
+  // Manejador de evento para marcar como pagado
+  marcarPagadoButton.addEventListener("click", function () {
+    // Puedes usar el ID del turno (turnoInfo.docID) para identificar el turno y actualizar su estado como pagado.
+    modalTurnos.style.display = "none";
+  });
+}
 
 
 function arrayTurnosByService(servicioSeleccionado) {
@@ -225,127 +362,13 @@ function cargarTabla(turnoFinal) {
 //   gridContainer.appendChild(table);
 // }
 
-function construirCalendario(fechaInicio, fechaFin, turnos, color) {
-  gridContainer.innerHTML = "";
 
-  // Crear tabla
-  const table = document.createElement("table");
-  table.classList.add("tabla-turnos");
-
-  // Fila de horarios
-  const timeRow = document.createElement("tr");
-  const timeHeader = document.createElement("th");
-  timeHeader.textContent = "Horario/Fecha";
-  timeRow.appendChild(timeHeader);
-
-  //Rellenamos de 08:00 a 18:00
-  for (let i = 8; i <= 18; i++) {
-    const timeCell = document.createElement("th");
-    timeCell.textContent = `${i}:00 - ${i + 1}:00`;
-    timeRow.appendChild(timeCell);
-  }
-
-  table.appendChild(timeRow);
-
-  //Establecemos las fechas
-  const currentDate = new Date(fechaInicio);
-  const endDate = new Date(fechaFin);
-
-  while (currentDate <= endDate) {
-    const dateRow = document.createElement("tr");
-    const dateHeader = document.createElement("td");
-    dateHeader.textContent = currentDate.toISOString().split("T")[0];
-    dateRow.appendChild(dateHeader);
-
-    for (let i = 8; i <= 18; i++) {
-      const cell = document.createElement("td");
-
-      // Revisa si el turno para esa fecha y hora ya está tomado
-      const turno = turnos.find((t) => {
-        return (
-          t.fecha === currentDate.toISOString().split("T")[0] &&
-          t.horario === `${i}:00`
-        );
-      });
-
-      if (turno) {
-        if (turno.seña) {
-          cell.innerText = turno.cliente + "seña pagada";
-          cell.classList.add("bandera");
-        } else {
-          cell.innerText = turno.cliente;
-          cell.classList.remove("bandera");
-        }
-
-        cell.style.backgroundColor = color; // Pintamos de color
-        cell.id = turno.docID; // Muestra el nombre del cliente en la celda
-
-        // Agregar el manejador de eventos clic
-        cell.addEventListener("click", () => {
-          mostrarInformacionDelTurno(turno);
-        });
-      }
-
-      dateRow.appendChild(cell);
-    }
-
-    table.appendChild(dateRow);
-    currentDate.setDate(currentDate.getDate() + 1); // Avanzamos al siguiente día
-  }
-  gridContainer.appendChild(table);
-}
 
 //Funcion de filtrado por 2 fechas
 
 
 // Modal de muestra individual -----------------------------------------------
 const spanCerrarModalTurnos = document.getElementById("cerrarModalTurnos");
-
-function mostrarInformacionDelTurno(turno) {
-  const modalTurnos = document.getElementById("modalTurnos");
-  const spanEmail = document.getElementById("email");
-  const spanCliente = document.getElementById("cliente");
-  const spanFecha = document.getElementById("fecha");
-  const spanTelefono = document.getElementById("telefono");
-  const spanHorario = document.getElementById("horario");
-  const spanComentarios = document.getElementById("comentarios");
-
-  //botones
-  const eliminarTurnoButton = document.getElementById("eliminarTurno");
-  const marcarPagadoButton = document.getElementById("marcarPagado");
-
-  // Objeto con la información del turno
-  let turnoInfo = {
-    email: turno.email,
-    cliente: turno.cliente,
-    fecha: turno.fecha,
-    telefono: turno.telefono,
-    comentarios: turno.comentarios,
-    horario: turno.horario,
-    docID: turno.docID,
-  };
-
-  spanEmail.textContent = turnoInfo.email;
-  spanCliente.textContent = turnoInfo.cliente;
-  spanFecha.textContent = turnoInfo.fecha;
-  spanTelefono.textContent = turnoInfo.telefono;
-  spanHorario.textContent = turnoInfo.horario;
-  spanComentarios.textContent = turnoInfo.comentarios;
-
-  // Muestra el modal
-  modalTurnos.style.display = "block";
-
-  eliminarTurnoButton.addEventListener("click", function () {
-    console.log("subcolecion nro: ", turnoInfo.docID);
-    modalTurnos.style.display = "none";
-  });
-
-  // Manejador de evento para marcar como pagado
-  marcarPagadoButton.addEventListener("click", function () {
-    // Puedes usar el ID del turno (turnoInfo.docID) para identificar el turno y actualizar su estado como pagado.
-    modalTurnos.style.display = "none";
-  });
-}
 
 // Cierra el modal cuando se hace clic en el botón de cerrar o en otra parte fuera del modal
 spanCerrarModalTurnos.onclick = function () {
@@ -354,7 +377,7 @@ spanCerrarModalTurnos.onclick = function () {
 
 
 
-// funciones para index
+// -----------------------------------funciones para index------------------------------------
 function stringAHora(horaString) {
   const [horas, minutos] = horaString.split(":").map(Number);
   const hora = new Date();
