@@ -240,7 +240,7 @@ function mostrarHorariosDisponibles(e) {
     console.log("servicio  encontrado en horarios ", servicioEncontrado)
     console.log("array de turnos: ", arrayDeTurnos)
 
-  
+
     console.log(esteticistaSeleccionadaId)
     console.log(servicioSeleccionadoId)
 
@@ -248,10 +248,11 @@ function mostrarHorariosDisponibles(e) {
     // Filtrar los elementos del array turnos que cumplan con la condición de fecha servicio y empleado
     const turnosFiltrados = arrayDeTurnos.filter(objeto =>
         objeto.idEmpleado === esteticistaSeleccionadaId && objeto.idServicio === servicioSeleccionadoId
-      );
-    
+    );
+
     console.log("turnos filtrados ", turnosFiltrados)
-    console.log(calcularHorariosDisponibles());
+
+    calcularHorariosDisponibles();
 
     //rango Horario
     // const horarioInicio = empleadoEncontrado.horaInicio;
@@ -306,8 +307,11 @@ function calcularHorariosDisponibles() {
     const horaInicioAlmuerzo = stringAHora("12:00");
     const horaFinAlmuerzo = stringAHora("13:00");
 
+    console.log(empleadoEncontrado.horaInicio,empleadoEncontrado.horaFin,servicioEncontrado.duracion)
+
     // Recorrer horario del profesional en bloques de 30 minutos
     while (horaActual < horaFinJornada) {
+
         // Si la hora actual está dentro del horario de almuerzo, saltar al final del almuerzo
         if (horaActual >= horaInicioAlmuerzo && horaActual < horaFinAlmuerzo) {
             horaActual = new Date(horaFinAlmuerzo);
@@ -317,9 +321,10 @@ function calcularHorariosDisponibles() {
         if (horaActual + servicioEncontrado.duracion <= horaFinJornada) {
             horariosDisponibles.push(new Date(horaActual));
         }
-
         horaActual.setMinutes(horaActual.getMinutes() + 30); // Avanzar 30 minutos
     }
+
+    console.log( "horarios disponibles " , horariosDisponibles)
 
     return horariosDisponibles;
 }
