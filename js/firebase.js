@@ -71,62 +71,57 @@ export const actualizar = (collection, id, newField) =>
 //Cargar Conexiones
 export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
-
-// export const obtenerConexion = () => getDocs(collection(db, conexion));
-// export const obtenerServicios = () => getDocs(collection(db, "servicios"));
-// export const obtenerEmpleados = () => getDocs(collection(db, "empleados"));
-// export const obtenerTurnos = () => getDocs(collection(db, "conexiones"));
-
 // ----------------------------------Funciones Turnos-------------------------------------------------------
 
 export const obtenerTurnosOtorgados = (id) => {
   return getDocs(collection(db, "conexiones", id, "turnos"));
 };
 
-export const guardarTurno = async (servicioId, turnoData) => {
-  const subcoleccionTurnosRef = collection(
-    doc(db, "conexiones", servicioId),
-    "turnos"
-  );
-  const nuevoTurnoRef = await addDoc(subcoleccionTurnosRef, turnoData);
-  console.log("Turno agregado con ID:", nuevoTurnoRef.id);
-};
+// export const guardarTurno = async (servicioId, turnoData) => {
+//   const subcoleccionTurnosRef = collection(
+//     doc(db, "conexiones", servicioId),
+//     "turnos"
+//   );
+//   const nuevoTurnoRef = await addDoc(subcoleccionTurnosRef, turnoData);
+//   console.log("Turno agregado con ID:", nuevoTurnoRef.id);
+// };
 
-export async function obtenerConexiones() {
-  const arrayConexiones = [];
-  const querySnapshot = await getDocs(collection(db, "conexiones"));
-  const promesasTurnos = [];
+// export async function obtenerConexiones() {
+//   const arrayConexiones = [];
+//   const querySnapshot = await getDocs(collection(db, "conexiones"));
+//   const promesasTurnos = [];
 
-  querySnapshot.forEach(async (docConexion) => {
-    let conexionData = docConexion.data();
-    let conexionId = docConexion.id;
-    conexionData.id = conexionId;
+//   querySnapshot.forEach(async (docConexion) => {
+//     let conexionData = docConexion.data();
+//     let conexionId = docConexion.id;
+//     conexionData.id = conexionId;
 
-    console.log("conexion data ", conexionData);
+//     console.log("conexion data ", conexionData);
 
-    const promesaTurno = getDocs(
-      collection(db, "conexiones", docConexion.id, "turnos")
-    ).then((docTurno) => {
-      const listaDeTurnos = docTurno.docs.map((doc) => {
-        return {
-          ...doc.data(),
-          docID: doc.id,
-        };
-      });
-      conexionData.turnos = listaDeTurnos;
-      arrayConexiones.push(conexionData);
-    });
+//     const promesaTurno = getDocs(
+//       collection(db, "conexiones", docConexion.id, "turnos")
+//     ).then((docTurno) => {
+//       const listaDeTurnos = docTurno.docs.map((doc) => {
+//         return {
+//           ...doc.data(),
+//           docID: doc.id,
+//         };
+//       });
+//       conexionData.turnos = listaDeTurnos;
+//       arrayConexiones.push(conexionData);
+//     });
 
-    promesasTurnos.push(promesaTurno);
-  });
+//     promesasTurnos.push(promesaTurno);
+//   });
 
-  //
+//   //
 
-  await Promise.all(promesasTurnos);
-  return arrayConexiones;
-}
+//   await Promise.all(promesasTurnos);
+//   return arrayConexiones;
+// }
 
 //----- Registrar Usuario ----
+
 const registroForm = document.getElementById("registerForm");
 if (registroForm) {
   registroForm.addEventListener("submit", async function (event) {
@@ -162,8 +157,10 @@ if (registroForm) {
 //     });
 //   })
 
+
 //______ INICIAR SESION USER -------
 // Comprueba si existe el formulario de inicio de sesión
+
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async function (event) {

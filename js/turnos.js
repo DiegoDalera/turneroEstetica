@@ -86,20 +86,29 @@ document.getElementById("btn_buscar_turnos").addEventListener("click", () => {
 });
 
 function filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre) {
-
   console.log(fInicio, fFin, esteticistaID, esteticistaNombre);
-  console.log(arrayDeTurnos)
+  console.log(arrayDeTurnos);
 
   const turnosFiltrados = arrayDeTurnos.filter((turno) => {
     const fechaTurno = new Date(turno.fechaTurno);
     return (
-      fechaTurno >= new Date(fInicio) && fechaTurno <= new Date(fFin)
+      fechaTurno >= new Date(fInicio) &&
+      fechaTurno <= new Date(fFin) &&
+      turno.idEmpleado === esteticistaID
     );
+  });
+
+  console.log(turnosFiltrados , "turnos filtrados")
+
+   // Ordena los turnos por fecha y hora
+   turnosFiltrados.sort((a, b) => {
+    const fechaA = new Date(`${a.fechaTurno}T${a.horaTurno}`);
+    const fechaB = new Date(`${b.fechaTurno}T${b.horaTurno}`);
+    return fechaA - fechaB;
   });
 
   // Luego, con esos turnos filtrados, construye tu calendario:
   construirCalendario(fInicio, fFin, turnosFiltrados, esteticistaID, esteticistaNombre);
-
 }
 
 //OnChange del Select Service Admin
