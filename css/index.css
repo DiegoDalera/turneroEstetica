@@ -14,21 +14,14 @@ select {
 .turnosDisponibles {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
 .btn-horario{
   margin: 4px;
-}
-
-.botonDeHorarios {
-  margin: 4px;
-}
-
-.botonDeHorariosDesabilitado {
-  margin: 4px;
-  background-color: pink;
-  /* cursor: not-allowed; */
+  padding: 2px;
 }
 
 .formulario {
