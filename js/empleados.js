@@ -45,7 +45,10 @@ let modal = document.getElementById("modal-agregar");
 let span = document.getElementsByClassName("close")[0];
 
 agregarEmpleado.onclick = function () {
+  limpiarFormulario();
   cargarFormularioDefault();
+  fechaActual();
+
   modal.style.display = "block";
 }
 span.onclick = function () {
@@ -119,6 +122,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         formAgregarEmpleado["direccion"].value = empleadoEditar.direccion
         formAgregarEmpleado["hora-inicio"].value = empleadoEditar.horaInicio
         formAgregarEmpleado["hora-fin"].value = empleadoEditar.horaFin
+        formAgregarEmpleado["fecha-inicio"].value = empleadoEditar.fechaInicio
+        formAgregarEmpleado["fecha-fin"].value = empleadoEditar.fechaFin
 
         // Obtén una referencia al select
         const serviciosSelect = document.getElementById("serviciosOfrecidos");
@@ -223,8 +228,8 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
       horaFin: horaFin,
       serviciosOfrecidos: serviciosOfrecidosSeleccionados,
       diasTrabajar: diasSeleccionados,
-      fechaInicio:fechaInicio,
-      fechaFin:fechaFin
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin
     };
 
     if (!editStatus) {
@@ -236,7 +241,7 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
         timer: 2500
       });
     } else {
-      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion, horaInicio, horaFin, serviciosOfrecidos: serviciosOfrecidosSeleccionados, diasTrabajar: diasSeleccionados, fechaInicio,fechaFin });
+      actualizar("empleados", idEdit, { nombre, mail, telefono, direccion, horaInicio, horaFin, serviciosOfrecidos: serviciosOfrecidosSeleccionados, diasTrabajar: diasSeleccionados, fechaInicio, fechaFin });
       Swal.fire({
         icon: 'success',
         title: 'El Nuevo empleado ha sido actualizado',
@@ -254,6 +259,34 @@ btnAgregarEmpleado.addEventListener("click", (e) => {
     console.error("Ocurrió un error:", error);
   }
 });
+
+function limpiarFormulario() {
+
+  const formulario = document.getElementById("formulario-empleado-agregar");
+
+  // Iterar a través de los elementos del formulario y restablecer su valor
+  const elementos = formulario.elements;
+  for (let i = 0; i < elementos.length; i++) {
+    if (elementos[i].type !== "button" && elementos[i].type !== "submit") {
+      elementos[i].value = "";
+    }
+  }
+
+  // También puedes restablecer la selección en los elementos <select> múltiples
+  const selectServicios = document.getElementById("serviciosOfrecidos");
+  selectServicios.selectedIndex = -1; // Desselecciona todas las opciones
+
+  const selectDias = document.getElementById("dias");
+  selectDias.selectedIndex = -1; // Desselecciona todas las opciones
+}
+
+function fechaActual() {
+  const fechaActual = new Date();
+  // Formatea la fecha en el formato YYYY-MM-DD (compatible con input type="date")
+  const fechaFormateada = fechaActual.toISOString().split('T')[0];
+  document.getElementById("fecha-inicio").value = fechaFormateada;
+  document.getElementById("fecha-fin").value = fechaFormateada;
+};
 
 
 

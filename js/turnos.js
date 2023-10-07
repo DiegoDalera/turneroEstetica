@@ -151,7 +151,7 @@ function filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre) 
 function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre) {
 
   console.log("construir calendarios ", fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre)
-
+ 
   //calcular horario minimo y maximo de atencion
   const esteticistaEncontrado = arrayDeEmpleados.find(function (esteticista) {
     return esteticista.id === esteticistaID;
@@ -159,6 +159,9 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
 
   const tablaTurnos = document.getElementById("tabla-turnos");
   const tbody = tablaTurnos.querySelector("tbody");
+
+  //borro posible tabla enterior
+  tbody.innerHTML = "";
 
   // Itero a través de los turnos y muestra la información en la tabla
   turnos.forEach(turno => {

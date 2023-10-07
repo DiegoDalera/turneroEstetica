@@ -324,8 +324,8 @@ function botonHorarioHabilitado(horariosDisponibles) {
             //-----------------------------
 
             Swal.fire({
-                title: 'Vas a reservar un turnos con nosotros',
-                text: `has seleccionado un turno a las ${horarioSeleccionado} con ${esteticistaSeleccionada} el dia  ${fechaSeleccionada}`,
+                title: 'Vas a reservar un turno con nosotros',
+                text: `Has seleccionado un turno a las ${horarioSeleccionado} con ${esteticistaSeleccionada} el día ${fechaSeleccionada}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -334,18 +334,22 @@ function botonHorarioHabilitado(horariosDisponibles) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire(
-                        'Leer con atencion',
-                        'Por favor, a continuacion completa tus datos. Una ves confirmado el  turnos deberas....',
-                        'success',
-                        habilitarInputs()
-                    )
+                        'Leer con atención',
+                        'Por favor, a continuación completa tus datos. Una vez confirmado el turno deberás...',
+                        'success'
+                    );
+
+                    // Llama a habilitarInputs() solo cuando se confirma
+                    habilitarInputs();
                 }
-            })
+            });
+
+
 
             //---------------------------
 
-            
         });
+
         divTurnos.appendChild(boton);
     });
 }
