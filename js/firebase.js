@@ -77,7 +77,31 @@ export const obtenerTurnosOtorgados = (id) => {
   return getDocs(collection(db, "conexiones", id, "turnos"));
 };
 
-// export const guardarTurno = async (servicioId, turnoData) => {
+export const borrarTurnosServicio = (id) => {
+
+  const turnosCollection = db.firestore().collection('turnos');
+  const idServicioAEliminar = id;
+
+  turnosCollection.where('idServicios', '==', idServicioAEliminar)
+    .get()
+    .then((querySnapshot) => {
+      
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete()
+          .then(() => {
+            console.log(`Documento con ID ${doc.id} eliminado`);
+          })
+          .catch((error) => {
+            console.error(`Error al eliminar el documento: ${error}`);
+          });
+      });
+    })
+    .catch((error) => {
+      console.error(`Error al realizar la consulta: ${error}`);
+    });
+};
+
+
 //   const subcoleccionTurnosRef = collection(
 //     doc(db, "conexiones", servicioId),
 //     "turnos"
@@ -133,7 +157,7 @@ if (registroForm) {
     await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        alert("Usuario registrado con éxito",user.email);
+        alert("Usuario registrado con éxito", user.email);
         window.location.href = "loginFirebase.html";
         // Puedes redireccionar al usuario o hacer otra acción después del registro
       })
@@ -142,20 +166,7 @@ if (registroForm) {
       });
   });
 }
-// Filtrar , Checkear Documentacion FIrebase.
 
-// db.collection('Turnos')
-//   .where('profesionalId', '==', profesionalId)
-//   .where('fecha', '>=', inicio)
-//   .where('fecha', '<=', fin)
-//   .where('servicio','==',servicioSeleccionado)
-//   .get()
-//   .then((querySnapshot) => {
-//     querySnapshot.forEach((doc) => {
-//       // Aquí puedes procesar cada documento de turno
-//       console.log(doc.id, '=>', doc.data());
-//     });
-//   })
 
 
 //______ INICIAR SESION USER -------
@@ -182,3 +193,21 @@ if (loginForm) {
       });
   });
 }
+
+// Filtrar , Checkear Documentacion FIrebase.
+
+// export const guardarTurno = async (servicioId, turnoData) => {
+
+
+// db.collection('Turnos')
+//   .where('profesionalId', '==', profesionalId)
+//   .where('fecha', '>=', inicio)
+//   .where('fecha', '<=', fin)
+//   .where('servicio','==',servicioSeleccionado)
+//   .get()
+//   .then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//       // Aquí puedes procesar cada documento de turno
+//       console.log(doc.id, '=>', doc.data());
+//     });
+//   })

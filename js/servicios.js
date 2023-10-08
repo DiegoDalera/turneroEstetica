@@ -4,7 +4,8 @@ import {
   db,
   actualizar,
   obtener,
-  borrar
+  borrar,
+  borrarTurnosServicio
 } from '../js/firebase.js'
 
 const formAgregarServicio = document.getElementById("formulario-servicio-agregar");
@@ -55,9 +56,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         var id = btn.getAttribute('doc-id');
         console.log(id)
         borrar("servicios", id)
-        Swal.fire('Servicio Eliminado');
-      })
-    })
+          .then(() => {
+            Swal.fire('Servicio Eliminado').then(() => {
+              borrarTurnosServicio(id);
+            });
+          })
+          .catch((error) => {
+            console.error(`Error al eliminar el servicio: ${error}`);
+          });
+      });
+    });
+
 
     //Agrego event listener editar
     const botonesEditarServicios = document.querySelectorAll(".btn-editar")
@@ -109,7 +118,7 @@ btnAgregarServicio.addEventListener("click", (e) => {
       guardar(newField, "servicios");
       Swal.fire({
         icon: 'success',
-        title: 'El Nuevo servicio a sido grabado',
+        title: 'El nuevo servicio a sido grabado',
         showConfirmButton: false,
         timer: 2500
       })
@@ -117,7 +126,7 @@ btnAgregarServicio.addEventListener("click", (e) => {
       actualizar("servicios", idEdit, { servicio, duracion, cantidadTurnos, valor });
       Swal.fire({
         icon: 'success',
-        title: 'El Nuevo servicio a sido actualizado',
+        title: 'El servicio a sido actualizado',
         showConfirmButton: false,
         timer: 2500
       })
@@ -147,7 +156,6 @@ function verificarCampos() {
     btnAgregarServicio.setAttribute('disabled', 'true');
   }
 }
-
 
 const agregarServicio = document.getElementById("enlaceAgregarServicios")
 let modal = document.getElementById("modal-agregar");

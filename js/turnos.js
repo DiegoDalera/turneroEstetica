@@ -1,4 +1,4 @@
-import { obtenerColl,borrar } from "../js/firebase.js";
+import { obtenerColl, borrar } from "../js/firebase.js";
 
 //Variables Globales
 let arrayDeTurnos = [];
@@ -151,7 +151,7 @@ function filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre) 
 function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre) {
 
   console.log("construir calendarios ", fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre)
- 
+
   //calcular horario minimo y maximo de atencion
   const esteticistaEncontrado = arrayDeEmpleados.find(function (esteticista) {
     return esteticista.id === esteticistaID;
@@ -200,18 +200,23 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     señadoCell.textContent = turno.señado;
     fila.appendChild(señadoCell);
 
-    // Crear la última celda con un botón de eliminación
+    // Crear la última celda con un botón de eliminación y el icono
     const eliminarCell = document.createElement("td");
     const eliminarButton = document.createElement("button");
-    eliminarButton.textContent = "Eliminar";
+    const icon = document.createElement("i");
+    icon.className = "bi bi-trash-fill";
 
-    eliminarButton.addEventListener("click", () => {
-      eliminarTurnoPorID(turno.id); // Llama a una función para eliminar el turno por su ID
-      //fila.remove(); // Elimina la fila de la tabla
+    eliminarButton.appendChild(icon); 
+       eliminarButton.addEventListener("click", () => {
+      eliminarTurnoPorID(turno.id); 
+      Swal.fire('Empleado Eliminado');
+      fila.remove(); 
+    
     });
 
     eliminarCell.appendChild(eliminarButton);
     fila.appendChild(eliminarCell);
+  
 
     tbody.appendChild(fila);
   });
@@ -219,7 +224,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
 
 // Función para eliminar un turno por su ID
 function eliminarTurnoPorID(turnoID) {
-borrar("turnos", turnoID)
+  borrar("turnos", turnoID)
 }
 
 
