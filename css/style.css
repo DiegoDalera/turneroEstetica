@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap");
 
 :root {
-  --color-barra-lateral: rgb(255, 255, 255);
+  --color-barra-lateral: #F8E8EE;
 
   --color-texto: rgb(0, 0, 0);
   --color-texto-menu: rgb(134, 136, 144);
@@ -52,7 +52,7 @@
 body {
   height: 100vh;
   width: 100%;
-  background-color: whitesmoke;
+  background-color: #f4dfe6
 }
 
 a {
@@ -76,7 +76,7 @@ i {
   align-items: center;
   border-radius: 50%;
   cursor: pointer;
-  background-color: whitesmoke;
+  background-color: #fbe4ed;
   color: black;
   right: 15px;
   top: 15px;

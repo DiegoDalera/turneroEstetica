@@ -184,9 +184,9 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     duracionCell.textContent = turno.duracion;
     fila.appendChild(duracionCell);
 
-    const servivioCell = document.createElement("td");
-    servivioCell.textContent = turno.idServicio;
-    fila.appendChild(servivioCell);
+    const servicioCell = document.createElement("td");
+    servicioCell.textContent = turno.servicioTurno;
+    fila.appendChild(servicioCell);
 
     const emailCell = document.createElement("td");
     emailCell.textContent = turno.email;
@@ -196,27 +196,39 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     telefonoCell.textContent = turno.telefono;
     fila.appendChild(telefonoCell);
 
+       // Crea un botón en lugar de mostrar turno.señado como texto
+    const señadoButton = document.createElement("button");
+    señadoButton.textContent = "Hacer Algo"; // Cambia el texto del botón según lo necesario
+    señadoButton.setAttribute("data-turno-id", turno.id);
+
+    // Agrega un evento clic al botón para realizar una acción
+    señadoButton.addEventListener("click", (event) => {
+      const turnoId = event.target.getAttribute("data-turno-id");
+      console.log(turnoId)
+      marcarTurnoSeñado(turnoId)
+    });
+
     const señadoCell = document.createElement("td");
-    señadoCell.textContent = turno.señado;
+    señadoCell.appendChild(señadoButton);
     fila.appendChild(señadoCell);
 
-    // Crear la última celda con un botón de eliminación y el icono
     const eliminarCell = document.createElement("td");
     const eliminarButton = document.createElement("button");
     const icon = document.createElement("i");
     icon.className = "bi bi-trash-fill";
 
-    eliminarButton.appendChild(icon); 
-       eliminarButton.addEventListener("click", () => {
-      eliminarTurnoPorID(turno.id); 
+    eliminarButton.appendChild(icon);
+    eliminarButton.addEventListener("click", () => {
+      console.log("turno id ", turno.id)
+      eliminarTurnoPorID(turno.id);
       Swal.fire('Empleado Eliminado');
-      fila.remove(); 
-    
+      fila.remove();
+
     });
 
     eliminarCell.appendChild(eliminarButton);
     fila.appendChild(eliminarCell);
-  
+
 
     tbody.appendChild(fila);
   });

@@ -184,9 +184,7 @@ if (loginForm) {
       .then((userCredential) => {
         const user = userCredential.user;
         alert("Sesión iniciada con éxito");
-        window.location.href = "/pages/servicios.html";
-
-        // Redireccionar o hacer algo después de iniciar sesión
+        window.location.href = "/pages/turnos.html";
       })
       .catch((error) => {
         alert("Error al iniciar sesión: " + error.message);

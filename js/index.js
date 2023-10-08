@@ -11,10 +11,8 @@ let servicioSeleccionado = undefined;
 let servicioSeleccionadoId = undefined;
 let fechaSeleccionada = undefined;
 let horarioSeleccionado = undefined;
-//let idConexion = undefined;
 let empleadoEncontrado = undefined;
 let servicioEncontrado = undefined;
-//let duracion = undefined;
 
 //Constantes
 const selectServicios = document.getElementById("select-servicios");
@@ -29,7 +27,6 @@ const btnConfirmaCita = document.getElementById("confirma_cita");
 const divTurnos = document.getElementById("turnosDisponibles");
 
 //EventListener
-
 document.addEventListener("DOMContentLoaded", async () => {
     cargarArrayTurnos();
     cargarArrayEmpleados();
@@ -95,7 +92,7 @@ async function cargarServicios() {
 
         const option = document.createElement("option");
         option.value = "1";
-        option.textContent = "Selecciona con quien";
+        option.textContent = "Selecciona que deseas hacerte";
         selectElement.appendChild(option);
 
         serviciosSnapshot.forEach((doc) => {
@@ -321,8 +318,6 @@ function botonHorarioHabilitado(horariosDisponibles) {
             e.preventDefault()
             horarioSeleccionado = horario;
 
-            //-----------------------------
-
             Swal.fire({
                 title: 'Vas a reservar un turno con nosotros',
                 text: `Has seleccionado un turno a las ${horarioSeleccionado} con ${esteticistaSeleccionada} el día ${fechaSeleccionada}`,
@@ -343,13 +338,7 @@ function botonHorarioHabilitado(horariosDisponibles) {
                     habilitarInputs();
                 }
             });
-
-
-
-            //---------------------------
-
         });
-
         divTurnos.appendChild(boton);
     });
 }
@@ -382,6 +371,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
         horaTurno: horarioSeleccionado,
         idEmpleado: esteticistaSeleccionadaId,
         idServicio: servicioSeleccionadoId,
+        servicioTurno: servicioSeleccionado,
         señado: false,
         telefono: telefono.value,
     };
@@ -399,10 +389,6 @@ btnConfirmaCita.addEventListener("click", (e) => {
         }, 3000);
     })();
 });
-
-
-
-
 
 function desabilitarInputs() {
     nombre.disabled = true;

@@ -31,20 +31,20 @@ import {
     llamada loginWithCredecials (creada por nosotros)
 */
 
-const btnEnviar = document.getElementById('enviarAdmin')
+// const btnEnviar = document.getElementById('enviarAdmin')
 
-btnEnviar.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const username = document.getElementById('userNameAdmin').value;
-    const password = document.getElementById('pswAdmin').value;
-    const validar = await loginCheck(username, password);
+// btnEnviar.addEventListener("click", async (e) => {
+//     e.preventDefault();
+//     const username = document.getElementById('userNameAdmin').value;
+//     const password = document.getElementById('pswAdmin').value;
+//     const validar = await loginCheck(username, password);
     
-    if (validar) {
-        window.location.href = "../turnos.html";
-      } else {
-        alert("Usuario y/o Contraseña incorrectos");
-      }
-});
+//     if (validar) {
+//         window.location.href = "../turnos.html";
+//       } else {
+//         alert("Usuario y/o Contraseña incorrectos");
+//       }
+// });
 
 async function loginCheck(username, password) {
     try {

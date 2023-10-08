@@ -15,28 +15,25 @@
         <h1>Loguearse</h1>
     </div>
 
-    <form class="modal-content-login" action="#" method="post" id="formulario_logueo">
+    <form class="modal-content-login" action="#" method="post" id="loginForm">
         <div class="formulario">
 
             <div class="elem-group">
-                <label for="uname"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="uname" id="userNameAdmin">
+                <label for="email"><b>Email</b></label>
+                <input type="email" placeholder="Enter Username" name="email" id="email">
             </div>
 
             <div class="elem-group">
                 <label for="psw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" id="pswAdmin">
+                <input type="password" placeholder="Enter Password" name="password" id="password">
             </div>
             <div class="elem-group">
-                <button type="submit" id="enviarAdmin">Login</button>
+                <button type="submit">Iniciar sesión</button>
             </div>
         </div>
     </form>
 
-
-
-    <script type="module" src="../../js/auth/loginGoogle.js">
-    </script>
+   <script type="module"  src="../../js/firebase.js"></script>
 
 </body>
 
