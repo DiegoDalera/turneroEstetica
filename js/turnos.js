@@ -1,4 +1,4 @@
-import { obtenerColl, borrar } from "../js/firebase.js";
+import { obtenerColl, borrar, actualizar } from "../js/firebase.js";
 
 //Variables Globales
 let arrayDeTurnos = [];
@@ -160,7 +160,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
   const tablaTurnos = document.getElementById("tabla-turnos");
   const tbody = tablaTurnos.querySelector("tbody");
 
-  //borro posible tabla enterior
+
   tbody.innerHTML = "";
 
   // Itero a través de los turnos y muestra la información en la tabla
@@ -196,16 +196,30 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     telefonoCell.textContent = turno.telefono;
     fila.appendChild(telefonoCell);
 
-       // Crea un botón en lugar de mostrar turno.señado como texto
+
     const señadoButton = document.createElement("button");
-    señadoButton.textContent = "Hacer Algo"; // Cambia el texto del botón según lo necesario
-    señadoButton.setAttribute("data-turno-id", turno.id);
+
+    console.log(turno.señado)
+
+    if (turno.señado) {
+      señadoButton.textContent = "Seña PAGADA";
+      señadoButton.setAttribute("data-turno-id", turno.id);
+      señadoButton.classList.remove("no-pagada");
+      señadoButton.classList.add("pagada");
+    } else {
+      señadoButton.textContent = "Seña NO PAGADA";
+      señadoButton.setAttribute("data-turno-id", turno.id);
+      señadoButton.classList.remove("pagada");
+      señadoButton.classList.add("no-pagada")
+    }
 
     // Agrega un evento clic al botón para realizar una acción
     señadoButton.addEventListener("click", (event) => {
       const turnoId = event.target.getAttribute("data-turno-id");
-      console.log(turnoId)
       marcarTurnoSeñado(turnoId)
+      Swal.fire('Seña Actualizada como pagada');
+      señadoButton.classList.remove("no-pagada");
+      señadoButton.classList.add("pagada");
     });
 
     const señadoCell = document.createElement("td");
@@ -219,7 +233,6 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
 
     eliminarButton.appendChild(icon);
     eliminarButton.addEventListener("click", () => {
-      console.log("turno id ", turno.id)
       eliminarTurnoPorID(turno.id);
       Swal.fire('Empleado Eliminado');
       fila.remove();
@@ -232,6 +245,10 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
 
     tbody.appendChild(fila);
   });
+}
+
+function marcarTurnoSeñado(turnoId) {
+  actualizar("turnos", turnoId, { señado: true })
 }
 
 // Función para eliminar un turno por su ID
