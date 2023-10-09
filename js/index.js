@@ -22,7 +22,7 @@ const nombre = document.getElementById("nombre");
 const email = document.getElementById("email");
 const telefono = document.getElementById("telefono");
 const comentarios = document.getElementById("comentarios");
-const formTurnos = document.getElementById("formulario_turnos");
+// const formTurnos = document.getElementById("formulario_turnos");
 const btnConfirmaCita = document.getElementById("confirma_cita");
 const divTurnos = document.getElementById("turnosDisponibles");
 
@@ -82,8 +82,7 @@ async function cargarArrayServicios() {
     console.log("array de servicios: ", arrayDeServicios);
 }
 
-
-//cargo los servicios disponibles en el select de Servicios
+//Cargo los servicios disponibles en el select de Servicios
 async function cargarServicios() {
     try {
         const serviciosSnapshot = await obtenerColl("servicios");
@@ -111,7 +110,7 @@ async function cargarServicios() {
     }
 }
 
-//selecciono el servicio elegido
+//Selecciono el servicio elegido
 selectServicios.addEventListener("change", (event) => {
     desabilitarInputs();
     servicioSeleccionadoId = event.target.value;
@@ -120,7 +119,7 @@ selectServicios.addEventListener("change", (event) => {
     cargarEsteticistas();
 });
 
-//cargo los esteticistas que ofrecen ese servicio.
+//Cargo los esteticistas que ofrecen ese servicio.
 function cargarEsteticistas() {
     selectEsteticistas.removeAttribute("disabled");
 
@@ -151,7 +150,7 @@ function cargarEsteticistas() {
     });
 }
 
-//selecciono el esteticista elegido
+//Selecciono el esteticista elegido
 selectEsteticistas.addEventListener("change", (e) => {
     esteticistaSeleccionadaId = e.target.value;
     esteticistaSeleccionada =
@@ -242,9 +241,8 @@ function mostrarHorariosDisponibles(e) {
 
 }
 
-// NUEVA FUNCION
 function calcularHorariosDisponibles(turnosFiltrados) {
-    const horariosDisponibles = []; // Aquí almacenaremos los horarios disponibles.
+    const horariosDisponibles = []; 
     if (turnosFiltrados.length === 0) {
         console.log("No hay turnos en esta fecha.");
     }
@@ -357,7 +355,6 @@ function habilitarInputs(e) {
     telefono.removeAttribute("disabled");
     comentarios.removeAttribute("disabled");
 }
-
 
 btnConfirmaCita.addEventListener("click", (e) => {
     e.preventDefault();

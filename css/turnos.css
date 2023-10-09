@@ -95,3 +95,12 @@
   cursor: pointer;
 }
 
+.pagada {
+  background-color: green;
+  color: white;
+}
+
+.no-pagada {
+  background-color: red;
+  color: white;
+}

@@ -9,7 +9,6 @@ let arrayDeServicios = [];
 const selectEsteticistaAdmin = document.getElementById("esteticistasAdmin");
 const fechaInicio = document.getElementById("fecha-inicio-turnos")
 const fechaFin = document.getElementById("fecha-fin-turnos")
-const gridContainer = document.getElementById("gridContainer");
 
 document.addEventListener("DOMContentLoaded", async () => {
   await Promise.all([cargarArrayTurnos(), cargarArrayEmpleados(), cargarArrayServicios()]);
@@ -64,7 +63,6 @@ async function cargarArrayServicios() {
   console.log("array de servicios: ", arrayDeServicios);
 }
 
-//Carga los servivios en el Select
 function cargarEsteticistas() {
 
   arrayDeEmpleados.forEach((conexion) => {
@@ -111,43 +109,6 @@ function filtrarTurnosPorFecha(fInicio, fFin, esteticistaID, esteticistaNombre) 
   construirCalendario(fInicio, fFin, turnosFiltrados, esteticistaID, esteticistaNombre);
 }
 
-//OnChange del Select Service Admin
-// selectEsteticistaAdmin.addEventListener("change", (event) => {
-//   servicioSeleccionadoAdmin = event.target.value;
-
-//   //Filtro de Conexiones(arrayTUrno) x Servicio Select
-//   turnoFinal = arrayTurnosByService(servicioSeleccionadoAdmin);
-
-//   console.log("ser seleccionado ", servicioSeleccionadoAdmin);
-//   console.log("turno final ", turnoFinal);
-//   // Ejemplo de uso
-//   const profesional = {
-//     horario: {
-//       inicio: "09:00",
-//       fin: "18:00",
-//     },
-//     almuerzo: {
-//       inicio: "13:00",
-//       fin: "14:00",
-//     },
-//   };
-//   const duracionServicio = 60; // duración en minutos
-//   const horariosDisponibles = calcularHorariosDisponibles(
-//     profesional,
-//     duracionServicio
-//   );
-
-//   console.log(horariosDisponibles, "horarios Disponibles");
-
-//   //cargarTabla(turnoFinal[0])
-//   construirCalendario(
-//     turnoFinal[0].fechaInicio,
-//     turnoFinal[0].fechaFin,
-//     turnoFinal[0].turnos,
-//     turnoFinal[0].color
-//   );
-// });
-
 function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre) {
 
   console.log("construir calendarios ", fechaInicio, fechaFin, turnos, esteticistaID, esteticistaNombre)
@@ -180,10 +141,6 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     horaCell.textContent = turno.horaTurno;
     fila.appendChild(horaCell);
 
-    const duracionCell = document.createElement("td");
-    duracionCell.textContent = turno.duracion;
-    fila.appendChild(duracionCell);
-
     const servicioCell = document.createElement("td");
     servicioCell.textContent = turno.servicioTurno;
     fila.appendChild(servicioCell);
@@ -202,12 +159,12 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     console.log(turno.señado)
 
     if (turno.señado) {
-      señadoButton.textContent = "Seña PAGADA";
+      señadoButton.textContent = "PAGADA";
       señadoButton.setAttribute("data-turno-id", turno.id);
       señadoButton.classList.remove("no-pagada");
       señadoButton.classList.add("pagada");
     } else {
-      señadoButton.textContent = "Seña NO PAGADA";
+      señadoButton.textContent = "NO PAGADA";
       señadoButton.setAttribute("data-turno-id", turno.id);
       señadoButton.classList.remove("pagada");
       señadoButton.classList.add("no-pagada")
@@ -217,7 +174,7 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
     señadoButton.addEventListener("click", (event) => {
       const turnoId = event.target.getAttribute("data-turno-id");
       marcarTurnoSeñado(turnoId)
-      Swal.fire('Seña Actualizada como pagada');
+      Swal.fire('Seña Actualizada como abonada');
       señadoButton.classList.remove("no-pagada");
       señadoButton.classList.add("pagada");
     });
@@ -251,11 +208,9 @@ function marcarTurnoSeñado(turnoId) {
   actualizar("turnos", turnoId, { señado: true })
 }
 
-// Función para eliminar un turno por su ID
 function eliminarTurnoPorID(turnoID) {
   borrar("turnos", turnoID)
 }
-
 
 // function mostrarInformacionDelTurno(turno) {
 //   const modalTurnos = document.getElementById("modalTurnos");
@@ -415,30 +370,3 @@ function stringAHora(horaString) {
   hora.setHours(horas, minutos, 0, 0);
   return hora;
 }
-
-// function calcularHorariosDisponibles(profesional, duracionServicio) {
-//   const horariosDisponibles = [];
-
-//   // Convertir horarios a objetos Date
-//   let horaActual = stringAHora(profesional.horario.inicio);
-//   const horaFinJornada = stringAHora(profesional.horario.fin);
-//   const horaInicioAlmuerzo = stringAHora(profesional.almuerzo.inicio);
-//   const horaFinAlmuerzo = stringAHora(profesional.almuerzo.fin);
-
-//   // Recorrer horario del profesional en bloques de 30 minutos
-//   while (horaActual < horaFinJornada) {
-//     // Si la hora actual está dentro del horario de almuerzo, saltar al final del almuerzo
-//     if (horaActual >= horaInicioAlmuerzo && horaActual < horaFinAlmuerzo) {
-//       horaActual = new Date(horaFinAlmuerzo);
-//     }
-
-//     // Verificar si hay suficiente tiempo disponible antes del próximo turno o del fin de la jornada
-//     if (horaActual + duracionServicio <= horaFinJornada) {
-//       horariosDisponibles.push(new Date(horaActual));
-//     }
-
-//     horaActual.setMinutes(horaActual.getMinutes() + 30); // Avanzar 30 minutos
-//   }
-
-//   return horariosDisponibles;
-// }

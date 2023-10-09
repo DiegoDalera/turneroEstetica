@@ -16,11 +16,11 @@ const nombre = document.getElementById("nombre")
 const mail = document.getElementById("mail")
 const telefono = document.getElementById("telefono")
 const direccion = document.getElementById("direccion")
-const fechaInicio = document.getElementById("fecha-inicio")
-const fechaFin = document.getElementById("fecha-fin")
+// const fechaInicio = document.getElementById("fecha-inicio")
+// const fechaFin = document.getElementById("fecha-fin")
 
 const dias = document.getElementById("dias");
-const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
+// const diasSeleccionados = Array.from(dias.selectedOptions).map(option => option.value);
 
 let editStatus = false
 let idEdit

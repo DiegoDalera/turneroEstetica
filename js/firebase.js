@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
 
 import {
@@ -21,6 +22,7 @@ import {
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA-CGvrLFUzDSyAPYdBz9L8HcDXfnNMkG4",
@@ -30,6 +32,7 @@ const firebaseConfig = {
   messagingSenderId: "909698048504",
   appId: "1:909698048504:web:c3bbe0da09c207aa9b360d",
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -68,14 +71,11 @@ export const borrar = (collection, id) => deleteDoc(doc(db, collection, id));
 export const actualizar = (collection, id, newField) =>
   updateDoc(doc(db, collection, id), newField);
 
-//Cargar Conexiones
 export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
-// ----------------------------------Funciones Turnos-------------------------------------------------------
-
-export const obtenerTurnosOtorgados = (id) => {
-  return getDocs(collection(db, "conexiones", id, "turnos"));
-};
+// export const obtenerTurnosOtorgados = (id) => {
+//   return getDocs(collection(db, "conexiones", id, "turnos"));
+// };
 
 export const borrarTurnosServicio = (id) => {
 
@@ -85,7 +85,7 @@ export const borrarTurnosServicio = (id) => {
   turnosCollection.where('idServicios', '==', idServicioAEliminar)
     .get()
     .then((querySnapshot) => {
-      
+
       querySnapshot.forEach((doc) => {
         doc.ref.delete()
           .then(() => {
@@ -166,7 +166,6 @@ if (registroForm) {
       });
   });
 }
-
 
 
 //______ INICIAR SESION USER -------
