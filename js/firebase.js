@@ -79,7 +79,7 @@ export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
 export const borrarTurnosServicio = (id) => {
 
-  const turnosCollection = db.firestore().collection('turnos');
+  const turnosCollection = db.collection('turnos');
   const idServicioAEliminar = id;
 
   turnosCollection.where('idServicios', '==', idServicioAEliminar)
