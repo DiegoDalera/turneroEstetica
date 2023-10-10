@@ -20,6 +20,8 @@ import {
   doc,
   updateDoc,
   onSnapshot,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
 
 
@@ -77,29 +79,24 @@ export const obtenerColl = (coll) => getDocs(collection(db, coll));
 //   return getDocs(collection(db, "conexiones", id, "turnos"));
 // };
 
-export const borrarTurnosServicio = (id) => {
-
-  const turnosCollection = db.collection('turnos');
+export const borrarTurnosServicio = async (id) => {
   const idServicioAEliminar = id;
-
-  turnosCollection.where('idServicios', '==', idServicioAEliminar)
-    .get()
-    .then((querySnapshot) => {
-
-      querySnapshot.forEach((doc) => {
-        doc.ref.delete()
-          .then(() => {
-            console.log(`Documento con ID ${doc.id} eliminado`);
-          })
-          .catch((error) => {
-            console.error(`Error al eliminar el documento: ${error}`);
-          });
-      });
-    })
-    .catch((error) => {
-      console.error(`Error al realizar la consulta: ${error}`);
-    });
+  const q = query(collection(db, "turnos"), where('idServicios', '==', idServicioAEliminar));
+  const querySnapshot = await getDocs(q);
+  
+  try {
+    for (const doc of querySnapshot.docs) {
+      await borrar("turnos", doc.id);
+      console.log(`Documento con ID ${doc.id} eliminado`);
+    }
+    alert("termino");
+  } catch (error) {
+    console.error(`Error al eliminar documentos: ${error}`);
+  }
 };
+
+
+
 
 
 //   const subcoleccionTurnosRef = collection(
