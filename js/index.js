@@ -5,6 +5,8 @@ let arrayDeTurnos = [];
 let arrayDeEmpleados = [];
 let arrayDeServicios = [];
 
+let picker = null;
+
 let esteticistaSeleccionada = undefined;
 let esteticistaSeleccionadaId = undefined;
 let servicioSeleccionado = undefined;
@@ -89,11 +91,6 @@ async function cargarServicios() {
         const selectElement = document.getElementById("select-servicios");
         selectElement.innerHTML = "";
 
-        const option = document.createElement("option");
-        option.value = "1";
-        option.textContent = "Selecciona que deseas hacerte";
-        selectElement.appendChild(option);
-
         serviciosSnapshot.forEach((doc) => {
             const data = doc.data();
             const nombreServicio = data.servicio;
@@ -118,6 +115,16 @@ selectServicios.addEventListener("change", (event) => {
         event.target.options[event.target.selectedIndex].textContent;
     cargarEsteticistas();
 });
+
+function desabilitarInputs() {
+    nombre.disabled = true;
+    email.disabled = true;
+    telefono.disabled = true;
+    comentarios.disabled = true;
+    dateInput.innerHTML = "";
+    dateInput.disabled = true;
+    divTurnos.innerHTML = "";
+}
 
 //Cargo los esteticistas que ofrecen ese servicio.
 function cargarEsteticistas() {
@@ -170,6 +177,10 @@ function cargarTurnosDisponibles() {
         return servicio.id === servicioSeleccionadoId;
     });
 
+    if (picker){
+        picker.destroy()
+    }
+
     dateInput.removeAttribute("disabled");
 
     const diasDeTurnos = empleadoEncontrado.diasTrabajar;
@@ -194,7 +205,7 @@ function cargarTurnosDisponibles() {
         }
     });
 
-    const picker = new Pikaday({
+    picker = new Pikaday({
         field: document.getElementById("datepicker"),
         format: "YYYY-MM-DD",
         maxDate: new Date(arrayDeEmpleados.fechaFin),
@@ -242,7 +253,7 @@ function mostrarHorariosDisponibles(e) {
 }
 
 function calcularHorariosDisponibles(turnosFiltrados) {
-    const horariosDisponibles = []; 
+    const horariosDisponibles = [];
     if (turnosFiltrados.length === 0) {
         console.log("No hay turnos en esta fecha.");
     }
@@ -387,15 +398,7 @@ btnConfirmaCita.addEventListener("click", (e) => {
     })();
 });
 
-function desabilitarInputs() {
-    nombre.disabled = true;
-    email.disabled = true;
-    telefono.disabled = true;
-    comentarios.disabled = true;
-    dateInput.innerHTML = "";
-    dateInput.disabled = true;
-    divTurnos.innerHTML = "";
-}
+
 
 // Validar Formulario
 nombre.addEventListener("input", verificarCampos);
