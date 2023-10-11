@@ -91,6 +91,11 @@ async function cargarServicios() {
         const selectElement = document.getElementById("select-servicios");
         selectElement.innerHTML = "";
 
+        const option = document.createElement("option");
+        option.value = "1";
+        option.textContent = "Selecciona que deseas hacerte";
+        selectElement.appendChild(option);
+
         serviciosSnapshot.forEach((doc) => {
             const data = doc.data();
             const nombreServicio = data.servicio;
@@ -115,6 +120,10 @@ selectServicios.addEventListener("change", (event) => {
         event.target.options[event.target.selectedIndex].textContent;
     cargarEsteticistas();
 });
+
+
+
+
 
 function desabilitarInputs() {
     nombre.disabled = true;
@@ -345,11 +354,31 @@ function botonHorarioHabilitado(horariosDisponibles) {
 
                     // Llama a habilitarInputs() solo cuando se confirma
                     habilitarInputs();
+                    habilitarDesabilitarCampos()
                 }
             });
         });
         divTurnos.appendChild(boton);
     });
+}
+
+function habilitarDesabilitarCampos() {
+   
+        const selectServicios = document.getElementById('select-servicios');
+        const esteticistas = document.getElementById('esteticistas');
+        const datepicker = document.getElementById('datepicker');
+        
+        selectServicios.disabled = !selectServicios.disabled;
+        esteticistas.disabled = !esteticistas.disabled;
+        datepicker.disabled = !datepicker.disabled;
+      
+        const buttons = document.querySelectorAll('.turnosDisponibles .btn-horario');
+        
+        // Itero  sobre los botones y cambio  el atributo "disabled" de cada uno
+        for (const button of buttons) {
+          button.disabled = !button.disabled;
+        }
+
 }
 
 function stringAHora(horaString) {
@@ -420,3 +449,8 @@ function formatoHora(date) {
         minute: "2-digit",
     });
 }
+
+  
+  
+  
+  
