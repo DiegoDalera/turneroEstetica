@@ -79,13 +79,12 @@ export const borrarTurnosServicio = async (id) => {
   const idServicioAEliminar = id;
   const q = query(collection(db, "turnos"), where('idServicios', '==', idServicioAEliminar));
   const querySnapshot = await getDocs(q);
-  
+
   try {
     for (const doc of querySnapshot.docs) {
       await borrar("turnos", doc.id);
       console.log(`Documento con ID ${doc.id} eliminado`);
     }
-    alert("termino");
   } catch (error) {
     console.error(`Error al eliminar documentos: ${error}`);
   }
@@ -171,12 +170,24 @@ if (loginForm) {
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        alert("Sesión iniciada con éxito");
-        window.location.href = "/pages/turnos.html";
+        Swal.fire({
+          icon: 'success',
+          title: 'Sesión iniciada correctamente',
+          showConfirmButton: false,
+          timer: 2500
+        }).then(() => {
+          window.location.href = "/pages/turnos.html";
+        });
       })
       .catch((error) => {
-        alert("Error al iniciar sesión: " + error.message);
+        console.error("Error al iniciar sesión:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al iniciar sesión',
+          text: 'El inicio de sesión no es correcto. Por favor, verifica tus credenciales.'
+        });
       });
+
   });
 }
 

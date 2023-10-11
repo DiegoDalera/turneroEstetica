@@ -64,6 +64,7 @@ async function cargarArrayServicios() {
 }
 
 function cargarEsteticistas() {
+  selectEsteticistaAdmin.innerHTML = ""
 
   arrayDeEmpleados.forEach((conexion) => {
     const option = document.createElement("option");
@@ -204,8 +205,18 @@ function construirCalendario(fechaInicio, fechaFin, turnos, esteticistaID, estet
   });
 }
 
-function marcarTurnoSeñado(turnoId) {
+async function marcarTurnoSeñado(turnoId) {
   actualizar("turnos", turnoId, { señado: true })
+
+  // Actualizao tambien el Array de turnos
+  const elementoDeseado = arrayDeTurnos.find(turno => turno.id === turnoId);
+
+  if (elementoDeseado) {
+    elementoDeseado.señado = true;
+    console.log("Campo 'señado' actualizado a true:", elementoDeseado);
+  } else {
+    console.log("No se encontró un elemento con el ID deseado");
+  }
 }
 
 function eliminarTurnoPorID(turnoID) {

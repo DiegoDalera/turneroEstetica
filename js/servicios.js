@@ -49,8 +49,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     //agrego event listener borrar
     const botonesBorrarServicios = document.querySelectorAll(".btn-borrar")
-    console.log(botonesBorrarServicios)
-
     botonesBorrarServicios.forEach(btn => {
       btn.addEventListener("click", (event) => {
         var id = btn.getAttribute('doc-id');
