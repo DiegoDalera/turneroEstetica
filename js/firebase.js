@@ -75,10 +75,6 @@ export const actualizar = (collection, id, newField) =>
 
 export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
-// export const obtenerTurnosOtorgados = (id) => {
-//   return getDocs(collection(db, "conexiones", id, "turnos"));
-// };
-
 export const borrarTurnosServicio = async (id) => {
   const idServicioAEliminar = id;
   const q = query(collection(db, "turnos"), where('idServicios', '==', idServicioAEliminar));
@@ -94,9 +90,6 @@ export const borrarTurnosServicio = async (id) => {
     console.error(`Error al eliminar documentos: ${error}`);
   }
 };
-
-
-
 
 
 //   const subcoleccionTurnosRef = collection(
@@ -166,7 +159,6 @@ if (registroForm) {
 
 
 //______ INICIAR SESION USER -------
-// Comprueba si existe el formulario de inicio de sesión
 
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {

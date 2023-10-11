@@ -7,15 +7,28 @@
     <title>Login</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css">
 </head>
 
 <body>
 
-    <div class="titulo">
-        <h1>Loguearse</h1>
+    <div class="wrapper">
+        <form class="login" id="loginForm">
+            <p class="title">Log in</p>
+            <input type="email" placeholder="Enter Email" name="email" id="email">
+            <i class="fa fa-envelope-o"></i>
+            <input type="password" placeholder="Enter Password" name="password" id="password">
+            <i class="fa fa-key"></i>
+            <a href="#">Forgot your password?</a>
+            <button type="submit">
+                <i class="spinner"></i>
+                <span class="state">Log in</span>
+            </button>
+        </form>
     </div>
 
-    <form class="modal-content-login" action="#" method="post" id="loginForm">
+    <!-- <form class="modal-content-login" action="#" method="post" id="loginForm">
         <div class="formulario">
 
             <div class="elem-group">
@@ -31,9 +44,10 @@
                 <button type="submit">Iniciar sesión</button>
             </div>
         </div>
-    </form>
+    </form> -->
 
-   <script type="module"  src="../../js/firebase.js"></script>
+    <script type="module" src="../../js/firebase.js"></script>
+    <script src="../../js/login.js"></script>
 
 </body>
 
