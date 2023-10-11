@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content:space-around;
+  justify-content: space-around;
   border: 1px solid black;
   padding: 4px;
 }
@@ -46,21 +46,7 @@
   text-align: center;
 }
 
-.tabla-turnos {
-  border: 1px solid black;
-  width: 100%;
-  table-layout: fixed; /* Fija el ancho de la tabla */
-}
 
-.tabla-turnos tr,
-.tabla-turnos td,
-.tabla-turnos th {
-  border: 1px solid black;
-  width: 10%;
-  text-align: center;
-  overflow: hidden; /* Oculta el contenido que se desborde */
-  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
-}
 
 /* Estilos modal turnos */
 
@@ -103,4 +89,34 @@
 .no-pagada {
   background-color: red;
   color: white;
+}
+
+
+/* Estilos para pantallas más pequeñas */
+
+@media (max-width: 768px) {
+  .caja_busqueda {
+    width: 100%;
+  }
+
+  .formulario-busqueda {
+    width: 100%;
+    flex-direction: column; /* Cambia la dirección de los elementos a columna */
+  }
+
+  .turnos-elem-group {
+    flex-direction: column; /* Cambia la dirección de los elementos a columna */
+    margin-bottom: 10px; /* Agrega espacio entre los elementos */
+    width: 100%;
+  }
+
+  .turnos-elem-group label,
+  .turnos-elem-group input,
+  .turnos-elem-group select,
+  .turnos-elem-group button {
+    padding: 0.75rem;
+    border-radius: 5px;
+    font-size: 1rem;
+
+  }
 }

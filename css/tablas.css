@@ -32,6 +32,24 @@
   width: 100%;
 }
 
+
+/* tabla turnos */
+
+.tabla-turnos {
+  border: 1px solid black;
+  width: 100%;
+  table-layout: fixed; /* Fija el ancho de la tabla */
+}
+
+.tabla-turnos tr,
+.tabla-turnos td,
+.tabla-turnos th {
+  border: 1px solid black;
+  text-align: center;
+  overflow: hidden; /* Oculta el contenido que se desborde */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
+}
+
 /*** Table Styles **/
 .table-fill {
   background: white;
@@ -145,4 +163,52 @@ td.text-center {
 
 td.text-right {
   text-align: right;
+}
+
+
+ /* Responsive  768px */
+
+ @media screen and (max-width: 768px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+  
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    text-align: center;
+  }
+  
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+  
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: .8em;
+  }
+  
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  table td:last-child {
+    border-bottom: 0;
+  }
 }

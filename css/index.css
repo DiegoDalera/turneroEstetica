@@ -42,7 +42,7 @@ textarea {
   font-size: 1rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .formulario {
     grid-template-columns: 1fr;
     column-gap: 1rem;
