@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap");
 
 :root {
-  --color-barra-lateral: #F8E8EE;
+  --color-barra-lateral: #fde5f9;
 
   --color-texto: rgb(0, 0, 0);
-  --color-texto-menu: rgb(134, 136, 144);
+  --color-texto-menu: #161412;
 
   --color-menu-hover: rgb(238, 238, 238);
   --color-menu-hover-texto: rgb(0, 0, 0);
 
-  --color-boton: rgb(0, 0, 0);
+  --color-boton: #e1548a;
   --color-boton-texto: rgb(255, 255, 255);
 
   --color-linea: rgb(180, 180, 180);
@@ -52,7 +52,7 @@
 body {
   height: 100vh;
   width: 100%;
-  background-color: #f4dfe6
+  background-color:#fff2f9;
 }
 
 a {
@@ -76,12 +76,13 @@ i {
   align-items: center;
   border-radius: 50%;
   cursor: pointer;
-  background-color: #fbe4ed;
+  background-color: #fde5f9;
   color: black;
   right: 15px;
   top: 15px;
   z-index: 100;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  background-color: #eb5598;
 }
 
 /*Barra Lateral*/
@@ -316,6 +317,13 @@ main {
 main.min-main {
   margin-left: 80px;
 }
+
+.confirma_cita{
+background-color: #eb5598;
+color: #161412;
+padding: 4px;
+}
+
 
 /* Responsive*/
 @media (max-height: 660px) {

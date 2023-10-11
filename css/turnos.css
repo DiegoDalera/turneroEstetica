@@ -46,8 +46,6 @@
   text-align: center;
 }
 
-
-
 /* Estilos modal turnos */
 
 /* Estilo para ocultar el modal inicialmente */
@@ -91,6 +89,11 @@
   color: white;
 }
 
+.btn_buscar_turnos {
+  background-color: #eb5598;
+  color: #161412;
+  padding: 4px;
+}
 
 /* Estilos para pantallas más pequeñas */
 
@@ -117,6 +120,5 @@
     padding: 0.75rem;
     border-radius: 5px;
     font-size: 1rem;
-
   }
 }
