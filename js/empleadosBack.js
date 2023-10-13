@@ -57,123 +57,112 @@ window.onclick = function (event) {
   }
 }
 
+//EventListener
 document.addEventListener("DOMContentLoaded", async () => {
-  await cargarDatosTabla();
-  await cargarFormularioDefault();
-});
-
-function generarHTMLTabla(empleado, id) {
-  return `
-    <tr>
-      <td>${empleado.nombre}</td>
-      <td>${empleado.mail}</td>
-      <td>${empleado.telefono}</td>
-      <td>${empleado.direccion}</td>
-      <td>${empleado.horaInicio}</td>
-      <td>${empleado.horaFin}</td>
-      <td>${empleado.serviciosOfrecidos}</td>
-      <td>${empleado.diasTrabajar}</td>
-      <td>${empleado.fechaInicio}</td>
-      <td>${empleado.fechaFin}</td>
-      <td>
-        <button class="btn-borrar" doc-id="${id}"><i class="bi bi-trash-fill"></i></button>
-        <button class="btn-editar" doc-id="${id}"><i class="bi bi-pencil-fill"></i></button>
-      </td>
-    </tr>
-  `;
-}
-
-function asignarEventosBotones() {
-  cuerpoTablaEmpleados.addEventListener("click", async (event) => {
-    const esBotonBorrar = event.target.closest(".btn-borrar");
-    const esBotonEditar = event.target.closest(".btn-editar");
-
-    if (esBotonBorrar) {
-      const id = esBotonBorrar.getAttribute('doc-id');
-      await borrar("empleados", id);
-      Swal.fire('Empleado Eliminado');
-    } else if (esBotonEditar) {
-      const id = esBotonEditar.getAttribute('doc-id'); // Obtener el ID del empleado a editar
-      console.log(id)
-      cargarFormularioDefault();
-    
-      const dato = await obtener("empleados", id)
-      const empleadoEditar = dato.data()
-      console.log("empleado a editar :", empleadoEditar)
-      let modal = document.getElementById("modal-agregar");
-      modal.style.display = "block";
-
-      editStatus = true
-      idEdit = id;
-
-      btnAgregarEmpleado.innerText = "Actualizar Empleado";
-      formAgregarEmpleado["nombre"].value = empleadoEditar.nombre
-      formAgregarEmpleado["nombre"].disabled = true;
-      formAgregarEmpleado["mail"].value = empleadoEditar.mail
-      formAgregarEmpleado["telefono"].value = empleadoEditar.telefono
-      formAgregarEmpleado["direccion"].value = empleadoEditar.direccion
-      formAgregarEmpleado["hora-inicio"].value = empleadoEditar.horaInicio
-      formAgregarEmpleado["hora-fin"].value = empleadoEditar.horaFin
-      formAgregarEmpleado["fecha-inicio"].value = empleadoEditar.fechaInicio
-      formAgregarEmpleado["fecha-fin"].value = empleadoEditar.fechaFin
-
-      // Obtén una referencia al select
-      const serviciosSelect = document.getElementById("serviciosOfrecidos");
-
-      // Recorre todas las opciones del select
-      for (let i = 0; i < serviciosSelect.options.length; i++) {
-        const option = serviciosSelect.options[i];
-        const servicio = option.value;
-
-        // Verifica si el servicio está en la lista de serviciosOfrecidos
-        if (empleadoEditar.serviciosOfrecidos.includes(servicio)) {
-          option.selected = true; // Marca la opción como seleccionada
-        }
-      }
-
-
-      // Datos proporcionados Dias de la semana trabajados
-      const diasElement = document.getElementById("dias");
-      diasElement.innerHTML = "";
-
-      const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-      const diasATrabajar = empleadoEditar.diasTrabajar
-      console.log(diasATrabajar)
-      console.log(diasSemana)
-
-      // Recorre la lista de días y crea las opciones
-      for (let i = 0; i < diasSemana.length; i++) {
-        const option = document.createElement("option");
-        option.text = diasSemana[i];
-        option.value = diasSemana[i];
-
-        // Verifica si el día debe estar preseleccionado
-        if (diasATrabajar.includes(diasSemana[i])) {
-          option.selected = true;
-        }
-        diasElement.appendChild(option);
-      }
-
-    }
-
-  });
-}
-
-async function cargarDatosTabla() {
-  try {
-    onSnapshot(collection(db, "empleados"), (querySnapshot) => {
-      let html = '';
-      querySnapshot.forEach(doc => {
-        const empleado = doc.data();
-        html += generarHTMLTabla(empleado, doc.id);
-      });
-      cuerpoTablaEmpleados.innerHTML = html;
-      asignarEventosBotones();
+  onSnapshot(collection(db, "empleados"), (querySnapshot) => {
+    let html = '';
+    querySnapshot.forEach(doc => {
+      const empleado = doc.data();
+      html += `
+          <tr>
+            <td>${empleado.nombre}</td>
+            <td>${empleado.mail}</td>
+            <td>${empleado.telefono}</td>
+            <td>${empleado.direccion}</td>
+            <td>${empleado.horaInicio}</td>
+            <td>${empleado.horaFin}</td>
+            <td>${empleado.serviciosOfrecidos}</td>
+            <td>${empleado.diasTrabajar}</td>
+            <td>${empleado.fechaInicio}</td>
+            <td>${empleado.fechaFin}</td>
+            <td>
+              <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
+              <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
+            </td>
+          </tr>
+    `
     });
-  } catch (error) {
-    console.error("Error cargando datos:", error);
-  }
-}
+    cuerpoTablaEmpleados.innerHTML = html;
+
+    //Agrego event listener borrar
+    const botonesBorrarEmpleados = document.querySelectorAll(".btn-borrar")
+    botonesBorrarEmpleados.forEach(btn => {
+      btn.addEventListener("click", (event) => {
+        var id = btn.getAttribute('doc-id');
+        borrar("empleados", id)
+        Swal.fire('Empleado Eliminado');
+      })
+    })
+
+    //Agrego event listener editar
+    const botonesEditarEmpleado = document.querySelectorAll(".btn-editar")
+    botonesEditarEmpleado.forEach(btn => {
+      btn.addEventListener("click", async (event) => {
+
+        cargarFormularioDefault();
+
+        var id = btn.getAttribute('doc-id');
+        const dato = await obtener("empleados", id)
+        const empleadoEditar = dato.data()
+        console.log("empleado a editar :", empleadoEditar)
+        let modal = document.getElementById("modal-agregar");
+        modal.style.display = "block";
+
+        editStatus = true
+        idEdit = id;
+
+        btnAgregarEmpleado.innerText = "Actualizar Empleado";
+        formAgregarEmpleado["nombre"].value = empleadoEditar.nombre
+        formAgregarEmpleado["nombre"].disabled = true;
+        formAgregarEmpleado["mail"].value = empleadoEditar.mail
+        formAgregarEmpleado["telefono"].value = empleadoEditar.telefono
+        formAgregarEmpleado["direccion"].value = empleadoEditar.direccion
+        formAgregarEmpleado["hora-inicio"].value = empleadoEditar.horaInicio
+        formAgregarEmpleado["hora-fin"].value = empleadoEditar.horaFin
+        formAgregarEmpleado["fecha-inicio"].value = empleadoEditar.fechaInicio
+        formAgregarEmpleado["fecha-fin"].value = empleadoEditar.fechaFin
+
+        // Obtén una referencia al select
+        const serviciosSelect = document.getElementById("serviciosOfrecidos");
+
+        // Recorre todas las opciones del select
+        for (let i = 0; i < serviciosSelect.options.length; i++) {
+          const option = serviciosSelect.options[i];
+          const servicio = option.value;
+
+          // Verifica si el servicio está en la lista de serviciosOfrecidos
+          if (empleadoEditar.serviciosOfrecidos.includes(servicio)) {
+            option.selected = true; // Marca la opción como seleccionada
+          }
+        }
+
+
+        // Datos proporcionados Dias de la semana trabajados
+        const diasElement = document.getElementById("dias");
+        diasElement.innerHTML = "";
+
+        const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+        const diasATrabajar = empleadoEditar.diasTrabajar
+        console.log(diasATrabajar)
+        console.log(diasSemana)
+
+        // Recorre la lista de días y crea las opciones
+        for (let i = 0; i < diasSemana.length; i++) {
+          const option = document.createElement("option");
+          option.text = diasSemana[i];
+          option.value = diasSemana[i];
+
+          // Verifica si el día debe estar preseleccionado
+          if (diasATrabajar.includes(diasSemana[i])) {
+            option.selected = true;
+          }
+          diasElement.appendChild(option);
+        }
+
+      })
+    })
+  })
+})
 
 async function cargarFormularioDefault() {
 
@@ -192,8 +181,6 @@ async function cargarFormularioDefault() {
 
 
   const selectDias = document.getElementById("dias");
-  selectDias.innerHTML = "";
-  
   const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
   // Recorro la lista de días y creo las opciones

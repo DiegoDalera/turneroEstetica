@@ -46,16 +46,22 @@ const provider = new GoogleAuthProvider();
 export let user;
 
 export async function loginWithGoogle() {
-  const response = await signInWithPopup(auth, provider);
-  const credential = GoogleAuthProvider.credentialFromResult(response);
-  const token = credential.accessToken;
+  try {
+    const response = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(response);
+    const token = credential.accessToken;
 
-  localStorage.setItem("token", token);
-  if (token) {
-    user = response.user;
+    localStorage.setItem("token", token);
+    if (token) {
+      user = response.user;
+    }
+    return user;
+  } catch (error) {
+    console.error("Error al iniciar sesión con Google:", error);
+
   }
-  return user;
 }
+
 
 export async function loginWithCredecials(email, password) {
   // retorna un objeto credenciales
@@ -90,50 +96,6 @@ export const borrarTurnosServicio = async (id) => {
   }
 };
 
-
-//   const subcoleccionTurnosRef = collection(
-//     doc(db, "conexiones", servicioId),
-//     "turnos"
-//   );
-//   const nuevoTurnoRef = await addDoc(subcoleccionTurnosRef, turnoData);
-//   console.log("Turno agregado con ID:", nuevoTurnoRef.id);
-// };
-
-// export async function obtenerConexiones() {
-//   const arrayConexiones = [];
-//   const querySnapshot = await getDocs(collection(db, "conexiones"));
-//   const promesasTurnos = [];
-
-//   querySnapshot.forEach(async (docConexion) => {
-//     let conexionData = docConexion.data();
-//     let conexionId = docConexion.id;
-//     conexionData.id = conexionId;
-
-//     console.log("conexion data ", conexionData);
-
-//     const promesaTurno = getDocs(
-//       collection(db, "conexiones", docConexion.id, "turnos")
-//     ).then((docTurno) => {
-//       const listaDeTurnos = docTurno.docs.map((doc) => {
-//         return {
-//           ...doc.data(),
-//           docID: doc.id,
-//         };
-//       });
-//       conexionData.turnos = listaDeTurnos;
-//       arrayConexiones.push(conexionData);
-//     });
-
-//     promesasTurnos.push(promesaTurno);
-//   });
-
-//   //
-
-//   await Promise.all(promesasTurnos);
-//   return arrayConexiones;
-// }
-
-//----- Registrar Usuario ----
 
 const registroForm = document.getElementById("registerForm");
 if (registroForm) {
@@ -191,20 +153,3 @@ if (loginForm) {
   });
 }
 
-// Filtrar , Checkear Documentacion FIrebase.
-
-// export const guardarTurno = async (servicioId, turnoData) => {
-
-
-// db.collection('Turnos')
-//   .where('profesionalId', '==', profesionalId)
-//   .where('fecha', '>=', inicio)
-//   .where('fecha', '<=', fin)
-//   .where('servicio','==',servicioSeleccionado)
-//   .get()
-//   .then((querySnapshot) => {
-//     querySnapshot.forEach((doc) => {
-//       // Aquí puedes procesar cada documento de turno
-//       console.log(doc.id, '=>', doc.data());
-//     });
-//   })

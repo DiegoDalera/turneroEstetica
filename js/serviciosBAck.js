@@ -5,6 +5,7 @@ import {
   actualizar,
   obtener,
   borrar,
+  borrarTurnosServicio
 } from '../js/firebase.js'
 
 const formAgregarServicio = document.getElementById("formulario-servicio-agregar");
@@ -27,71 +28,72 @@ valor.addEventListener('input', verificarCampos);
 
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
-  await cargarDatosTabla();
-});
-
-
-function asignarEventosBotones() {
-  cuerpoTablaServicios.addEventListener("click", async (event) => {
-    const esBotonBorrar = event.target.closest(".btn-borrar");
-    const esBotonEditar = event.target.closest(".btn-editar");
-
-    if (esBotonBorrar) {
-      const id = esBotonBorrar.getAttribute('doc-id');
-      await borrar("servicios", id);
-      Swal.fire('Servicio Eliminado');
-    } else if (esBotonEditar) {
-      const id = esBotonEditar.getAttribute('doc-id');
-      const dato = await obtener("servicios", id)
-      console.log(dato.data())
-      const servicioEditar = dato.data()
-
-      let modal = document.getElementById("modal-agregar");
-      modal.style.display = "block";
-
-      editStatus = true
-      idEdit = id;
-
-      btnAgregarServicio.innerText = "Actualizar";
-      formAgregarServicio["nombre_servicio_ag"].value = servicioEditar.servicio
-      formAgregarServicio["nombre_servicio_ag"].disabled = true;
-      formAgregarServicio["duracion_ag"].value = servicioEditar.duracion
-      formAgregarServicio["cantidad_turnos_ag"].value = servicioEditar.cantidadTurnos
-      formAgregarServicio["valor_ag"].value = servicioEditar.valor
-    }
-  });
-}
-
-async function cargarDatosTabla() {
-  try {
-    onSnapshot(collection(db, "servicios"), (querySnapshot) => {
-      let html = '';
-      querySnapshot.forEach(doc => {
-        const servicio = doc.data();
-        html += generarHTMLServicio(servicio, doc.id);
-      });
-      cuerpoTablaServicios.innerHTML = html;
-      asignarEventosBotones();
+  onSnapshot(collection(db, "servicios"), (querySnapshot) => {
+    let html = '';
+    querySnapshot.forEach(doc => {
+      const servicio = doc.data();
+      html += `
+          <tr>
+            <td>${servicio.servicio}</td>
+            <td>${servicio.duracion}</td>
+            <td>${servicio.cantidadTurnos}</td>
+            <td>${servicio.valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+            <td>
+              <button class="btn-borrar" doc-id="${doc.id}"><i class="bi bi-trash-fill"></i></button>
+              <button class="btn-editar" doc-id="${doc.id}"><i class="bi bi-pencil-fill"></i></button>
+            </td>
+          </tr>
+    `
     });
-  } catch (error) {
-    console.error("Error cargando datos:", error);
-  }
-}
+    cuerpoTablaServicios.innerHTML = html;
 
-function generarHTMLServicio(servicio, id) {
-  return `
-    <tr>
-      <td>${servicio.servicio}</td>
-      <td>${servicio.duracion}</td>
-      <td>${servicio.cantidadTurnos}</td>
-      <td>${servicio.valor.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-      <td>
-        <button class="btn-borrar" doc-id="${id}"><i class="bi bi-trash-fill"></i></button>
-        <button class="btn-editar" doc-id="${id}"><i class="bi bi-pencil-fill"></i></button>
-      </td>
-    </tr>
-  `;
-}
+    //agrego event listener borrar
+    const botonesBorrarServicios = document.querySelectorAll(".btn-borrar")
+    botonesBorrarServicios.forEach(btn => {
+      btn.addEventListener("click", (event) => {
+        var id = btn.getAttribute('doc-id');
+        console.log(id)
+        borrar("servicios", id)
+          .then(() => {
+            Swal.fire('Servicio Eliminado').then(() => {
+              borrarTurnosServicio(id);
+            });
+          })
+          .catch((error) => {
+            console.error(`Error al eliminar el servicio: ${error}`);
+          });
+      });
+    });
+
+
+    //Agrego event listener editar
+    const botonesEditarServicios = document.querySelectorAll(".btn-editar")
+    console.log(botonesEditarServicios);
+
+    botonesEditarServicios.forEach(btn => {
+      btn.addEventListener("click", async (event) => {
+        var id = btn.getAttribute('doc-id');
+
+        const dato = await obtener("servicios", id)
+        console.log(dato.data())
+        const servicioEditar = dato.data()
+
+        let modal = document.getElementById("modal-agregar");
+        modal.style.display = "block";
+
+        editStatus = true
+        idEdit = id;
+
+        btnAgregarServicio.innerText = "Actualizar";
+        formAgregarServicio["nombre_servicio_ag"].value = servicioEditar.servicio
+        formAgregarServicio["nombre_servicio_ag"].disabled = true;
+        formAgregarServicio["duracion_ag"].value = servicioEditar.duracion
+        formAgregarServicio["cantidad_turnos_ag"].value = servicioEditar.cantidadTurnos
+        formAgregarServicio["valor_ag"].value = servicioEditar.valor
+      })
+    })
+  })
+})
 
 //Agregar y Editar Servicio
 btnAgregarServicio.addEventListener("click", (e) => {
