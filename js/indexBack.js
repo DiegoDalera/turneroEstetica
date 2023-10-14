@@ -29,26 +29,59 @@ const divTurnos = document.getElementById("turnosDisponibles");
 
 //EventListener
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarArray("turnos", arrayDeTurnos);
-    await cargarArray("empleados", arrayDeEmpleados);
-    await cargarArray("servicios", arrayDeServicios);
+    cargarArrayTurnos();
+    cargarArrayEmpleados();
+    cargarArrayServicios();
     cargarServicios();
 });
 
-async function cargarArray(coleccion, array) {
+async function cargarArrayTurnos() {
     try {
-        const querySnapshot = await obtenerColl(coleccion);
+        const querySnapshot = await obtenerColl("turnos");
         querySnapshot.forEach((doc) => {
+            // Acceder a los datos de cada documento
             const data = doc.data();
             data.id = doc.id;
-            array.push(data);
+            arrayDeTurnos.push(data);
         });
-        console.log(`Array de ${coleccion}: `, array);
     } catch (error) {
-        console.error(`Error al obtener los ${coleccion}:`, error);
+        console.error("Error al obtener los turnos:", error);
     }
+
+    console.log("array de turnos : ", arrayDeTurnos);
 }
 
+async function cargarArrayEmpleados() {
+    try {
+        const querySnapshot = await obtenerColl("empleados");
+        querySnapshot.forEach((doc) => {
+            // Acceder a los datos de cada documento
+            const data = doc.data();
+            // Agregar el ID como una propiedad en el objeto de datos
+            data.id = doc.id;
+            arrayDeEmpleados.push(data);
+        });
+    } catch (error) {
+        console.error("Error al obtener los empleados:", error);
+    }
+    console.log("array de empleados: ", arrayDeEmpleados);
+}
+
+async function cargarArrayServicios() {
+    try {
+        const querySnapshot = await obtenerColl("servicios");
+        querySnapshot.forEach((doc) => {
+            // Acceder a los datos de cada documento
+            const data = doc.data();
+            // Agregar el ID como una propiedad en el objeto de datos
+            data.id = doc.id;
+            arrayDeServicios.push(data);
+        });
+    } catch (error) {
+        console.error("Error al obtener los servicios:", error);
+    }
+    console.log("array de servicios: ", arrayDeServicios);
+}
 
 //Cargo los servicios disponibles en el select de Servicios
 async function cargarServicios() {
@@ -149,7 +182,7 @@ function cargarTurnosDisponibles() {
         return servicio.id === servicioSeleccionadoId;
     });
 
-    if (picker) {
+    if (picker){
         picker.destroy()
     }
 
@@ -200,6 +233,15 @@ dateInput.addEventListener("change", function (e) {
 function mostrarHorariosDisponibles(e) {
     divTurnos.innerHTML = "";
     const fechaAlmacenadaStr = fechaSeleccionada;
+
+    // Empleado  y servicio encontrados
+    console.log("empleado encontrado", empleadoEncontrado);
+    console.log("servicio  encontrado en horarios ", servicioEncontrado);
+    console.log("array de turnos: ", arrayDeTurnos);
+
+    console.log(esteticistaSeleccionadaId);
+    console.log(servicioSeleccionadoId);
+    console.log("duracion ", servicioEncontrado.duracion)
 
     // Filtrar los elementos del array turnos que cumplan con la condición de fecha servicio y empleado
     const turnosFiltrados = arrayDeTurnos.filter(
@@ -315,21 +357,21 @@ function botonHorarioHabilitado(horariosDisponibles) {
 }
 
 function habilitarDesabilitarCampos() {
-
-    const selectServicios = document.getElementById('select-servicios');
-    const esteticistas = document.getElementById('esteticistas');
-    const datepicker = document.getElementById('datepicker');
-
-    selectServicios.disabled = !selectServicios.disabled;
-    esteticistas.disabled = !esteticistas.disabled;
-    datepicker.disabled = !datepicker.disabled;
-
-    const buttons = document.querySelectorAll('.turnosDisponibles .btn-horario');
-
-    // Itero  sobre los botones y cambio  el atributo "disabled" de cada uno
-    for (const button of buttons) {
-        button.disabled = !button.disabled;
-    }
+   
+        const selectServicios = document.getElementById('select-servicios');
+        const esteticistas = document.getElementById('esteticistas');
+        const datepicker = document.getElementById('datepicker');
+        
+        selectServicios.disabled = !selectServicios.disabled;
+        esteticistas.disabled = !esteticistas.disabled;
+        datepicker.disabled = !datepicker.disabled;
+      
+        const buttons = document.querySelectorAll('.turnosDisponibles .btn-horario');
+        
+        // Itero  sobre los botones y cambio  el atributo "disabled" de cada uno
+        for (const button of buttons) {
+          button.disabled = !button.disabled;
+        }
 
 }
 
@@ -379,6 +421,8 @@ btnConfirmaCita.addEventListener("click", (e) => {
     })();
 });
 
+
+
 // Validar Formulario
 nombre.addEventListener("input", verificarCampos);
 email.addEventListener("input", verificarCampos);
@@ -400,7 +444,7 @@ function formatoHora(date) {
     });
 }
 
-
-
-
-
+  
+  
+  
+  
