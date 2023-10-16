@@ -13,9 +13,8 @@ import {
   updateDoc,
   onSnapshot,
   query,
-  where
+  where,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -31,7 +30,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
-// Funciones 
+// Funciones
 export { collection, onSnapshot, db };
 
 export const guardar = (newField, coleccion) => {
@@ -44,21 +43,33 @@ export const actualizar = (collection, id, newField) =>
 
 export const obtenerColl = (coll) => getDocs(collection(db, coll));
 
-
 export const borrarTurnosServicio = async (id) => {
   const idServicioAEliminar = id;
-  const q = query(collection(db, "turnos"), where('idServicios', '==', idServicioAEliminar));
+  const q = query(
+    collection(db, "turnos"),
+    where("idServicio", "==", idServicioAEliminar)
+  );
   const querySnapshot = await getDocs(q);
-
   try {
-    for (const doc of querySnapshot.docs) {
-      await borrar("turnos", doc.id);
-      console.log(`Documento con ID ${doc.id} eliminado`);
-    }
+    const deletePromises = querySnapshot.forEach((doc) => {
+      console.log("Se borrò exitosamente, doc:", doc.id);
+      borrar("turnos", doc.id);
+    });
+    await Promise.all(deletePromises);
   } catch (error) {
-    console.error(`Error al eliminar documentos: ${error}`);
+    console.log(error);
   }
+
+  // try {
+  //   // for (const doc of querySnapshot.docs) {
+  //   //   await borrar("turnos", doc.id);
+  //   //   console.log(`Documento con ID ${doc.id} eliminado`);
+  //   // }
+  //   const deletePromises = querySnapshot.docs.map((doc) =>
+  //     borrar("turnos", doc.id)
+  //   );
+  //   await Promise.all(deletePromises);
+  // } catch (error) {
+  //   console.error(`Error al eliminar documentos: ${error}`);
+  // }
 };
-
-
-
