@@ -5,6 +5,7 @@ import {
   actualizar,
   obtener,
   borrar,
+  borrarTurnosServicio
 } from '../js/firebase.js'
 
 const formAgregarServicio = document.getElementById("formulario-servicio-agregar");
@@ -38,8 +39,11 @@ function asignarEventosBotones() {
 
     if (esBotonBorrar) {
       const id = esBotonBorrar.getAttribute('doc-id');
+      console.log(id , "id servicio a borrar")
       await borrar("servicios", id);
+      await borrarTurnosServicio(id)
       Swal.fire('Servicio Eliminado');
+
     } else if (esBotonEditar) {
       const id = esBotonEditar.getAttribute('doc-id');
       const dato = await obtener("servicios", id)

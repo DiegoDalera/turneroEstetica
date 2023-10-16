@@ -6,7 +6,9 @@ import {
     signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -62,8 +64,6 @@ export async function loginWithCredentials(email, password) {
     }
 }
 
-
-
 // if (loginForm) {
 //     loginForm.addEventListener("submit", async function (event) {
 //         event.preventDefault();
@@ -94,3 +94,38 @@ export async function loginWithCredentials(email, password) {
 
 //     });
 // }
+
+//______ INICIAR SESION USER -------
+
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        await signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sesión iniciada correctamente',
+                    showConfirmButton: false,
+                    timer: 2500
+                }).then(() => {
+                    window.location.href = "/pages/turnos.html";
+                });
+            })
+            .catch((error) => {
+                console.error("Error al iniciar sesión:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar sesión',
+                    text: 'El inicio de sesión no es correcto. Por favor, verifica tus credenciales.'
+                });
+            });
+
+    });
+}
+
